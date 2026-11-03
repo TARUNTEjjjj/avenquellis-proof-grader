@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.20)
-project(NoetherGrader VERSION 0.7.0 LANGUAGES CXX)
+project(VeyraGrader VERSION 0.8.0 LANGUAGES CXX)
 include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
 include(CTest)
@@ -81,3 +81,10 @@ install(FILES ${CMAKE_CURRENT_BINARY_DIR}/NoetherGraderConfig.cmake ${CMAKE_CURR
 if(NOETHER_GRADER_BUILD_CLI)
     install(FILES third_party/nlohmann/LICENSE.MIT DESTINATION ${CMAKE_INSTALL_DATADIR}/licenses/NoetherGrader RENAME nlohmann-json-LICENSE.MIT)
 endif()
+
+# The canonical Veyra package and its original installed name resolve the same ABI.
+set(veyra_package_dir ${CMAKE_INSTALL_LIBDIR}/cmake/VeyraGrader)
+configure_package_config_file(cmake/VeyraGraderConfig.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/VeyraGraderConfig.cmake
+    INSTALL_DESTINATION ${veyra_package_dir})
+write_basic_package_version_file(${CMAKE_CURRENT_BINARY_DIR}/VeyraGraderConfigVersion.cmake VERSION ${PROJECT_VERSION} COMPATIBILITY SameMajorVersion)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/VeyraGraderConfig.cmake ${CMAKE_CURRENT_BINARY_DIR}/VeyraGraderConfigVersion.cmake DESTINATION ${veyra_package_dir})

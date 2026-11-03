@@ -1,9 +1,9 @@
 {
-  "name": "noether-proof-grader",
-  "version": "0.7.0",
+  "name": "@veyra/proof-grader",
+  "version": "0.8.0",
   "private": true,
   "type": "module",
-  "description": "Evidence-preserving mathematical proof review and human marking workflow",
+  "description": "Veyra Math proof grading with native certificates, evidence-preserving proposals and human review",
   "exports": {
     ".": "./src/index.js",
     "./provider": "./src/provider.js",
@@ -12,14 +12,18 @@
     "./pages": "./src/pages.js",
     "./device": "./src/device.js",
     "./span-v2": "./src/span-v2.js",
-    "./partial-credit": "./src/partial-credit.js"
+    "./partial-credit": "./src/partial-credit.js",
+    "./edge": "./edge/runtime.js",
+    "./native-consensus": "./src/native-consensus.js"
   },
   "scripts": {
     "test": "node --test",
     "start": "node src/server.js",
     "benchmark": "node benchmark/run.js",
     "build:device": "node scripts/build-device.mjs",
-    "benchmark:device": "node benchmark/device-browser.mjs"
+    "benchmark:device": "node benchmark/device-browser.mjs",
+    "build:edge": "node scripts/build-edge.mjs",
+    "check:edge": "node wasm/check.mjs"
   },
   "engines": {
     "node": ">=20"
@@ -28,5 +32,9 @@
     "@mlc-ai/web-llm": "0.2.87",
     "esbuild": "0.25.11",
     "playwright-core": "1.55.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/TARUNTEjjjj/veyra-proof-grader.git"
   }
 }

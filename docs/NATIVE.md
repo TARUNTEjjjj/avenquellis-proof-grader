@@ -1,6 +1,6 @@
 # Native proof grading backend
 
-The C++20 library evaluates the two exact Veyra Math proof certificates, prepares arbitrary arguments for review, validates human marks and reconciles two model readings. The CLI can request both readings through the existing Veyra Math evaluation service. The browser and Cloudflare Workers continue to use their JavaScript entry points.
+The C++20 library evaluates the two exact Veyra Math proof certificates, prepares arbitrary arguments for review, validates human marks and reconciles two model readings. The CLI can request both readings through the existing Veyra Math evaluation service. Browser and Pages adapters execute the same C++ grading code through WebAssembly.
 
 ## Build and install
 
@@ -13,7 +13,7 @@ ctest --test-dir build/native --output-on-failure
 cmake --install build/native --prefix "$PWD/build/install"
 ```
 
-Library-only consumers can configure with `-DNOETHER_GRADER_BUILD_CLI=OFF`. Use `find_package(NoetherGrader 0.7 CONFIG REQUIRED)`, link to `NoetherGrader::grader` and include `<noether/grader/grader.hpp>`. The installed-consumer test builds and executes an external project using the exported package. Debug builds can use `-DNOETHER_GRADER_SANITIZERS=ON` and `-DNOETHER_GRADER_WARNINGS_AS_ERRORS=ON`.
+Library-only consumers can configure with `-DNOETHER_GRADER_BUILD_CLI=OFF`. Use `find_package(VeyraGrader 0.8 CONFIG REQUIRED)`, link to `VeyraGrader::grader` and include `<veyra/grader/grader.hpp>`. The original CMake package, namespace and headers remain available. The installed-consumer test builds and executes an external project using the exported package. Debug builds can use `-DNOETHER_GRADER_SANITIZERS=ON` and `-DNOETHER_GRADER_WARNINGS_AS_ERRORS=ON`.
 
 ## Offline CLI
 

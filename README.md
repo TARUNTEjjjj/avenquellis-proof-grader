@@ -6,7 +6,7 @@ No CMI/ISI professor, olympiad examiner or benchmark has certified this software
 
 ## Native C++ backend
 
-Build the C++20 backend with CMake. The `veyra-grader` CLI checks proof certificates, sends ungraded free-form proofs to a configured two-reader service, validates returned rubric evidence and records explicit human marks. The static library is available as `NoetherGrader::grader`. [Build, JSON examples and offline or networked workflows](docs/NATIVE.md)
+Build the C++20 backend with CMake. The `veyra-grader` CLI checks proof certificates, sends ungraded free-form proofs to a configured two-reader service, validates returned rubric evidence and records explicit human marks. The static library is available as `VeyraGrader::grader` through `<veyra/grader/grader.hpp>`. The legacy CMake target and header remain available. [Build, JSON examples and offline or networked workflows](docs/NATIVE.md)
 
 ```sh
 cmake -S . -B build/native -DCMAKE_BUILD_TYPE=Release
@@ -14,6 +14,10 @@ cmake --build build/native --parallel
 ctest --test-dir build/native --output-on-failure
 build/native/veyra-grader assess examples/checked-gcd.json
 ```
+
+## C++ grading in the browser and on Pages
+
+The Pages proof API resolves the original question on the server and invokes the compiled grader before any model call. The same C++ module runs locally in the browser for offline certificate checks. Only complete certificates carry a checked final score. The two-reader model supplies provisional opinions which the native grader revalidates against exact evidence. [Build manifest, ABI and tests](docs/EDGE.md)
 
 ## Run locally
 
@@ -40,7 +44,7 @@ node --env-file=.env src/server.js
 `src/certificate.js` is a standalone browser-safe module with no imports or network requirements. `certificateHelp(question)` returns instructions and a blank scaffold for a supported question. `verifyCertificate(question, answer)` verifies an explicit certificate and returns a score of 10 only when every required inference is established. Partial results have `score: null`, `lowerBoundPoints` for verified steps, and feedback for each criterion. Ordinary prose and unsupported questions return `null` and use the existing review workflow. Both implementations reconstruct the instance ID and parameter from the supplied generator seed. Bank questions must also match their original track and requested difficulty. A public service must resolve the assigned question from its own catalog before accepting marks.
 
 ```js
-import {certificateHelp, verifyCertificate} from 'noether-proof-grader/certificate';
+import {certificateHelp, verifyCertificate} from '@veyra/proof-grader/certificate';
 
 const help = certificateHelp(question);
 if (help) {
@@ -194,19 +198,20 @@ Bind Workers AI to your Pages project as `AI` and redeploy with that binding. A 
 binding = "AI"
 ```
 
-Import `createPagesReviewHandler` from `noether-proof-grader/pages`, or vendor `src/pages.js`, `src/service.js`, `src/provider.js` and `src/index.js` together outside the static asset directory. Your Pages Function can export the returned handler as `onRequest`:
+Import `createPagesReviewHandler` from `@veyra/proof-grader/pages`, or vendor the Pages handler and its relative modules together outside the static asset directory. Supply the compiled grading runtime for native checks. Your Pages Function can export the returned handler as `onRequest`:
 
 ```js
-import {createPagesReviewHandler} from 'noether-proof-grader/pages';
-import {resolvePracticeQuestion, reserveReviewAllowance} from '../../server/practice.js';
+import {createPagesReviewHandler} from '@veyra/proof-grader/pages';
+import {resolvePracticeQuestion, reserveReviewAllowance, getNativeGrader} from '../../server/practice.js';
 
 export const onRequest = createPagesReviewHandler({
   resolveQuestion: ({questionId, reference}) => resolvePracticeQuestion(questionId, reference),
-  admit: ({request, env, question}) => reserveReviewAllowance(request, env, question)
+  admit: ({request, env, question}) => reserveReviewAllowance(request, env, question),
+  loadGrader: getNativeGrader
 });
 ```
 
-The two `server/practice.js` callbacks belong to the host application. `resolvePracticeQuestion` retrieves or regenerates a canonical proof question from the server’s catalog. `reserveReviewAllowance` authenticates the caller as appropriate and atomically reserves its quota for two passes. Return `true` to admit, or a denial `Response` such as HTTP 429. A missing callback or failed admission prevents inference. The per-isolate limit is additional to the host’s account-wide quota.
+The `server/practice.js` callbacks belong to the host application. `resolvePracticeQuestion` retrieves or regenerates a canonical proof question from the server’s catalog. `reserveReviewAllowance` authenticates the caller as appropriate and atomically reserves its quota for two passes. Return `true` to admit, or a denial `Response` such as HTTP 429. A missing callback or failed admission prevents inference. The per-isolate limit is additional to the host’s account-wide quota.
 
 The browser posts JSON `{questionId, answer, reference?}` to its same-origin endpoint. The optional reference is a bounded object of generation metadata for the host to validate. The handler rejects client-supplied rubrics, statements and models. The model sees only the resolved question and the submitted answer. A rejected or unavailable review leaves the local attempt available for later moderation.
 

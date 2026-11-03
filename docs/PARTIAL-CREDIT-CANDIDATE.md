@@ -34,7 +34,7 @@ This example applies only to a question with matching `lemma` and `conclusion` r
 ## Trial entry points
 
 ```js
-import {makePartialCreditRequest, evaluatePartialCredit, PRIMARY_MODEL} from 'noether-proof-grader/partial-credit';
+import {makePartialCreditRequest, evaluatePartialCredit, PRIMARY_MODEL} from '@veyra/proof-grader/partial-credit';
 
 // Pure, suitable for tokenizer-based preflight before a budget is authorized.
 const requestA = makePartialCreditRequest(question, answer, 0, {model: PRIMARY_MODEL, maxTokens: 2400});

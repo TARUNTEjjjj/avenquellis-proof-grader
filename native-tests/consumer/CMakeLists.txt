@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.20)
 project(ConsumeGrader LANGUAGES CXX)
+find_package(VeyraGrader 0.7 CONFIG REQUIRED)
 find_package(NoetherGrader 0.7 CONFIG REQUIRED)
 add_executable(grader-consumer main.cpp)
-target_link_libraries(grader-consumer PRIVATE NoetherGrader::grader)
+target_link_libraries(grader-consumer PRIVATE VeyraGrader::grader)

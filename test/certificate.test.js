@@ -112,3 +112,9 @@ test('the same public ID cannot be retargeted by substituting a valid parameter 
     const q=structuredClone(gcd);mutate(q);assert.equal(certificateHelp(q),null);
   }
 });
+
+test('the Veyra scaffold and legacy Noether documents produce the same checked mark', () => {
+  assert.match(certificateHelp(gcd).scaffold, /^VEYRA-PROOF\/1\n/);
+  const veyra=gcdAnswer.replace('NOETHER-PROOF/1','VEYRA-PROOF/1');
+  assert.deepEqual(verifyCertificate(gcd,veyra),verifyCertificate(gcd,gcdAnswer));
+});
