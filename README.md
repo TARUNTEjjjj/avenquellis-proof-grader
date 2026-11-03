@@ -16,7 +16,7 @@ npm run benchmark -- --offline
 
 The development service listens at `http://127.0.0.1:4175`. `PORT` changes the port. Browser code can import the offline `src/index.js`; provider integration belongs on a server.
 
-To enable actual model evaluation, copy `.env.example` to your ignored `.env`, enter your provider URL, explicit model and key, then run on Node 20.6+:
+To enable model evaluation against a compatible HTTP provider, copy `.env.example` to your ignored `.env`, enter your provider URL, explicit model and key, then run on Node 20.6+:
 
 ```sh
 node --env-file=.env src/server.js
@@ -54,11 +54,12 @@ The checker binds each theorem to its exact generated statement, bounded paramet
 
 | Variable | Meaning |
 | --- | --- |
-| `EVALUATOR_BASE_URL` | Required API base ending at the API version, e.g. `https://api.openai.com/v1`. `/chat/completions` is appended. |
-| `EVALUATOR_MODEL` | Required, explicit model supporting strict JSON-schema Chat Completions. No hidden model default. |
-| `EVALUATOR_API_KEY` | Server-side provider secret. Required for remote endpoints; optional for a local compatible model server. |
+| `EVALUATOR_PROVIDER` | `http` (default) or `workers-ai` for a Cloudflare binding. |
+| `EVALUATOR_BASE_URL` | HTTP provider API base ending at the API version, e.g. `https://api.openai.com/v1`. `/chat/completions` is appended. |
+| `EVALUATOR_MODEL` | HTTP mode requires an explicit model supporting strict JSON-schema Chat Completions. Workers AI defaults to `@cf/meta/llama-3.3-70b-instruct-fp8-fast` and also supports `@cf/meta/llama-3.1-8b-instruct`. |
+| `EVALUATOR_API_KEY` | HTTP provider secret. Required for remote HTTP endpoints. The Workers AI binding supplies its own account access. |
 | `EVALUATOR_TIMEOUT_MS` | Per-review deadline, default 25000; permitted range 50–60000. |
-| `EVALUATOR_MAX_TOKENS` | Per-review completion cap, default 4000; range 256–12000. Includes reasoning tokens where the provider does. |
+| `EVALUATOR_MAX_TOKENS` | Per-review completion cap. HTTP mode defaults to 4000 with range 256–12000. Workers AI defaults to 1536 with range 256–4000. Includes reasoning tokens where the provider does. |
 | `EVALUATOR_TOKEN_PARAMETER` | `max_completion_tokens` by default. Choose `max_tokens` explicitly for a compatible provider that requires that legacy field. |
 | `EVALUATOR_ACCESS_TOKEN` | Shared service secret. Required with at least 32 characters on public deployments. |
 | `ALLOWED_ORIGIN` | One exact permitted browser origin. Defaults to `http://localhost:4173` locally; no browser origin is allowed by default on the public Worker. |
@@ -66,7 +67,7 @@ The checker binds each theorem to its exact generated statement, bounded paramet
 
 HTTPS is required for remote providers. HTTP is permitted only on localhost/127.0.0.1/::1. Redirects are rejected. Keys never appear in request payloads returned to the caller, client code, source-controlled configuration or error messages.
 
-The API request limit is 100KB; evaluator input is further restricted to a 20,000-character answer, 15,000-character statement, at most 32 rubric criteria and a 65KB serialized mathematical payload. Each response is capped at 64KB. Two evaluations may be active per handler instance, and each evaluation makes two parallel reviewer requests with no automatic retries. This is an instance-level concurrency limit, not a distributed billing quota.
+For the HTTP provider, the API request limit is 100KB. Evaluator input is further restricted to a 20,000-character answer, 15,000-character statement, at most 32 rubric criteria and a 65KB serialized mathematical payload. Each response is capped at 64KB. Two evaluations may be active per handler instance, and each evaluation makes two parallel reviewer requests with no automatic retries. This is an instance-level concurrency limit, not a distributed billing quota.
 
 ## API contract
 
@@ -109,19 +110,50 @@ Each credited criterion must cite exact text from the submitted answer. Scores m
 
 Both reviewers receive different audit instructions but the same isolated question/answer input. Neither receives the other's output. They currently use the same configured model; different prompts do not guarantee independent errors. The student answer is always untrusted data in the user message, never a system instruction. Prompt injection remains an evaluation concern; teacher moderation is required even if the proposals agree.
 
-`assessProof` remains browser-safe and offline. It returns exact submission spans, the rubric and general writing prompts without guessing mathematical correctness from keywords or length. `runIndependentReview` remains available for custom evaluator functions. `evaluateProof` in `src/provider.js` provides the real compatible HTTP integration.
+`assessProof` remains browser-safe and offline. It returns exact submission spans, the rubric and general writing prompts without guessing mathematical correctness from keywords or length. `runIndependentReview` remains available for custom evaluator functions. `evaluateProof` in `src/provider.js` supports both the compatible HTTP integration and native Workers AI.
 
-## Cloudflare Worker
+## Native Cloudflare Workers AI
 
-`src/worker.js` and `wrangler.toml` are ready for a standalone Worker. They use standard Fetch APIs and require no Node compatibility flag. With Wrangler installed and your Cloudflare account connected:
+A Pages Function or standalone Worker can run both reviewers with an `AI` binding. The default model is `@cf/meta/llama-3.3-70b-instruct-fp8-fast`. The smaller `@cf/meta/llama-3.1-8b-instruct` is also supported. Both appear on Cloudflare’s JSON Mode model list. The native adapter sends the schema directly in `response_format.json_schema`, consumes the non-streaming `response` field, then validates every rubric mark and exact quotation locally. Cloudflare documents that JSON Mode can fail to satisfy a schema. [Workers AI JSON Mode](https://developers.cloudflare.com/workers-ai/features/json-mode/)
 
-1. Set `EVALUATOR_BASE_URL`, `EVALUATOR_MODEL` and, if needed, `ALLOWED_ORIGIN` under `[vars]` in `wrangler.toml`.
-2. Set secrets interactively with `wrangler secret put EVALUATOR_API_KEY` and `wrangler secret put EVALUATOR_ACCESS_TOKEN`.
-3. Run `wrangler deploy`.
+Each evaluation makes two calls. `criterionProposals` shows each reviewer’s marks and quoted evidence. An individual criterion has `agreedPoints` only when both valid reviewers assigned it the same marks. The total `suggestedScore` requires agreement on **every** criterion. `reviewerScoreRange` gives the two proposed totals when both are available. This range has no calibrated probability interpretation. Both calls use one model and can share mathematical errors.
 
-Follow [Cloudflare's secrets instructions](https://developers.cloudflare.com/workers/configuration/secrets/) and [Wrangler configuration reference](https://developers.cloudflare.com/workers/wrangler/configuration/). Keep secrets out of `[vars]` and source control. Local Wrangler `.dev.vars` files are ignored.
+Daily allocation exhaustion, capacity limits, invalid model responses and timeouts leave the answer open for human review. Diagnostic codes include `daily_quota`, `provider_busy`, `invalid_output` and `timeout`. Neither pass is retried. A local deadline releases the caller, although an upstream inference may still finish and count toward account usage. Outstanding binding calls continue to count toward the four-call per-isolate limit until they settle. [Cloudflare Workers AI error codes](https://developers.cloudflare.com/workers-ai/platform/errors/)
 
-The Worker can be considered for Cloudflare's Free plan subject to its [current request, CPU and subrequest limits](https://developers.cloudflare.com/workers/platform/limits/). The external model provider has separate costs and quotas; Cloudflare hosting does not make model inference free. A compatible local model can avoid per-call API charges when running the Node service, but a hosted Worker cannot reach your computer's localhost. No account, paid plan or production deployment is created by this repository.
+**Cost.** On 3 November 2026, Cloudflare documents a free allocation of 10,000 neurons per day, resetting at 00:00 UTC. On Workers Free, operations fail after exhaustion. Workers Paid can bill additional usage. Select the Free account plan for a hard platform stop at the free allowance. A request count or token cap alone does not enforce a zero-cost policy on a paid account. Check the current allocation and model eligibility before enabling production inference. Local Wrangler calls with an actual AI binding also consume account usage. [Workers AI pricing](https://developers.cloudflare.com/workers-ai/platform/pricing/) · [Pages AI bindings](https://developers.cloudflare.com/pages/functions/bindings/#workers-ai)
+
+### Pages Function integration
+
+Bind Workers AI to your Pages project as `AI` and redeploy with that binding. A Pages Wrangler file uses the following binding section. The dashboard also supports separate production and preview bindings. [Pages configuration](https://developers.cloudflare.com/pages/functions/bindings/#workers-ai)
+
+```toml
+[ai]
+binding = "AI"
+```
+
+Import `createPagesReviewHandler` from `noether-proof-grader/pages`, or vendor `src/pages.js`, `src/service.js`, `src/provider.js` and `src/index.js` together outside the static asset directory. Your Pages Function can export the returned handler as `onRequest`:
+
+```js
+import {createPagesReviewHandler} from 'noether-proof-grader/pages';
+import {resolvePracticeQuestion, reserveReviewAllowance} from '../../server/practice.js';
+
+export const onRequest = createPagesReviewHandler({
+  resolveQuestion: ({questionId, reference}) => resolvePracticeQuestion(questionId, reference),
+  admit: ({request, env, question}) => reserveReviewAllowance(request, env, question)
+});
+```
+
+The two `server/practice.js` callbacks belong to the host application. `resolvePracticeQuestion` retrieves or regenerates a canonical proof question from the server’s catalog. `reserveReviewAllowance` authenticates the caller as appropriate and atomically reserves its quota for two passes. Return `true` to admit, or a denial `Response` such as HTTP 429. A missing callback or failed admission prevents inference. The per-isolate limit is additional to the host’s account-wide quota.
+
+The browser posts JSON `{questionId, answer, reference?}` to its same-origin endpoint. The optional reference is a bounded object of generation metadata for the host to validate. The handler rejects client-supplied rubrics, statements and models. The model sees only the resolved question and the submitted answer. A rejected or unavailable review leaves the local attempt available for later moderation.
+
+Server code that already performs those checks can use `evaluateProof({question, answer}, {env: {AI: env.AI, EVALUATOR_PROVIDER: 'workers-ai'}})` directly. The public handler has no need for a provider key in browser code.
+
+### Standalone Worker
+
+`src/worker.js` serves the protected `/health`, `/assess`, `/evaluate` and `/review` routes. For native AI, select `wrangler.workers-ai.toml`, configure `EVALUATOR_ACCESS_TOKEN` as a secret of at least 32 characters, and deploy with that config. For an external HTTP provider, `wrangler.toml` retains the original mode. Set `EVALUATOR_BASE_URL`, `EVALUATOR_MODEL` and the `EVALUATOR_API_KEY` and `EVALUATOR_ACCESS_TOKEN` secrets. [Worker secrets](https://developers.cloudflare.com/workers/configuration/secrets/) · [Wrangler configuration](https://developers.cloudflare.com/workers/wrangler/configuration/)
+
+Unit and transport tests use simulated binding results and a local HTTP server. No production model grade or examiner accuracy measurement has been obtained from these tests.
 
 ## Benchmark CLI
 

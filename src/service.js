@@ -7,7 +7,7 @@ function tokenEqual(given,expected) {
   for (let i=0;i<Math.max(given.length,expected.length);i++) different|=(given.charCodeAt(i)||0) ^ (expected.charCodeAt(i)||0);
   return different === 0;
 }
-async function readJson(request) {
+export async function readJson(request) {
   if ((request.headers.get('content-type') || '').split(';',1)[0].trim().toLowerCase() !== 'application/json') throw Object.assign(new Error('Use application/json.'),{status:415});
   if (Number(request.headers.get('content-length') || 0) > MAX_REQUEST_BYTES) throw Object.assign(new Error('Request too large.'),{status:413});
   const reader=request.body?.getReader();

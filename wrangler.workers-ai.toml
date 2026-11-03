@@ -1,0 +1,15 @@
+name = "noether-proof-grader"
+main = "src/worker.js"
+compatibility_date = "2026-11-03"
+workers_dev = true
+
+# Standalone Worker only. A Pages project adds the [ai] binding to its own config.
+# Set EVALUATOR_ACCESS_TOKEN through Wrangler secrets before enabling public POSTs.
+[ai]
+binding = "AI"
+
+[vars]
+EVALUATOR_PROVIDER = "workers-ai"
+EVALUATOR_MODEL = "@cf/meta/llama-3.3-70b-instruct-fp8-fast"
+EVALUATOR_TIMEOUT_MS = "25000"
+EVALUATOR_MAX_TOKENS = "1536"

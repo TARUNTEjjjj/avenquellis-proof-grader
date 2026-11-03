@@ -1,7 +1,9 @@
-/** Server/Worker-only compatible Chat Completions transport. Never bundle this with secrets. */
+/** Server-side rubric evaluation through HTTP Chat Completions or a native Workers AI binding. */
 import {assessProof, runIndependentReview, validateCritique} from './index.js';
 
 export const PROMPT_VERSION = 'noether-proof-review-2026-11-03-v1';
+export const DEFAULT_WORKERS_AI_MODEL = '@cf/meta/llama-3.3-70b-instruct-fp8-fast';
+const supportedWorkersModels = new Set([DEFAULT_WORKERS_AI_MODEL, '@cf/meta/llama-3.1-8b-instruct']);
 const MAX_RESPONSE_BYTES = 65536;
 const MAX_INPUT_BYTES = 65000;
 const encoder = new TextEncoder();
@@ -15,6 +17,18 @@ function integer(value, fallback, min, max, name) {
   return result;
 }
 export function readEvaluatorConfig(env = {}) {
+  const provider = env.EVALUATOR_PROVIDER || 'http';
+  if (provider === 'workers-ai') {
+    if (typeof env.AI?.run !== 'function') throw new EvaluatorError('not_configured', 'Configure a Cloudflare Workers AI binding named AI.');
+    const model = env.EVALUATOR_MODEL || DEFAULT_WORKERS_AI_MODEL;
+    if (!supportedWorkersModels.has(model)) throw new EvaluatorError('configuration', 'Choose a supported Workers AI JSON Mode model.');
+    return Object.freeze({
+      provider, model, binding: env.AI,
+      timeoutMs: integer(env.EVALUATOR_TIMEOUT_MS, 25000, 50, 60000, 'EVALUATOR_TIMEOUT_MS'),
+      maxTokens: integer(env.EVALUATOR_MAX_TOKENS, 1536, 256, 4000, 'EVALUATOR_MAX_TOKENS')
+    });
+  }
+  if (provider !== 'http') throw new EvaluatorError('configuration', 'EVALUATOR_PROVIDER must be http or workers-ai.');
   if (!env.EVALUATOR_BASE_URL || !env.EVALUATOR_MODEL) throw new EvaluatorError('not_configured','Configure EVALUATOR_BASE_URL and EVALUATOR_MODEL to enable evaluation.');
   let base; try {base=new URL(env.EVALUATOR_BASE_URL);} catch {throw new EvaluatorError('configuration','EVALUATOR_BASE_URL must be an absolute URL.');}
   const local = ['localhost','127.0.0.1','[::1]'].includes(base.hostname);
@@ -24,7 +38,7 @@ export function readEvaluatorConfig(env = {}) {
   const tokenParameter=env.EVALUATOR_TOKEN_PARAMETER || 'max_completion_tokens';
   if (!['max_completion_tokens','max_tokens'].includes(tokenParameter)) throw new EvaluatorError('configuration','EVALUATOR_TOKEN_PARAMETER must be max_completion_tokens or max_tokens.');
   return Object.freeze({
-    endpoint:base.href.replace(/\/$/,'') + '/chat/completions', model:env.EVALUATOR_MODEL.trim(),
+    provider, endpoint:base.href.replace(/\/$/,'') + '/chat/completions', model:env.EVALUATOR_MODEL.trim(),
     apiKey:env.EVALUATOR_API_KEY || '',
     timeoutMs:integer(env.EVALUATOR_TIMEOUT_MS,25000,50,60000,'EVALUATOR_TIMEOUT_MS'),
     maxTokens:integer(env.EVALUATOR_MAX_TOKENS,4000,256,12000,'EVALUATOR_MAX_TOKENS'), tokenParameter
@@ -73,13 +87,80 @@ const approaches = [
   'Review A: Begin from the student’s strategy and assess whether its deductions establish the full claim; map sound achievements to the rubric.',
   'Review B: Independently audit the proof for counterexamples, missing cases, unjustified implications and alternative valid arguments; then assign rubric credit. You have no other reviewer result.'
 ];
+function reviewerMessages(question, submission, reviewerIndex) {
+  return [
+    {role: 'system', content: commonPrompt + '\n' + approaches[reviewerIndex]},
+    {role: 'user', content: JSON.stringify({question, submission})}
+  ];
+}
+
+function parseBindingOutput(output, question, answer) {
+  const response = output?.response;
+  if (!response || !['string', 'object'].includes(typeof response)) {
+    throw new EvaluatorError('incomplete_output', 'Workers AI did not return a structured review.');
+  }
+  const content = typeof response === 'string' ? response : JSON.stringify(response);
+  if (encoder.encode(content).length > MAX_RESPONSE_BYTES) {
+    throw new EvaluatorError('response_too_large', 'Workers AI response exceeded the size limit.');
+  }
+  try {
+    return validateProviderCritique({question, answer, critique: JSON.parse(content)});
+  } catch {
+    throw new EvaluatorError('invalid_output', 'Workers AI returned invalid rubric marks, evidence, or JSON.');
+  }
+}
+
+function bindingFailure(error) {
+  if (error instanceof EvaluatorError) return error;
+  // The platform can put the internal code on the exception or inside its message.
+  // Return only known diagnostics, because provider messages may contain private input.
+  const details = [error?.code, error?.message].join(' ');
+  if (/\b3036\b/.test(details)) return new EvaluatorError('daily_quota', 'The daily Workers AI allocation has been used.');
+  if (/\b3040\b/.test(details) || error?.status === 429) return new EvaluatorError('provider_busy', 'Workers AI capacity is temporarily unavailable.');
+  if (/\b(3007|3008)\b/.test(details)) return new EvaluatorError('timeout', 'Workers AI did not finish within its deadline.');
+  return new EvaluatorError('provider_failure', 'Workers AI could not complete a structured review.');
+}
+
+// Keep unanswered model calls counted even after the caller's local deadline.
+// This bound applies to one isolate. An account-wide budget belongs in the host.
+let activeBindingCalls = 0;
+
+export function createWorkersAiEvaluator({config, reviewerIndex}) {
+  if (![0, 1].includes(reviewerIndex)) throw new TypeError('reviewerIndex must be 0 or 1.');
+  return async ({question, submission}) => {
+    if (activeBindingCalls >= 4) throw new EvaluatorError('provider_busy', 'The evaluator is busy.');
+    const input = {
+      messages: reviewerMessages(question, submission, reviewerIndex),
+      stream: false,
+      max_tokens: config.maxTokens,
+      response_format: {type: 'json_schema', json_schema: reviewSchema(question)}
+    };
+    let timer;
+    activeBindingCalls++;
+    const inference = Promise.resolve()
+      .then(() => config.binding.run(config.model, input))
+      .finally(() => { activeBindingCalls--; });
+    const deadline = new Promise((_, reject) => {
+      timer = setTimeout(() => reject(new EvaluatorError('timeout', 'Workers AI exceeded the configured deadline.')), config.timeoutMs);
+    });
+    try {
+      const output = await Promise.race([inference, deadline]);
+      return parseBindingOutput(output, question, submission);
+    } catch (error) {
+      throw bindingFailure(error);
+    } finally {
+      clearTimeout(timer);
+    }
+  };
+}
+
 export function createHttpEvaluator({config,reviewerIndex,fetchImpl=globalThis.fetch}) {
   if (![0,1].includes(reviewerIndex)) throw new TypeError('reviewerIndex must be 0 or 1.');
   return async ({question,submission}) => {
     const controller=new AbortController();
     const timer=setTimeout(()=>controller.abort(),config.timeoutMs);
     try {
-      const body={model:config.model,stream:false,messages:[{role:'system',content:`${commonPrompt}\n${approaches[reviewerIndex]}`},{role:'user',content:JSON.stringify({question,submission})}],response_format:{type:'json_schema',json_schema:{name:'proof_review',strict:true,schema:reviewSchema(question)}},[config.tokenParameter]:config.maxTokens};
+      const body={model:config.model,stream:false,messages:reviewerMessages(question,submission,reviewerIndex),response_format:{type:'json_schema',json_schema:{name:'proof_review',strict:true,schema:reviewSchema(question)}},[config.tokenParameter]:config.maxTokens};
       const response=await fetchImpl(config.endpoint,{method:'POST',redirect:'error',signal:controller.signal,headers:{'Content-Type':'application/json',...(config.apiKey?{Authorization:`Bearer ${config.apiKey}`}:{})},body:JSON.stringify(body)});
       if (!response.ok) {await response.body?.cancel();throw new EvaluatorError('provider_http_error',`Evaluator returned HTTP ${response.status}.`);}
       let payload; try {payload=JSON.parse(await boundedBody(response));} catch (error) {if(error instanceof EvaluatorError) throw error;throw new EvaluatorError('invalid_output','Evaluator returned malformed JSON.');}
@@ -110,15 +191,39 @@ export async function evaluateProof(input,{env={},fetchImpl=globalThis.fetch}={}
   const config=readEvaluatorConfig(env);
   const errors=[null,null];
   const evaluators=[0,1].map(index=>{
-    const evaluate=createHttpEvaluator({config,reviewerIndex:index,fetchImpl});
+    const evaluate = config.provider === 'workers-ai'
+      ? createWorkersAiEvaluator({config, reviewerIndex:index})
+      : createHttpEvaluator({config, reviewerIndex:index, fetchImpl});
     return async value=>{try{return await evaluate(value);}catch(error){errors[index]={code:error.code || 'provider_failure',message:error.message};throw error;}};
   });
   const result=await runIndependentReview({...prepared,evaluators});
   const agreed=result.reviewReason === 'agreement_requires_human_validation';
+  const proposals = result.reviews.filter(review => review.status === 'proposal');
+  const reviewerScoreRange = proposals.length === 2
+    ? {min: Math.min(...proposals.map(r => r.score)), max: Math.max(...proposals.map(r => r.score))}
+    : null;
+  const criterionProposals = prepared.question.rubric.map(criterion => {
+    const reviewers = result.reviews.map(review => ({
+      reviewer: review.reviewer,
+      points: review.status === 'proposal' ? review.criterionScores[criterion.id] : null,
+      quotes: review.status === 'proposal' ? review.evidence.filter(e => e.criterionId === criterion.id).map(e => e.quote) : []
+    }));
+    const bothPresent = reviewers.every(r => r.points !== null);
+    const match = bothPresent && reviewers[0].points === reviewers[1].points;
+    return {id: criterion.id, description: criterion.description, maxPoints: criterion.points,
+      reviewers, agreedPoints: match ? reviewers[0].points : null,
+      status: match ? 'agreement' : bothPresent ? 'disagreement' : 'insufficient_reviews'};
+  });
+  const uncertainty = {
+    kind: agreed ? 'agreement' : proposals.length === 2 ? 'disagreement' : 'insufficient_reviews',
+    calibrated: false,
+    explanation: 'The reviewers share one model and may make the same mathematical error. Their score range describes their proposals and has no calibrated probability interpretation.'
+  };
   return {...result,status:agreed?'awaiting_review':'needs_review',assessmentType:'model_assisted_review',score:null,provisionalScore:null,
     suggestedScore:agreed?result.reviews[0].score:null,
     suggestedCriterionScores:agreed?{...result.reviews[0].criterionScores}:null,
+    criterionProposals, reviewerScoreRange, uncertainty,
     reviews:result.reviews.map((review,index)=>errors[index]?{...review,failure:errors[index]}:review),
-    provenance:{model:config.model,promptVersion:PROMPT_VERSION,reviewerCount:2,blindReviews:true,expertValidated:false},
+    provenance:{provider:config.provider,model:config.model,promptVersion:PROMPT_VERSION,reviewerCount:2,blindReviews:true,expertValidated:false},
     notice:agreed?'Both reviewers propose the same rubric marks. This is a suggested score awaiting human review, not a certified grade.':'Reviewers disagreed or could not complete a valid review. Examine the individual proposals; a human must resolve the result.'};
 }

@@ -1,6 +1,6 @@
 # Evaluation and release protocol
 
-The offline benchmark smoke test and local fake-provider integration tests have run successfully. No live-model or expert-labelled accuracy benchmark has been run. The tests verify workflow, transport and validation; they do not establish mathematical grading accuracy. The runnable CLI is documented in the repository README. It omits error metrics without separately supplied human labels.
+The offline benchmark smoke test, local HTTP transport tests and simulated native Workers AI binding tests have run successfully. No live-model or expert-labelled accuracy benchmark has been run. The tests verify workflow, transport and validation; they do not establish mathematical grading accuracy. The runnable CLI is documented in the repository README. It omits error metrics without separately supplied human labels.
 
 The separate `NOETHER-PROOF/1` checker proves bounded structured claims for two authored template families using integer arithmetic. Its regression fixtures were captured from the original question bank. They cover alternative valid Bézout pairs, complete residue coverage, malformed and partial inputs, tampered problem statements or rubrics, both inclusions for gcd, and spurious linear combinations that agree at one input but fail identically. Certificate scores should be reported separately from model-assisted grading metrics. The fixtures do not measure how closely the model grades free-form proofs relative to examiners.
 
