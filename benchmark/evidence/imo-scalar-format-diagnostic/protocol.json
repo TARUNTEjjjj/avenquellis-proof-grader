@@ -1,0 +1,16 @@
+{
+  "version": "noether-score-only-format-diagnostic-v1",
+  "purpose": "Isolate whether Qwen can return a usable numeric partial-credit score when the final output needs only a number. This is a non-promotable format diagnostic, separate from the failed release pilot and sealed confirmation. No endpoint controls, no feedback or evidence evaluation, and no pooling with any prior study.",
+  "sourceSha256": "e85a520c2bbb5a89f2db35088c7935d485922f26cf2bbd04f15e1d967af26cfe",
+  "selectionSalt": "noether-score-only-format-v1:rank:",
+  "presentationSalt": "noether-score-only-format-v1:presentation:",
+  "caseSalt": "noether-score-only-format-v1:case:",
+  "problemSalt": "noether-score-only-format-v1:problem:",
+  "excludedFixtureHashes": {"pilot":"ed26a252ae9aae2bc080c4e273a6def9f96c3be3cfc665e7f96f100a6ade5e60","confirmation":"f8a0bd2f1afc058ad61c693bd89aba3d093c2ffc4511d217859005d9c00af960"},
+  "eligibility": "Only source-tagged Novel Problem. Exclude every source problem ID used by either of the previous 19 frozen responses (by normalized statement), re-used candidate response text from that roster, and every source case previously exposed in the 24-case offline smoke test. Remove any response repeated anywhere in the source after Unicode and whitespace normalization. Retain complete input and full common guidance only if production bounds accept it. The remaining problem families may have appeared with other responses in the no-inference smoke test.",
+  "bands": {"low":[1,2],"middle":[3,4],"high":[5,6]},
+  "slotOrder": ["middle","low","high","middle","low","high"],
+  "selection": "Sort all eligible cases inside each band by SHA256(selectionSalt + source Grading ID) and tie-break by source ID. Choose the lexicographically earliest sequence in the declared slot order giving six distinct problem IDs; sort the selected cases by presentation hash unrelated to labels and anonymize source case and problem identifiers independently. Scores are used by the data custodian for stratification only.",
+  "inference": "Same Qwen model, fixed prompt/version/cap and two independent blind readings per case, submit once. No retries or prompt tuning using this set. Both requests include the complete source problem, reference, common grading guidance and candidate proof. Model receives no source ID, score, class, annotation, outcome, source-specific band or band labels.",
+  "measurement": "Report each reviewer and strict agreement separately. A reading is scored only if its literal final answer passes the locked format/range checks. An agreed score requires both valid numeric readings to match exactly. For each, report number registered/valid/abstained, exact and within-one among valid and per registered, MAE and signed bias among valid only. Separate client transport failures from invalid, timed-out or incomplete model readings. Individual-reading counts are not independent case samples. Withhold all labels until prediction file(s) are frozen. This partial-only set cannot assess full/zero endpoint behavior or establish release readiness."
+}

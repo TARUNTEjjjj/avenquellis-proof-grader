@@ -1,0 +1,21 @@
+{
+  "wire": "json",
+  "selectedBy": "Predeclared native JSON synthetic compatibility check produced one valid scored final.",
+  "model": "@cf/qwen/qwen3-30b-a3b-fp8",
+  "cap": 2400,
+  "version": "noether-scalar-diagnostic-2026-11-03-v1",
+  "fixtureSha256": "34aadbdbece25bf4eb5e7ee9ed9df6756ea8b068f85c4e46c74047f8e329a460",
+  "sourceModuleSha256": "48740ac64e79c7efddaf1445d831197ad998836fb61137536b3e0882644e1c41",
+  "handlerSha256": "621c6181db6a660567eb581a535157666637f5ff0e4cea5f89d6e77a0db9d409",
+  "clientSha256": "214e71f028b75125a1636b655ea02b1222ed7c59ae692cd857f3a7063209f309",
+  "heldPayloadSha256": "7ad661a9f85534a13967d9776c76cfbf664c77b522794abd61dc8981356c3891",
+  "syntheticPayloadSha256": "9c71c7e05ca391deccf8e129352c1a5ff9ad8049f3ce3c86a51c8fcf2da7f384",
+  "syntheticResultSha256": "04e062d6d9eace2d5efa2a2bda456d959353138f0b11603fb8d608111f65e2a1",
+  "registeredCases": 6,
+  "maxCalls": 12,
+  "originalPredictionSha256": "170ae2d6565f18b45d0c4bb1efd534f11e175548059335d6c952d1395b1e74cb",
+  "publishedPredictionSha256": "1293284dc960b1383bebfa6b53e5b71d5af72dc678c1a97da1d7452e48002dcd",
+  "aggregateCodeSha256": "e53ba4f907e77e064b2dcd3d28d7eda61b04207f97890a1fc8dacc1430a6be4f",
+  "caseAndRequestHashesSha256": "00d7bf0c91f0cf48e1e0c620476ff448d07e52361617f8ba3135d849c450c538",
+  "sealedTargetsSha256": "c535d13913b4b97f31d819cba8ecb15614d18d02c0a98626a44655f6702ebc4f"
+}

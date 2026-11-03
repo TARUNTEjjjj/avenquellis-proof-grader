@@ -1,0 +1,24 @@
+{
+  "moduleSha256": "48740ac64e79c7efddaf1445d831197ad998836fb61137536b3e0882644e1c41",
+  "model": "@cf/qwen/qwen3-30b-a3b-fp8",
+  "version": "noether-scalar-diagnostic-2026-11-03-v1",
+  "cap": 2400,
+  "checks": {
+    "json": {
+      "heldPayloadSha256": "7ad661a9f85534a13967d9776c76cfbf664c77b522794abd61dc8981356c3891",
+      "syntheticPayloadSha256": "9c71c7e05ca391deccf8e129352c1a5ff9ad8049f3ce3c86a51c8fcf2da7f384",
+      "heldCalls": 12,
+      "syntheticCalls": 1,
+      "maximumRequestBytes": 18327,
+      "preservesFullSource": true
+    },
+    "plain": {
+      "heldPayloadSha256": "3968d015c467cc2be2dc335dbcf4de8a19f559a6d40c2a2d1206ceb90a137a24",
+      "syntheticPayloadSha256": "d54e550c0dcc5489d48b9dd17a5d3764098d5fa964f73ff5f5206610f0ee4bdf",
+      "heldCalls": 12,
+      "syntheticCalls": 1,
+      "maximumRequestBytes": 18132,
+      "preservesFullSource": true
+    }
+  }
+}

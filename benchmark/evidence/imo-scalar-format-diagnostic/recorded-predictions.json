@@ -1,0 +1,104 @@
+[
+  {
+    "id": "r-fa17e13316e156b3",
+    "suggestedScore": null,
+    "reason": "unscored_reading",
+    "http": 200,
+    "returnedNativeReceipts": 2,
+    "readings": [
+      {
+        "score": 7,
+        "code": null
+      },
+      {
+        "score": null,
+        "code": "reader_timeout"
+      }
+    ]
+  },
+  {
+    "id": "r-50a902296e433a0e",
+    "suggestedScore": 7,
+    "reason": "agreement",
+    "http": 200,
+    "returnedNativeReceipts": 2,
+    "readings": [
+      {
+        "score": 7,
+        "code": null
+      },
+      {
+        "score": 7,
+        "code": null
+      }
+    ]
+  },
+  {
+    "id": "r-30a2423a2a31aa45",
+    "suggestedScore": 7,
+    "reason": "agreement",
+    "http": 200,
+    "returnedNativeReceipts": 2,
+    "readings": [
+      {
+        "score": 7,
+        "code": null
+      },
+      {
+        "score": 7,
+        "code": null
+      }
+    ]
+  },
+  {
+    "id": "r-dc7ed9c628506805",
+    "suggestedScore": null,
+    "reason": "reader_disagreement",
+    "http": 200,
+    "returnedNativeReceipts": 2,
+    "readings": [
+      {
+        "score": 7,
+        "code": null
+      },
+      {
+        "score": 6,
+        "code": null
+      }
+    ]
+  },
+  {
+    "id": "r-33e70356ee3dc8d6",
+    "suggestedScore": 7,
+    "reason": "agreement",
+    "http": 200,
+    "returnedNativeReceipts": 2,
+    "readings": [
+      {
+        "score": 7,
+        "code": null
+      },
+      {
+        "score": 7,
+        "code": null
+      }
+    ]
+  },
+  {
+    "id": "r-35f28ff310df593d",
+    "suggestedScore": null,
+    "reason": "unscored_reading",
+    "http": 200,
+    "returnedNativeReceipts": 2,
+    "readings": [
+      {
+        "score": 4,
+        "code": null
+      },
+      {
+        "score": null,
+        "code": "incomplete"
+      }
+    ]
+  }
+]

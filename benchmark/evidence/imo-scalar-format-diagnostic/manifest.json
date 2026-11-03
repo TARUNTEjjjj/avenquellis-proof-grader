@@ -1,0 +1,27 @@
+{
+  "version": "noether-score-only-format-diagnostic-v1",
+  "sourceSha256": "e85a520c2bbb5a89f2db35088c7935d485922f26cf2bbd04f15e1d967af26cfe",
+  "protocolSha256": "36d1b57fe53634ce00cdf01dfd6712012da2f5eea43e2c927ec8634fa411c220",
+  "sourceRows": 1000,
+  "sourceProblems": 30,
+  "availableDistinctNovelProblems": 12,
+  "eligibleResponses": 413,
+  "eligiblePartialResponses": 192,
+  "priorFrozenCasesExcluded": 19,
+  "previousOfflineSmokeIdsExcluded": 24,
+  "problemOverlapWithPriorNineteen": 0,
+  "responseOverlapWithPriorNineteen": 0,
+  "caseCount": 6,
+  "distinctProblems": 6,
+  "partialCount": 6,
+  "caseIdsInBlindOrder": [
+    "r-fa17e13316e156b3",
+    "r-50a902296e433a0e",
+    "r-30a2423a2a31aa45",
+    "r-dc7ed9c628506805",
+    "r-33e70356ee3dc8d6",
+    "r-35f28ff310df593d"
+  ],
+  "fixtureSha256": "34aadbdbece25bf4eb5e7ee9ed9df6756ea8b068f85c4e46c74047f8e329a460",
+  "sealedTargetsSha256": "c535d13913b4b97f31d819cba8ecb15614d18d02c0a98626a44655f6702ebc4f"
+}

@@ -1,0 +1,197 @@
+{
+  "scope": "Number-only response format on a separately frozen partial-only research cohort; no deployment or release gate. No pooling with prior studies.",
+  "registered": 6,
+  "http200WithTwoReceipts": 6,
+  "bothReadingsValid": 4,
+  "validReadingsDisagreed": 1,
+  "allRegistered": {
+    "reading1": {
+      "registered": 6,
+      "validScores": 6,
+      "abstentions": 0,
+      "coverage": 1.0,
+      "exactCount": 0,
+      "withinOneCount": 2,
+      "exactPerRegistered": 0.0,
+      "withinOnePerRegistered": 0.3333333333333333,
+      "exactAmongValid": 0.0,
+      "withinOneAmongValid": 0.3333333333333333,
+      "maeAmongValid": 3.3333333333333335,
+      "signedBiasAmongValid": 3.3333333333333335,
+      "overCount": 6,
+      "underCount": 0
+    },
+    "reading2": {
+      "registered": 6,
+      "validScores": 4,
+      "abstentions": 2,
+      "coverage": 0.6666666666666666,
+      "exactCount": 0,
+      "withinOneCount": 1,
+      "exactPerRegistered": 0.0,
+      "withinOnePerRegistered": 0.16666666666666666,
+      "exactAmongValid": 0.0,
+      "withinOneAmongValid": 0.25,
+      "maeAmongValid": 3.5,
+      "signedBiasAmongValid": 3.5,
+      "overCount": 4,
+      "underCount": 0
+    },
+    "strictConsensus": {
+      "registered": 6,
+      "validScores": 3,
+      "abstentions": 3,
+      "coverage": 0.5,
+      "exactCount": 0,
+      "withinOneCount": 1,
+      "exactPerRegistered": 0.0,
+      "withinOnePerRegistered": 0.16666666666666666,
+      "exactAmongValid": 0.0,
+      "withinOneAmongValid": 0.3333333333333333,
+      "maeAmongValid": 3,
+      "signedBiasAmongValid": 3,
+      "overCount": 3,
+      "underCount": 0
+    }
+  },
+  "onlyReached": {
+    "reading1": {
+      "registered": 6,
+      "validScores": 6,
+      "abstentions": 0,
+      "coverage": 1.0,
+      "exactCount": 0,
+      "withinOneCount": 2,
+      "exactPerRegistered": 0.0,
+      "withinOnePerRegistered": 0.3333333333333333,
+      "exactAmongValid": 0.0,
+      "withinOneAmongValid": 0.3333333333333333,
+      "maeAmongValid": 3.3333333333333335,
+      "signedBiasAmongValid": 3.3333333333333335,
+      "overCount": 6,
+      "underCount": 0
+    },
+    "reading2": {
+      "registered": 6,
+      "validScores": 4,
+      "abstentions": 2,
+      "coverage": 0.6666666666666666,
+      "exactCount": 0,
+      "withinOneCount": 1,
+      "exactPerRegistered": 0.0,
+      "withinOnePerRegistered": 0.16666666666666666,
+      "exactAmongValid": 0.0,
+      "withinOneAmongValid": 0.25,
+      "maeAmongValid": 3.5,
+      "signedBiasAmongValid": 3.5,
+      "overCount": 4,
+      "underCount": 0
+    },
+    "strictConsensus": {
+      "registered": 6,
+      "validScores": 3,
+      "abstentions": 3,
+      "coverage": 0.5,
+      "exactCount": 0,
+      "withinOneCount": 1,
+      "exactPerRegistered": 0.0,
+      "withinOnePerRegistered": 0.16666666666666666,
+      "exactAmongValid": 0.0,
+      "withinOneAmongValid": 0.3333333333333333,
+      "maeAmongValid": 3,
+      "signedBiasAmongValid": 3,
+      "overCount": 3,
+      "underCount": 0
+    }
+  },
+  "cases": [
+    {
+      "id": "r-fa17e13316e156b3",
+      "reading1": 7,
+      "reading2": null,
+      "strictConsensus": null,
+      "httpStatus": 200,
+      "returnedNativeReceipts": 2,
+      "readingErrorCodes": [
+        null,
+        "reader_timeout"
+      ],
+      "outcome": "unscored_reading",
+      "humanScore": 3
+    },
+    {
+      "id": "r-50a902296e433a0e",
+      "reading1": 7,
+      "reading2": 7,
+      "strictConsensus": 7,
+      "httpStatus": 200,
+      "returnedNativeReceipts": 2,
+      "readingErrorCodes": [
+        null,
+        null
+      ],
+      "outcome": "agreement",
+      "humanScore": 5
+    },
+    {
+      "id": "r-30a2423a2a31aa45",
+      "reading1": 7,
+      "reading2": 7,
+      "strictConsensus": 7,
+      "httpStatus": 200,
+      "returnedNativeReceipts": 2,
+      "readingErrorCodes": [
+        null,
+        null
+      ],
+      "outcome": "agreement",
+      "humanScore": 6
+    },
+    {
+      "id": "r-dc7ed9c628506805",
+      "reading1": 7,
+      "reading2": 6,
+      "strictConsensus": null,
+      "httpStatus": 200,
+      "returnedNativeReceipts": 2,
+      "readingErrorCodes": [
+        null,
+        null
+      ],
+      "outcome": "reader_disagreement",
+      "humanScore": 1
+    },
+    {
+      "id": "r-33e70356ee3dc8d6",
+      "reading1": 7,
+      "reading2": 7,
+      "strictConsensus": 7,
+      "httpStatus": 200,
+      "returnedNativeReceipts": 2,
+      "readingErrorCodes": [
+        null,
+        null
+      ],
+      "outcome": "agreement",
+      "humanScore": 1
+    },
+    {
+      "id": "r-35f28ff310df593d",
+      "reading1": 4,
+      "reading2": null,
+      "strictConsensus": null,
+      "httpStatus": 200,
+      "returnedNativeReceipts": 2,
+      "readingErrorCodes": [
+        null,
+        "incomplete"
+      ],
+      "outcome": "unscored_reading",
+      "humanScore": 3
+    }
+  ],
+  "wire": "json",
+  "fixtureSha256": "34aadbdbece25bf4eb5e7ee9ed9df6756ea8b068f85c4e46c74047f8e329a460",
+  "predictionSha256": "170ae2d6565f18b45d0c4bb1efd534f11e175548059335d6c952d1395b1e74cb",
+  "targetSha256": "c535d13913b4b97f31d819cba8ecb15614d18d02c0a98626a44655f6702ebc4f"
+}
