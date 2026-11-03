@@ -97,7 +97,7 @@ Json assessment_json(const Question& question, const Assessment& result) {
     Json output = {{"questionId", question.id}, {"status", name(result.status)}, {"score", result.score},
                    {"maxMarks", question.max_marks}, {"criteria", rows}};
     if (result.lower_bound) {
-        output["schemaVersion"] = "VEYRA-PROOF/1";
+        output["schemaVersion"] = "AVENQUELLIS-PROOF/1";
         output["feedback"] = Json::array();
         for (const auto& row : result.criteria) if (!row.points.value_or(0)) output["feedback"].push_back(row.feedback);
         output["notice"] = result.status == Status::verified_certificate

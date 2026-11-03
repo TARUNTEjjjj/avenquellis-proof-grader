@@ -1,9 +1,9 @@
 {
-  "name": "@veyra/proof-grader",
+  "name": "@avenquellis/proof-grader",
   "version": "0.8.0",
   "private": true,
   "type": "module",
-  "description": "Veyra Math proof grading with native certificates, evidence-preserving proposals and human review",
+  "description": "Avenquellis proof grading with native certificates, evidence-preserving proposals and human review",
   "exports": {
     ".": "./src/index.js",
     "./provider": "./src/provider.js",
@@ -35,6 +35,6 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/TARUNTEjjjj/veyra-proof-grader.git"
+    "url": "https://github.com/TARUNTEjjjj/avenquellis-proof-grader.git"
   }
 }

@@ -1,4 +1,4 @@
-# Veyra Math Proof Grader
+# Avenquellis Proof Grader
 
 The offline certificate checker awards exact marks for complete structured proofs in two original number-theory families. Free-form submissions use the proof-review service, with optional model-assisted mark proposals. Two blind reviewer calls assess the same answer against a problem-specific rubric. When every criterion score agrees, the service returns a **suggested score awaiting human review**. Disagreement, invalid evidence or transport failure produces no combined score. Teacher decisions are recorded through a separate validated review endpoint.
 
@@ -6,13 +6,13 @@ No CMI/ISI professor, olympiad examiner or benchmark has certified this software
 
 ## Native C++ backend
 
-Build the C++20 backend with CMake. The `veyra-grader` CLI checks proof certificates, sends ungraded free-form proofs to a configured two-reader service, validates returned rubric evidence and records explicit human marks. The static library is available as `VeyraGrader::grader` through `<veyra/grader/grader.hpp>`. The legacy CMake target and header remain available. [Build, JSON examples and offline or networked workflows](docs/NATIVE.md)
+Build the C++20 backend with CMake. The `avenquellis-grader` CLI checks proof certificates, sends ungraded free-form proofs to a configured two-reader service, validates returned rubric evidence and records explicit human marks. The static library is available as `AvenquellisGrader::grader` through `<avenquellis/grader/grader.hpp>`. The legacy CMake target and header remain available. [Build, JSON examples and offline or networked workflows](docs/NATIVE.md)
 
 ```sh
 cmake -S . -B build/native -DCMAKE_BUILD_TYPE=Release
 cmake --build build/native --parallel
 ctest --test-dir build/native --output-on-failure
-build/native/veyra-grader assess examples/checked-gcd.json
+build/native/avenquellis-grader assess examples/checked-gcd.json
 ```
 
 ## C++ grading in the browser and on Pages
@@ -44,7 +44,7 @@ node --env-file=.env src/server.js
 `src/certificate.js` is a standalone browser-safe module with no imports or network requirements. `certificateHelp(question)` returns instructions and a blank scaffold for a supported question. `verifyCertificate(question, answer)` verifies an explicit certificate and returns a score of 10 only when every required inference is established. Partial results have `score: null`, `lowerBoundPoints` for verified steps, and feedback for each criterion. Ordinary prose and unsupported questions return `null` and use the existing review workflow. Both implementations reconstruct the instance ID and parameter from the supplied generator seed. Bank questions must also match their original track and requested difficulty. A public service must resolve the assigned question from its own catalog before accepting marks.
 
 ```js
-import {certificateHelp, verifyCertificate} from '@veyra/proof-grader/certificate';
+import {certificateHelp, verifyCertificate} from '@avenquellis/proof-grader/certificate';
 
 const help = certificateHelp(question);
 if (help) {
@@ -54,7 +54,7 @@ if (help) {
 }
 ```
 
-The first certificate line is `VEYRA-PROOF/1` (legacy `NOETHER-PROOF/1` remains supported). The next two fields identify the template family and its `k`. Use one named field per line, ASCII integer coefficients separated by spaces, and at most 2,048 characters total. Coefficients are capped at an absolute value of 1,000,000. The parser rejects duplicate or unknown fields and extra prose. A learner can submit another valid proof in the ordinary review workflow.
+The first certificate line is `AVENQUELLIS-PROOF/1` (legacy `NOETHER-PROOF/1` remains supported). The next two fields identify the template family and its `k`. Use one named field per line, ASCII integer coefficients separated by spaces, and at most 2,048 characters total. Coefficients are capped at an absolute value of 1,000,000. The parser rejects duplicate or unknown fields and extra prose. A learner can submit another valid proof in the ordinary review workflow.
 
 | Supported template | Certificate obligations | Marks |
 | --- | --- | --- |
@@ -198,10 +198,10 @@ Bind Workers AI to your Pages project as `AI` and redeploy with that binding. A 
 binding = "AI"
 ```
 
-Import `createPagesReviewHandler` from `@veyra/proof-grader/pages`, or vendor the Pages handler and its relative modules together outside the static asset directory. Supply the compiled grading runtime for native checks. Your Pages Function can export the returned handler as `onRequest`:
+Import `createPagesReviewHandler` from `@avenquellis/proof-grader/pages`, or vendor the Pages handler and its relative modules together outside the static asset directory. Supply the compiled grading runtime for native checks. Your Pages Function can export the returned handler as `onRequest`:
 
 ```js
-import {createPagesReviewHandler} from '@veyra/proof-grader/pages';
+import {createPagesReviewHandler} from '@avenquellis/proof-grader/pages';
 import {resolvePracticeQuestion, reserveReviewAllowance, getNativeGrader} from '../../server/practice.js';
 
 export const onRequest = createPagesReviewHandler({

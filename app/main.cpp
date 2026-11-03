@@ -10,14 +10,14 @@ using Json = nlohmann::json;
 using namespace noether::grader;
 
 const char* help =
-    "Usage: veyra-grader <assess|scaffold|finalize|compare|review> [request.json|-]\n"
+    "Usage: avenquellis-grader <assess|scaffold|finalize|compare|review> [request.json|-]\n"
     "Reads one JSON object from a file or stdin and prints JSON.\n"
     "assess     Check a recognized certificate or prepare a free-form proof for review.\n"
     "scaffold   Print a blank certificate for a supported generated question.\n"
     "finalize   Record explicit human rubric marks, reviewer and rationale.\n"
     "compare    Validate and compare two already obtained readings (no network).\n"
-    "review     Request two model readings from VEYRA_GRADER_URL /evaluate.\n"
-    "           Use VEYRA_GRADER_TOKEN for remote HTTPS or protected local service.\n";
+    "review     Request two model readings from AVENQUELLIS_GRADER_URL /evaluate.\n"
+    "           Use AVENQUELLIS_GRADER_TOKEN for remote HTTPS or protected local service.\n";
 
 }
 

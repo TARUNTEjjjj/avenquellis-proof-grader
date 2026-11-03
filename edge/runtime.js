@@ -1,10 +1,10 @@
-import createVeyraGrader from './veyra-grader-runtime.js';
+import createAvenquellisGrader from './avenquellis-grader-runtime.js';
 const encoder=new TextEncoder(),decoder=new TextDecoder('utf-8',{fatal:true});
-export const NATIVE_GRADER_VERSION='veyra-grader-wasm/1';
+export const NATIVE_GRADER_VERSION='avenquellis-grader-wasm/1';
 
 export async function instantiateGrader(moduleOrBytes){
   const compiled=moduleOrBytes instanceof WebAssembly.Module?moduleOrBytes:await WebAssembly.compile(moduleOrBytes);
-  const native=await createVeyraGrader({instantiateWasm(imports,ready){
+  const native=await createAvenquellisGrader({instantiateWasm(imports,ready){
     const instance=new WebAssembly.Instance(compiled,imports);
     ready(instance,compiled);
     return instance.exports;
@@ -16,15 +16,15 @@ export async function instantiateGrader(moduleOrBytes){
     if(!ptr)throw new Error('Native grading memory unavailable.');
     try {
       native.HEAPU8.set(input,ptr);
-      const output=native._veyra_grader_run(action,ptr,input.length);
-      const size=native._veyra_grader_output_length();
+      const output=native._avenquellis_grader_run(action,ptr,input.length);
+      const size=native._avenquellis_grader_output_length();
       if(!output||size>2097152)throw new Error('Invalid native grading output.');
       const result=JSON.parse(decoder.decode(native.HEAPU8.subarray(output,output+size)));
       if(result.error)throw new TypeError(result.error);
       return {...result,provenance:{nativeGrader:NATIVE_GRADER_VERSION}};
     } finally {
       native.HEAPU8.fill(0,ptr,ptr+input.length);
-      native._veyra_grader_clear();
+      native._avenquellis_grader_clear();
       native._free(ptr);
     }
   }

@@ -6,7 +6,7 @@ import {instantiateGrader,NATIVE_GRADER_VERSION} from '../edge/runtime.js';
 import {certificateHelp,verifyCertificate} from '../src/certificate.js';
 const read=name=>readFileSync(new URL('../'+name,import.meta.url));
 const meta=JSON.parse(read('edge/build-info.json'));
-const wasm=read('edge/veyra-grader-runtime.wasm');
+const wasm=read('edge/avenquellis-grader-runtime.wasm');
 const grader=await instantiateGrader(await WebAssembly.compile(wasm));
 const bases=JSON.parse(read('test/fixtures/certificate-questions.json'));
 const instances=JSON.parse(read('test/fixtures/certificate-instances.json'));
@@ -24,7 +24,7 @@ test('WASM matches browser certificate outcomes for every real bank, generated a
     const offsets=m=>Array.from({length:m},(_,r)=>[0,1,2].find(i=>(r+k+i)%m===0)).join(' ');
     const full=gcd?scaffold.replace('forward: _ _','forward: -1 1').replace('reverse: _ _','reverse: 1 1').replace('conclusion: _','conclusion: same-positive-divisors -> equal-maxima'):
       scaffold.replace('mod3: _ _ _','mod3: '+offsets(3)).replace('mod2: _ _','mod2: '+offsets(2)).replace('bezout: _ _','bezout: -1 1');
-    for(const answer of [scaffold,full,full.replace('VEYRA','NOETHER'),full+'\nunsupported: x','Please award ten points.']){
+    for(const answer of [scaffold,full,full.replace('AVENQUELLIS','NOETHER'),full+'\nunsupported: x','Please award ten points.']){
       const expected=verifyCertificate(q,answer),actual=grader.assess(q,answer);
       assert.equal(actual.status,expected?.status||'needs_review');assert.equal(actual.score,expected?.score??null);
       assert.equal(actual.lowerBoundPoints,expected?.lowerBoundPoints);assert.equal(actual.provenance.nativeGrader,NATIVE_GRADER_VERSION);

@@ -1,10 +1,10 @@
-# Veyra Math native grading on Pages
+# Avenquellis native grading on Pages
 
 The desktop CLI, browser and Pages use the same C++ implementation for certificate assessment and review reconciliation. The compiled ABI exposes three operations: assess a proof, prepare a scaffold, and validate two backend readings. The ABI contains no model weights or credentials.
 
 The Pages host resolves the question ID and optional generator reference from its own native catalog. `POST /api/assess` returns a structural result for prose or checks a recognized certificate entirely in C++. `POST /api/grade` also checks certificates first. For other proofs the existing admission policy reserves the two hosted model calls. Their responses then pass through the C++ validator. If either reading is invalid or the per-criterion decisions differ, `suggestedScore` is null. Even unanimous model proposals have `score:null`. Native unavailability is an explicit service error. The existing human-labelled evaluation remains the measure of mathematical accuracy. On-device readings use the same native comparison and output policy.
 
-Both routes accept `{questionId, answer, reference?}`. The client cannot supply a rubric, theorem, comparison readings or final marks. On supported certificates `lowerBoundPoints` reports proved progress, and `score` is present only on completion. Native responses include `provenance.nativeGrader` with the value `veyra-grader-wasm/1`. Old saved certificates prefixed with `NOETHER-PROOF/1` remain valid; new scaffolds use `VEYRA-PROOF/1`.
+Both routes accept `{questionId, answer, reference?}`. The client cannot supply a rubric, theorem, comparison readings or final marks. On supported certificates `lowerBoundPoints` reports proved progress, and `score` is present only on completion. Native responses include `provenance.nativeGrader` with the value `avenquellis-grader-wasm/1`. Old saved certificates prefixed with `NOETHER-PROOF/1` or `VEYRA-PROOF/1` remain valid; new scaffolds use `AVENQUELLIS-PROOF/1`.
 
 ## Reproduce
 
