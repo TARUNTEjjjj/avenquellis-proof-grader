@@ -1,0 +1,713 @@
+{
+  "maximumMarks": 7,
+  "total": 24,
+  "scored": 12,
+  "abstained": 12,
+  "coverage": 0.5,
+  "onScored": {
+    "exactCount": 3,
+    "exactRate": 0.25,
+    "withinOneCount": 5,
+    "withinOneRate": 0.4166666666666667,
+    "meanAbsoluteError": 2.8333333333333335,
+    "meanSignedError": 1.5,
+    "overCount": 6,
+    "underCount": 3,
+    "maximumAbsoluteError": 7
+  },
+  "reasons": {
+    "agreement_requires_human_validation": 12,
+    "browser_runtime_interruption": 1,
+    "reviewer_disagreement": 11
+  },
+  "cases": [
+    {
+      "id": "trojan-h-014",
+      "problem": "usamo-2025-2",
+      "humanMark": 5,
+      "suggestedScore": null,
+      "reviewReason": "reviewer_disagreement",
+      "reviewerScores": [
+        7,
+        0
+      ],
+      "criterionScores": [
+        {
+          "c1": 1,
+          "c2": 2,
+          "c3": 3,
+          "c4": 1
+        },
+        {
+          "c1": 0,
+          "c2": 0,
+          "c3": 0,
+          "c4": 0
+        }
+      ],
+      "failureCodes": [
+        null,
+        null
+      ],
+      "milliseconds": 18043
+    },
+    {
+      "id": "trojan-h-002",
+      "problem": "usamo-2025-1",
+      "humanMark": 1,
+      "suggestedScore": 1,
+      "reviewReason": "agreement_requires_human_validation",
+      "reviewerScores": [
+        1,
+        1
+      ],
+      "criterionScores": [
+        {
+          "c1": 1,
+          "c2": 0,
+          "c3": 0,
+          "c4": 0
+        },
+        {
+          "c1": 1,
+          "c2": 0,
+          "c3": 0,
+          "c4": 0
+        }
+      ],
+      "failureCodes": [
+        null,
+        null
+      ],
+      "milliseconds": 14140
+    },
+    {
+      "id": "trojan-h-034",
+      "problem": "usamo-2025-5",
+      "humanMark": 5,
+      "suggestedScore": 0,
+      "reviewReason": "agreement_requires_human_validation",
+      "reviewerScores": [
+        0,
+        0
+      ],
+      "criterionScores": [
+        {
+          "c1": 0,
+          "c2": 0,
+          "c3": 0
+        },
+        {
+          "c1": 0,
+          "c2": 0,
+          "c3": 0
+        }
+      ],
+      "failureCodes": [
+        null,
+        null
+      ],
+      "milliseconds": 24105
+    },
+    {
+      "id": "trojan-h-041",
+      "problem": "usamo-2025-6",
+      "humanMark": 0,
+      "suggestedScore": 0,
+      "reviewReason": "agreement_requires_human_validation",
+      "reviewerScores": [
+        0,
+        0
+      ],
+      "criterionScores": [
+        {
+          "c1": 0,
+          "c2": 0,
+          "c3": 0
+        },
+        {
+          "c1": 0,
+          "c2": 0,
+          "c3": 0
+        }
+      ],
+      "failureCodes": [
+        null,
+        null
+      ],
+      "milliseconds": 17035
+    },
+    {
+      "id": "trojan-h-026",
+      "problem": "usamo-2025-4",
+      "humanMark": 6,
+      "suggestedScore": null,
+      "reviewReason": "reviewer_disagreement",
+      "reviewerScores": [
+        7,
+        1
+      ],
+      "criterionScores": [
+        {
+          "c1": 1,
+          "c2": 4,
+          "c3": 2
+        },
+        {
+          "c1": 1,
+          "c2": 0,
+          "c3": 0
+        }
+      ],
+      "failureCodes": [
+        null,
+        null
+      ],
+      "milliseconds": 15440
+    },
+    {
+      "id": "trojan-h-021",
+      "problem": "usamo-2025-3",
+      "humanMark": 3,
+      "suggestedScore": 7,
+      "reviewReason": "agreement_requires_human_validation",
+      "reviewerScores": [
+        7,
+        7
+      ],
+      "criterionScores": [
+        {
+          "c1": 3,
+          "c2": 1,
+          "c3": 2,
+          "c4": 1
+        },
+        {
+          "c1": 3,
+          "c2": 1,
+          "c3": 2,
+          "c4": 1
+        }
+      ],
+      "failureCodes": [
+        null,
+        null
+      ],
+      "milliseconds": 20393
+    },
+    {
+      "id": "trojan-h-013",
+      "problem": "usamo-2025-2",
+      "humanMark": 3,
+      "suggestedScore": null,
+      "reviewReason": "reviewer_disagreement",
+      "reviewerScores": [
+        7,
+        0
+      ],
+      "criterionScores": [
+        {
+          "c1": 1,
+          "c2": 2,
+          "c3": 3,
+          "c4": 1
+        },
+        {
+          "c1": 0,
+          "c2": 0,
+          "c3": 0,
+          "c4": 0
+        }
+      ],
+      "failureCodes": [
+        null,
+        null
+      ],
+      "milliseconds": 18713
+    },
+    {
+      "id": "trojan-h-001",
+      "problem": "usamo-2025-1",
+      "humanMark": 2,
+      "suggestedScore": 1,
+      "reviewReason": "agreement_requires_human_validation",
+      "reviewerScores": [
+        1,
+        1
+      ],
+      "criterionScores": [
+        {
+          "c1": 1,
+          "c2": 0,
+          "c3": 0,
+          "c4": 0
+        },
+        {
+          "c1": 1,
+          "c2": 0,
+          "c3": 0,
+          "c4": 0
+        }
+      ],
+      "failureCodes": [
+        null,
+        null
+      ],
+      "milliseconds": 12553
+    },
+    {
+      "id": "trojan-h-038",
+      "problem": "usamo-2025-5",
+      "humanMark": 6,
+      "suggestedScore": null,
+      "reviewReason": "reviewer_disagreement",
+      "reviewerScores": [
+        1,
+        0
+      ],
+      "criterionScores": [
+        {
+          "c1": 1,
+          "c2": 0,
+          "c3": 0
+        },
+        {
+          "c1": 0,
+          "c2": 0,
+          "c3": 0
+        }
+      ],
+      "failureCodes": [
+        null,
+        null
+      ],
+      "milliseconds": 22001
+    },
+    {
+      "id": "trojan-h-046",
+      "problem": "usamo-2025-6",
+      "humanMark": 4,
+      "suggestedScore": null,
+      "reviewReason": "reviewer_disagreement",
+      "reviewerScores": [
+        7,
+        0
+      ],
+      "criterionScores": [
+        {
+          "c1": 1,
+          "c2": 3,
+          "c3": 3
+        },
+        {
+          "c1": 0,
+          "c2": 0,
+          "c3": 0
+        }
+      ],
+      "failureCodes": [
+        null,
+        null
+      ],
+      "milliseconds": 17415
+    },
+    {
+      "id": "trojan-h-030",
+      "problem": "usamo-2025-4",
+      "humanMark": 1,
+      "suggestedScore": 1,
+      "reviewReason": "agreement_requires_human_validation",
+      "reviewerScores": [
+        1,
+        1
+      ],
+      "criterionScores": [
+        {
+          "c1": 1,
+          "c2": 0,
+          "c3": 0
+        },
+        {
+          "c1": 1,
+          "c2": 0,
+          "c3": 0
+        }
+      ],
+      "failureCodes": [
+        null,
+        null
+      ],
+      "milliseconds": 12514
+    },
+    {
+      "id": "trojan-h-017",
+      "problem": "usamo-2025-3",
+      "humanMark": 0,
+      "suggestedScore": 7,
+      "reviewReason": "agreement_requires_human_validation",
+      "reviewerScores": [
+        7,
+        7
+      ],
+      "criterionScores": [
+        {
+          "c1": 3,
+          "c2": 1,
+          "c3": 2,
+          "c4": 1
+        },
+        {
+          "c1": 3,
+          "c2": 1,
+          "c3": 2,
+          "c4": 1
+        }
+      ],
+      "failureCodes": [
+        null,
+        null
+      ],
+      "milliseconds": 22203
+    },
+    {
+      "id": "trojan-h-012",
+      "problem": "usamo-2025-2",
+      "humanMark": 1,
+      "suggestedScore": null,
+      "reviewReason": "reviewer_disagreement",
+      "reviewerScores": [
+        7,
+        0
+      ],
+      "criterionScores": [
+        {
+          "c1": 1,
+          "c2": 2,
+          "c3": 3,
+          "c4": 1
+        },
+        {
+          "c1": 0,
+          "c2": 0,
+          "c3": 0,
+          "c4": 0
+        }
+      ],
+      "failureCodes": [
+        null,
+        null
+      ],
+      "milliseconds": 21783
+    },
+    {
+      "id": "trojan-h-003",
+      "problem": "usamo-2025-1",
+      "humanMark": 2,
+      "suggestedScore": 7,
+      "reviewReason": "agreement_requires_human_validation",
+      "reviewerScores": [
+        7,
+        7
+      ],
+      "criterionScores": [
+        {
+          "c1": 1,
+          "c2": 3,
+          "c3": 2,
+          "c4": 1
+        },
+        {
+          "c1": 1,
+          "c2": 3,
+          "c3": 2,
+          "c4": 1
+        }
+      ],
+      "failureCodes": [
+        null,
+        null
+      ],
+      "milliseconds": 17356
+    },
+    {
+      "id": "trojan-h-033",
+      "problem": "usamo-2025-5",
+      "humanMark": 7,
+      "suggestedScore": null,
+      "reviewReason": "browser_runtime_interruption",
+      "reviewerScores": [
+        null,
+        null
+      ],
+      "criterionScores": [
+        null,
+        null
+      ],
+      "failureCodes": [
+        "browser_reported_abort",
+        "no_completed_reading"
+      ],
+      "milliseconds": null
+    },
+    {
+      "id": "trojan-h-042",
+      "problem": "usamo-2025-6",
+      "humanMark": 5,
+      "suggestedScore": null,
+      "reviewReason": "reviewer_disagreement",
+      "reviewerScores": [
+        7,
+        0
+      ],
+      "criterionScores": [
+        {
+          "c1": 1,
+          "c2": 3,
+          "c3": 3
+        },
+        {
+          "c1": 0,
+          "c2": 0,
+          "c3": 0
+        }
+      ],
+      "failureCodes": [
+        null,
+        null
+      ],
+      "milliseconds": 17151
+    },
+    {
+      "id": "trojan-h-029",
+      "problem": "usamo-2025-4",
+      "humanMark": 4,
+      "suggestedScore": 7,
+      "reviewReason": "agreement_requires_human_validation",
+      "reviewerScores": [
+        7,
+        7
+      ],
+      "criterionScores": [
+        {
+          "c1": 1,
+          "c2": 4,
+          "c3": 2
+        },
+        {
+          "c1": 1,
+          "c2": 4,
+          "c3": 2
+        }
+      ],
+      "failureCodes": [
+        null,
+        null
+      ],
+      "milliseconds": 10103
+    },
+    {
+      "id": "trojan-h-023",
+      "problem": "usamo-2025-3",
+      "humanMark": 6,
+      "suggestedScore": 7,
+      "reviewReason": "agreement_requires_human_validation",
+      "reviewerScores": [
+        7,
+        7
+      ],
+      "criterionScores": [
+        {
+          "c1": 3,
+          "c2": 1,
+          "c3": 2,
+          "c4": 1
+        },
+        {
+          "c1": 3,
+          "c2": 1,
+          "c3": 2,
+          "c4": 1
+        }
+      ],
+      "failureCodes": [
+        null,
+        null
+      ],
+      "milliseconds": 19846
+    },
+    {
+      "id": "trojan-h-011",
+      "problem": "usamo-2025-2",
+      "humanMark": 4,
+      "suggestedScore": null,
+      "reviewReason": "reviewer_disagreement",
+      "reviewerScores": [
+        7,
+        0
+      ],
+      "criterionScores": [
+        {
+          "c1": 1,
+          "c2": 2,
+          "c3": 3,
+          "c4": 1
+        },
+        {
+          "c1": 0,
+          "c2": 0,
+          "c3": 0,
+          "c4": 0
+        }
+      ],
+      "failureCodes": [
+        null,
+        null
+      ],
+      "milliseconds": 20246
+    },
+    {
+      "id": "trojan-h-008",
+      "problem": "usamo-2025-1",
+      "humanMark": 0,
+      "suggestedScore": null,
+      "reviewReason": "reviewer_disagreement",
+      "reviewerScores": [
+        1,
+        0
+      ],
+      "criterionScores": [
+        {
+          "c1": 1,
+          "c2": 0,
+          "c3": 0,
+          "c4": 0
+        },
+        {
+          "c1": 0,
+          "c2": 0,
+          "c3": 0,
+          "c4": 0
+        }
+      ],
+      "failureCodes": [
+        null,
+        null
+      ],
+      "milliseconds": 13182
+    },
+    {
+      "id": "trojan-h-035",
+      "problem": "usamo-2025-5",
+      "humanMark": 2,
+      "suggestedScore": 0,
+      "reviewReason": "agreement_requires_human_validation",
+      "reviewerScores": [
+        0,
+        0
+      ],
+      "criterionScores": [
+        {
+          "c1": 0,
+          "c2": 0,
+          "c3": 0
+        },
+        {
+          "c1": 0,
+          "c2": 0,
+          "c3": 0
+        }
+      ],
+      "failureCodes": [
+        null,
+        null
+      ],
+      "milliseconds": 20596
+    },
+    {
+      "id": "trojan-h-044",
+      "problem": "usamo-2025-6",
+      "humanMark": 6,
+      "suggestedScore": null,
+      "reviewReason": "reviewer_disagreement",
+      "reviewerScores": [
+        1,
+        0
+      ],
+      "criterionScores": [
+        {
+          "c1": 1,
+          "c2": 0,
+          "c3": 0
+        },
+        {
+          "c1": 0,
+          "c2": 0,
+          "c3": 0
+        }
+      ],
+      "failureCodes": [
+        null,
+        null
+      ],
+      "milliseconds": 17625
+    },
+    {
+      "id": "trojan-h-032",
+      "problem": "usamo-2025-4",
+      "humanMark": 4,
+      "suggestedScore": null,
+      "reviewReason": "reviewer_disagreement",
+      "reviewerScores": [
+        7,
+        1
+      ],
+      "criterionScores": [
+        {
+          "c1": 1,
+          "c2": 4,
+          "c3": 2
+        },
+        {
+          "c1": 1,
+          "c2": 0,
+          "c3": 0
+        }
+      ],
+      "failureCodes": [
+        null,
+        null
+      ],
+      "milliseconds": 9780
+    },
+    {
+      "id": "trojan-h-019",
+      "problem": "usamo-2025-3",
+      "humanMark": 1,
+      "suggestedScore": 7,
+      "reviewReason": "agreement_requires_human_validation",
+      "reviewerScores": [
+        7,
+        7
+      ],
+      "criterionScores": [
+        {
+          "c1": 3,
+          "c2": 1,
+          "c3": 2,
+          "c4": 1
+        },
+        {
+          "c1": 3,
+          "c2": 1,
+          "c3": 2,
+          "c4": 1
+        }
+      ],
+      "failureCodes": [
+        null,
+        null
+      ],
+      "milliseconds": 20361
+    }
+  ]
+}
