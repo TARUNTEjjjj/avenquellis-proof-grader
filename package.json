@@ -1,6 +1,6 @@
 {
   "name": "noether-proof-grader",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "private": true,
   "type": "module",
   "description": "Evidence-preserving mathematical proof review and human marking workflow",
@@ -11,7 +11,8 @@
     "./certificate": "./src/certificate.js",
     "./pages": "./src/pages.js",
     "./device": "./src/device.js",
-    "./span-v2": "./src/span-v2.js"
+    "./span-v2": "./src/span-v2.js",
+    "./partial-credit": "./src/partial-credit.js"
   },
   "scripts": {
     "test": "node --test",

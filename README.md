@@ -156,6 +156,10 @@ npm run benchmark:device -- \
 
 Keep the same port, host and isolated profile to reuse cached model weights. The harness uses `127.0.0.1` and accepts an installed Chrome path on other operating systems. The local GPU and driver must support WebGPU and FP16. Progress is checkpointed atomically after each case. See [the evaluation protocol](docs/EVALUATION.md) for the interpretation of coverage, error metrics and examiner-label provenance.
 
+## Research candidate for partial credit
+
+A separate point-ledger experiment records what a proof establishes, what still needs repair and the exact basis for each proposed integer mark. It preserves independent reader opinions, validates source-specific point levels and prerequisites, and leaves the final mark open for human review. It is not imported by the production request handler. See [candidate design, model configuration and prerequisites](docs/PARTIAL-CREDIT-CANDIDATE.md).
+
 ## Native Cloudflare Workers AI
 
 A Pages Function or standalone Worker can run both reviewers with an `AI` binding. The default model is `@cf/meta/llama-3.3-70b-instruct-fp8-fast`. The smaller `@cf/meta/llama-3.1-8b-instruct` is also supported. Both appear on Cloudflare’s JSON Mode model list. The native adapter sends the schema directly in `response_format.json_schema`, consumes the non-streaming `response` field, then validates every rubric mark and exact quotation locally. Cloudflare documents that JSON Mode can fail to satisfy a schema. [Workers AI JSON Mode](https://developers.cloudflare.com/workers-ai/features/json-mode/)

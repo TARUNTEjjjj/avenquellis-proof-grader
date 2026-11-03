@@ -1,0 +1,66 @@
+{
+  "question": {
+    "id": "synthetic-partial-parity",
+    "statement": "Prove that n(n+1) is even for every integer n. Treat even and odd n.",
+    "type": "proof",
+    "maxMarks": 4,
+    "solution": "For even n the first factor is even; for odd n the next factor is even. In each case the product is even.",
+    "rubric": [
+      {
+        "id": "even",
+        "description": "Justify the even-input case.",
+        "points": 2
+      },
+      {
+        "id": "odd",
+        "description": "Justify the odd-input case.",
+        "points": 2
+      }
+    ],
+    "partialMarkingGuide": {
+      "version": 1,
+      "source": "Authored synthetic transport smoke, not examiner labels.",
+      "criteria": [
+        {
+          "id": "even",
+          "levels": [
+            {
+              "points": 0,
+              "when": "No valid reasoning for this case."
+            },
+            {
+              "points": 1,
+              "when": "Shows the relevant factor is even but does not justify its implication for the product."
+            },
+            {
+              "points": 2,
+              "when": "Shows the factor is even and deduces the even product for this entire case."
+            }
+          ]
+        },
+        {
+          "id": "odd",
+          "levels": [
+            {
+              "points": 0,
+              "when": "No valid reasoning for this case."
+            },
+            {
+              "points": 1,
+              "when": "Shows the relevant factor is even but does not justify its implication for the product."
+            },
+            {
+              "points": 2,
+              "when": "Shows the factor is even and deduces the even product for this entire case."
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "answer": "Suppose n=2k. Then n(n+1)=2[k(2k+1)], twice an integer. I have only covered even n and have no argument for odd n.",
+  "visibleTexts": [
+    "{\"audit\":\"The submission addresses the even case but omits the odd case entirely.\",\"marks\":[{\"p\":2,\"s\":[0],\"earned\":\"The even case is established.\",\"why\":\"For even n=2k, n(n+1)=2k(2k+1) is twice an integer, hence even.\",\"gap\":\"\"},{\"p\":0,\"s\":[],\"earned\":\"No valid reasoning for the odd case.\",\"why\":\"The submission explicitly states no argument was provided for odd n.\",\"gap\":\"No valid reasoning for this case.\"}]}",
+    "{\"audit\":\"The odd case is entirely unaddressed, as acknowledged by the student.\",\"marks\":[{\"p\":2,\"s\":[0],\"earned\":\"Even case proven correctly.\",\"why\":\"The span shows n=2k leads to 2[k(2k+1)], a multiple of 2, satisfying the even case.\",\"gap\":\"No reasoning provided for the odd case.\"},{\"p\":0,\"s\":[],\"earned\":\"No valid reasoning for odd case.\",\"why\":\"The submission explicitly states no argument was provided for odd n.\",\"gap\":\"No valid reasoning for this case.\"}]}"
+  ]
+}
