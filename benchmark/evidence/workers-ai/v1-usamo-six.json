@@ -1,0 +1,226 @@
+{
+  "dataset": "TROJAN(H), six balanced USAMO 2025 problems",
+  "asOf": "2026-11-03",
+  "model": "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+  "protocol": "verbatim-v1",
+  "promptVersion": "noether-proof-review-2026-11-03-v1",
+  "fixtureSha256": "51a8b2fa3b76f4f3fd041fee668742d0042aa775b8a69683be49fc1aeba90916",
+  "lockedPredictionSha256": "fb71787275745d3356bb85a67d2c4d6ebf19de4b63452931a0d040994a185f61",
+  "selection": "One preregistered response per problem, drawn from the frozen hash-ordered subset. Human marks were joined after prediction lock.",
+  "transport": "Official Workers AI run REST endpoint under an AI binding shim, using the production native evaluator payload and scoring policy. Two blind calls, 900 completion tokens per call, 55-second local deadline.",
+  "metrics": {
+    "labeledCases": 6,
+    "offeredScores": 0,
+    "abstentions": 6,
+    "coverage": 0.0,
+    "onScoredCases": null
+  },
+  "readings": {
+    "attempted": 12,
+    "http200": 10,
+    "curlTimeoutNoResponse": 2,
+    "validProposals": 2,
+    "invalidOutput": 8,
+    "invalidOutputAtTokenCap": 2,
+    "invalidOutputBelowTokenCap": 6,
+    "exactCauseAvailable": false,
+    "diagnosis": "The invalid_output stage follows a successful, nonempty, size-bounded provider response. It can indicate JSON, rubric, or exact-evidence validation failure. The generated bodies were not retained. Two invalid readings reached the 900-token cap; that alone does not establish truncation."
+  },
+  "budget": {
+    "conservativeSixCaseReservationNeurons": 2895.23,
+    "conservativeInitialTransportReservationNeurons": 1475.81,
+    "measuredNeuronsForTenHTTP200Responses": 1984.9184,
+    "unknownTimedOutUsage": true
+  },
+  "cases": [
+    {
+      "id": "trojan-h-014",
+      "expertScore": 5,
+      "maxMarks": 7,
+      "suggestedScore": null,
+      "reviewerScores": [
+        7,
+        null
+      ],
+      "criterionScores": [
+        {
+          "c1": 1,
+          "c2": 2,
+          "c3": 3,
+          "c4": 1
+        },
+        null
+      ],
+      "failureCodes": [
+        null,
+        "invalid_output"
+      ],
+      "httpStatuses": [
+        200,
+        200
+      ],
+      "completionTokens": [
+        864,
+        814
+      ],
+      "measuredNeurons": [
+        233.72726440429688,
+        223.7270050048828
+      ]
+    },
+    {
+      "id": "trojan-h-002",
+      "expertScore": 1,
+      "maxMarks": 7,
+      "suggestedScore": null,
+      "reviewerScores": [
+        null,
+        null
+      ],
+      "criterionScores": [
+        null,
+        null
+      ],
+      "failureCodes": [
+        "provider_failure",
+        "provider_failure"
+      ],
+      "httpStatuses": [
+        null,
+        null
+      ],
+      "completionTokens": [
+        null,
+        null
+      ],
+      "measuredNeurons": [
+        null,
+        null
+      ]
+    },
+    {
+      "id": "trojan-h-034",
+      "expertScore": 5,
+      "maxMarks": 7,
+      "suggestedScore": null,
+      "reviewerScores": [
+        null,
+        null
+      ],
+      "criterionScores": [
+        null,
+        null
+      ],
+      "failureCodes": [
+        "invalid_output",
+        "invalid_output"
+      ],
+      "httpStatuses": [
+        200,
+        200
+      ],
+      "completionTokens": [
+        802,
+        900
+      ],
+      "measuredNeurons": [
+        231.90975952148438,
+        252.22068786621094
+      ]
+    },
+    {
+      "id": "trojan-h-041",
+      "expertScore": 0,
+      "maxMarks": 7,
+      "suggestedScore": null,
+      "reviewerScores": [
+        null,
+        7
+      ],
+      "criterionScores": [
+        null,
+        {
+          "c1": 1,
+          "c2": 3,
+          "c3": 3
+        }
+      ],
+      "failureCodes": [
+        "invalid_output",
+        null
+      ],
+      "httpStatuses": [
+        200,
+        200
+      ],
+      "completionTokens": [
+        717,
+        563
+      ],
+      "measuredNeurons": [
+        199.59408569335938,
+        168.29405212402344
+      ]
+    },
+    {
+      "id": "trojan-h-026",
+      "expertScore": 6,
+      "maxMarks": 7,
+      "suggestedScore": null,
+      "reviewerScores": [
+        null,
+        null
+      ],
+      "criterionScores": [
+        null,
+        null
+      ],
+      "failureCodes": [
+        "invalid_output",
+        "invalid_output"
+      ],
+      "httpStatuses": [
+        200,
+        200
+      ],
+      "completionTokens": [
+        900,
+        472
+      ],
+      "measuredNeurons": [
+        213.52589416503906,
+        126.10922241210938
+      ]
+    },
+    {
+      "id": "trojan-h-021",
+      "expertScore": 3,
+      "maxMarks": 7,
+      "suggestedScore": null,
+      "reviewerScores": [
+        null,
+        null
+      ],
+      "criterionScores": [
+        null,
+        null
+      ],
+      "failureCodes": [
+        "invalid_output",
+        "invalid_output"
+      ],
+      "httpStatuses": [
+        200,
+        200
+      ],
+      "completionTokens": [
+        565,
+        574
+      ],
+      "measuredNeurons": [
+        166.8636016845703,
+        168.9468536376953
+      ]
+    }
+  ]
+}

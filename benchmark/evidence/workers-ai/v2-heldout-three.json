@@ -1,0 +1,78 @@
+{
+  "dataset": "Fresh three-case TROJAN(H) USAMO held-out pilot",
+  "asOf": "2026-11-03",
+  "model": "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+  "protocol": "span-v2",
+  "promptVersion": "noether-workers-ai-span-review-2026-11-03-v2",
+  "selection": "Excluded all 24 device cases and all six V1 cases, including abstentions. Selected three previously unused cases by hash, from different problems, without using reference marks.",
+  "fixtureSha256": "d190b89f02d3de19411d80d65da92617c01d119628287a016c4cd0d34ca45d62",
+  "selectionSha256": "06508961fd7667ed76a6711a59a0296ab48891541fecb790a51b618aba6e9622",
+  "lockedPredictionSha256": "410bb16eb64b9a7db0530afb562b70c1c50b238b9a11aa12469f9e8dcbc2ebf1",
+  "budget": {
+    "conservativeNeuronsReservation": 1520.15,
+    "observedInferenceReceipts": 0,
+    "actualNeurons": null
+  },
+  "metrics": {
+    "labeledCases": 3,
+    "offeredScores": 0,
+    "abstentions": 3,
+    "coverage": 0.0,
+    "onScoredCases": null
+  },
+  "transport": "Pinned, bearer-restricted, expiring Cloudflare Pages preview with three fixed server-side cases and a native Workers AI binding. The runner journaled each case once.",
+  "diagnosis": "The runner recorded preview_transport_failure on all three requests and no validated provider payload. It did not retain actual HTTP status or error body. Response timings were 68\u2013112 ms. No claim about model grading accuracy or actual billed GPU usage follows.",
+  "cases": [
+    {
+      "id": "trojan-h-004",
+      "problem": "usamo-2025-1",
+      "expertScore": 6,
+      "maxMarks": 7,
+      "suggestedScore": null,
+      "reviewReason": "preview_transport_failure",
+      "reviewerScores": [
+        null,
+        null
+      ],
+      "failureCodes": [
+        "transport",
+        "transport"
+      ],
+      "milliseconds": 82
+    },
+    {
+      "id": "trojan-h-010",
+      "problem": "usamo-2025-2",
+      "expertScore": 0,
+      "maxMarks": 7,
+      "suggestedScore": null,
+      "reviewReason": "preview_transport_failure",
+      "reviewerScores": [
+        null,
+        null
+      ],
+      "failureCodes": [
+        "transport",
+        "transport"
+      ],
+      "milliseconds": 68
+    },
+    {
+      "id": "trojan-h-027",
+      "problem": "usamo-2025-4",
+      "expertScore": 2,
+      "maxMarks": 7,
+      "suggestedScore": null,
+      "reviewReason": "preview_transport_failure",
+      "reviewerScores": [
+        null,
+        null
+      ],
+      "failureCodes": [
+        "transport",
+        "transport"
+      ],
+      "milliseconds": 112
+    }
+  ]
+}

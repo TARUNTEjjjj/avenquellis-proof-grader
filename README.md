@@ -55,6 +55,7 @@ The checker binds each theorem to its exact generated statement, bounded paramet
 | Variable | Meaning |
 | --- | --- |
 | `EVALUATOR_PROVIDER` | `http` (default) or `workers-ai` for a Cloudflare binding. |
+| `EVALUATOR_PROTOCOL` | Workers AI only. Omit or use `verbatim-v1` for the original exact-quote protocol. Opt into `span-v2` for numbered evidence spans. |
 | `EVALUATOR_BASE_URL` | HTTP provider API base ending at the API version, e.g. `https://api.openai.com/v1`. `/chat/completions` is appended. |
 | `EVALUATOR_MODEL` | HTTP mode requires an explicit model supporting strict JSON-schema Chat Completions. Workers AI defaults to `@cf/meta/llama-3.3-70b-instruct-fp8-fast` and also supports `@cf/meta/llama-3.1-8b-instruct`. |
 | `EVALUATOR_API_KEY` | HTTP provider secret. Required for remote HTTP endpoints. The Workers AI binding supplies its own account access. |
@@ -158,6 +159,10 @@ Keep the same port, host and isolated profile to reuse cached model weights. The
 ## Native Cloudflare Workers AI
 
 A Pages Function or standalone Worker can run both reviewers with an `AI` binding. The default model is `@cf/meta/llama-3.3-70b-instruct-fp8-fast`. The smaller `@cf/meta/llama-3.1-8b-instruct` is also supported. Both appear on Cloudflare’s JSON Mode model list. The native adapter sends the schema directly in `response_format.json_schema`, consumes the non-streaming `response` field, then validates every rubric mark and exact quotation locally. Cloudflare documents that JSON Mode can fail to satisfy a schema. [Workers AI JSON Mode](https://developers.cloudflare.com/workers-ai/features/json-mode/)
+
+The hosted protocol is versioned. `verbatim-v1` asks for exact quotations. `span-v2` sends numbered excerpts sliced from the original answer and asks for criterion points, one to three supporting span IDs and a short mathematical reason. The code resolves those IDs to exact text and applies the same score bounds and evidence checks. Invalid or missing spans cannot earn credit. Every positive criterion still needs support, and a total still requires both independent rubric proposals to agree exactly. A source pointer identifies the text but its mathematical relevance remains a model judgment. Both protocols return their identifier and prompt version in `provenance`. The V1 USAMO pilot offered 0/6 combined marks. One independently matched full-credit IMO worked example received 7/7. A separate three-case V2 preview experiment failed at the transport layer and returned no usable model readings. These studies do not demonstrate dependable free-form grading accuracy.
+
+To select V2 in a Pages project, set `EVALUATOR_PROVIDER = "workers-ai"`, `EVALUATOR_PROTOCOL = "span-v2"` and bind `AI`. The package's `createPagesReviewHandler` forwards this server setting. The endpoint accepts no user-selected protocol. Include `src/span-v2.js` when copying the server-side module group. For the standalone Worker use the same variables in Wrangler `[vars]`. V2 exposes `invalid_json`, `invalid_schema`, `invalid_marks`, `invalid_span`, `missing_support`, `invalid_evidence` and existing timeout/quota codes to distinguish validation failures without returning raw failed model text. [Hosted benchmark evidence](benchmark/evidence/workers-ai/README.md)
 
 Each evaluation makes two calls. `criterionProposals` shows each reviewer’s marks and quoted evidence. An individual criterion has `agreedPoints` only when both valid reviewers assigned it the same marks. The total `suggestedScore` requires agreement on **every** criterion. `reviewerScoreRange` gives the two proposed totals when both are available. This range has no calibrated probability interpretation. Both calls use one model and can share mathematical errors.
 

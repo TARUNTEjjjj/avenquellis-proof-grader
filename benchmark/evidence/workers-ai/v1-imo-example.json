@@ -1,0 +1,32 @@
+{
+  "dataset": "Officially assessed 2025 IMO Gemini solution release, P1 worked comparison",
+  "model": "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+  "protocol": "verbatim-v1",
+  "promptVersion": "noether-proof-review-2026-11-03-v1",
+  "source": "https://deepmind.google/blog/advanced-version-of-gemini-with-deep-think-officially-achieves-gold-medal-standard-at-the-international-mathematical-olympiad/",
+  "sourcePdf": "https://storage.googleapis.com/deepmind-media/gemini/IMO_2025.pdf",
+  "pages": "1\u20132",
+  "fixtureSha256": "4e16c82657707513db10144b30a4dc3ff45e36daae0138547eab5ff725d3f0e0",
+  "lockedPredictionSha256": "8d43f83127573ddd3092cf8a459ced9cbca349de3e9943e5f383fe44c30effb1",
+  "referenceScore": 7,
+  "maxMarks": 7,
+  "referenceBasis": "The author reports five perfect answers and 35/42 officially graded. The directly linked release contains exactly P1\u2013P5. The IMO president confirms the total in the same report. The individual label is matched from these sources; a separately signed item-level marksheet or archived original submission checksum was not published.",
+  "practiceRubric": "Researcher-authored, 3 marks for existence and 4 for exclusion; these are not claimed as official IMO criterion weights.",
+  "reviewerScores": [
+    7,
+    7
+  ],
+  "criterionScores": [
+    {
+      "existence": 3,
+      "exclusion": 4
+    },
+    {
+      "existence": 3,
+      "exclusion": 4
+    }
+  ],
+  "suggestedScore": 7,
+  "measuredUsageNeurons": 323.2131,
+  "reservationNeurons": 514.4
+}
