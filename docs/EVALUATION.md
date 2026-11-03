@@ -1,0 +1,14 @@
+# Evaluation and release protocol
+
+No benchmark has been run yet. The current software tests workflow correctness and score validation, not mathematical grading accuracy.
+
+1. Recruit qualified mathematical proof evaluators and document their relevant experience. Do not call reviewers CMI/ISI faculty unless their actual affiliations support that statement.
+2. Collect consented, anonymized submissions across algebra, geometry, number theory, combinatorics, calculus and probability. Include correct alternate proofs, short elegant proofs, long invalid proofs, partial progress, missing cases, circular arguments and deliberately irrelevant instructions.
+3. Have two experts mark every submission independently against an approved problem-specific rubric. Resolve disagreement with a third expert and retain the original marks as well as the adjudicated reference.
+4. Split train/development/test by problem and template family, not merely by answer. Otherwise nearly identical generated variants can leak into the evaluation set. Keep the held-out test set inaccessible during prompt and rubric development.
+5. Evaluate total and criterion-level mean absolute error, exact agreement, agreement within one mark, weighted Cohen's kappa, overgrading of invalid proofs, and recall of substantial logical flaws. Report counts and confidence intervals, and stratify by subject, proof type, score band and language. Assess robustness to alternate valid approaches separately.
+6. Measure abstention coverage and error on the subset the system proposes to score. A high agreement figure obtained by sending most answers to humans is not a high-coverage automated grader. Model self-reported confidence is not a calibrated probability.
+7. Compare with expert-to-expert disagreement and publish the benchmark version, rubric version, provider/model versions, prompt versions, sample size and limitations. Set release thresholds in advance with the educators who will use the tool.
+8. Use teacher moderation during pilot operation, retain corrected decisions and monitor regressions. Store the original answer, exact rubric, score breakdown, reviewer identity and rationale with immutable revision history in the production backend.
+
+A future formal-proof integration can mechanically verify a proof represented in a supported proof assistant. It does not make an arbitrary natural-language or handwritten submission formally verified. OCR introduces an additional error source and is not included in this release.
