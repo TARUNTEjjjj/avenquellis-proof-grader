@@ -1,6 +1,6 @@
 # Noether Proof Grader
 
-A working mathematical proof-review service with optional model-assisted score proposals. Two blind reviewer calls assess the same answer against a problem-specific rubric. When every criterion score agrees, the service returns a **suggested score awaiting human review**. Disagreement, invalid evidence or transport failure produces no combined score. Teacher decisions are recorded through a separate validated review endpoint.
+The offline certificate checker awards exact marks for complete structured proofs in two original number-theory families. Free-form submissions use the proof-review service, with optional model-assisted mark proposals. Two blind reviewer calls assess the same answer against a problem-specific rubric. When every criterion score agrees, the service returns a **suggested score awaiting human review**. Disagreement, invalid evidence or transport failure produces no combined score. Teacher decisions are recorded through a separate validated review endpoint.
 
 No CMI/ISI professor, olympiad examiner or benchmark has certified this software's grading accuracy. The tests verify transport, validation and review behavior. They do not establish mathematical marking accuracy.
 
@@ -23,6 +23,32 @@ node --env-file=.env src/server.js
 ```
 
 `POST /evaluate` sends the question, reference solution if present, rubric and answer to the configured provider twice. No provider requests occur through `/assess`, and no remote model was used during this repository's tests.
+
+## Exact offline proof certificates
+
+`src/certificate.js` is a standalone browser-safe module with no imports or network requirements. `certificateHelp(question)` returns instructions and a blank scaffold for a supported question. `verifyCertificate(question, answer)` verifies an explicit certificate and returns a score of 10 only when every required inference is established. Partial results have `score: null`, `lowerBoundPoints` for verified steps, and feedback for each criterion. Ordinary prose and unsupported questions return `null` and use the existing review workflow.
+
+```js
+import {certificateHelp, verifyCertificate} from 'noether-proof-grader/certificate';
+
+const help = certificateHelp(question);
+if (help) {
+  // Show help.instructions and let the student fill in help.scaffold.
+  const result = verifyCertificate(question, studentAnswer);
+  if (result?.complete) console.log(result.score, result.maxMarks);
+}
+```
+
+The first certificate line must be `NOETHER-PROOF/1`. The next two fields identify the template family and its `k`. Use one named field per line, ASCII integer coefficients separated by spaces, and at most 2,048 characters total. Coefficients are capped at an absolute value of 1,000,000. The parser rejects duplicate or unknown fields and extra prose. A learner can submit another valid proof in the ordinary review workflow.
+
+| Supported template | Certificate obligations | Marks |
+| --- | --- | --- |
+| `number-consecutive`, `1 ≤ k ≤ 12` | In `mod3` and `mod2`, supply a factor offset 0, 1 or 2 for every residue of `n`, in increasing residue order. `bezout` contains integer coefficients `u v` for `2u+3v=1`. | 4 for all residue classes modulo 3, 4 for both parity classes, 2 for using the identity with both verified divisibility claims. |
+| `number-gcd`, `7 ≤ k ≤ 30` | `forward` gives `A B` for `A·n+B·(n+k)=k`. `reverse` gives `C D` for `C·n+D·k=n+k`. `conclusion` explicitly invokes `same-positive-divisors -> equal-maxima`. | 4 per universally valid affine identity, then 2 for applying the inference once both inclusions hold. |
+
+For example, in an analogous modulo-five exercise with `k=2`, choosing offset `2` for residue `1` works because `1+2+2` is divisible by 5. The actual exercise requires a valid witness for **every** residue in each requested modulus. For the gcd family, the verifier compares the coefficient of `n` and the constant term exactly, so a combination that works at a single numerical value of `n` cannot pass.
+
+The checker binds each theorem to its exact generated statement, bounded parameter, template version, proof type, maximum marks and rubric. It uses `BigInt` for each witness and identity. A complete residue proof covers negative and zero integers as well as positive ones. A complete gcd proof establishes equality of the two finite nonempty sets of positive common divisors. The automated score applies to these two certificate languages. It supplies no accuracy estimate for free-form proof marking.
 
 ## Configuration
 

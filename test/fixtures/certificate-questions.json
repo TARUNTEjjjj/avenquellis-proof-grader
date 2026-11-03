@@ -1,0 +1,88 @@
+[
+  {
+    "id": "number-consecutive-1821pae",
+    "title": "Three consecutive factors",
+    "statement": "Prove that (n + 9)(n + 10)(n + 11) is divisible by 6 for every integer n.",
+    "topic": "number-theory",
+    "difficulty": "foundation",
+    "requestedDifficulty": "foundation",
+    "exam": "CMI",
+    "type": "proof",
+    "maxMarks": 10,
+    "solution": "Among three consecutive integers one is divisible by 3. At least one is even, so the product is divisible by 2 as well. Since gcd(2,3)=1, their product 6 divides the product. This reasoning includes zero and negative factors.",
+    "rubric": [
+      {
+        "id": "step-1",
+        "description": "Explain why a factor is divisible by 3.",
+        "points": 4
+      },
+      {
+        "id": "step-2",
+        "description": "Explain why a factor is even.",
+        "points": 4
+      },
+      {
+        "id": "step-3",
+        "description": "Use coprimality to conclude divisibility by 6 for every integer.",
+        "points": 2
+      }
+    ],
+    "source": {
+      "kind": "original",
+      "label": "Noether original practice · validated template",
+      "rights": "Original wording and solutions; standard mathematical results."
+    },
+    "templateId": "number-consecutive",
+    "parameters": {
+      "k": 9
+    },
+    "generator": {
+      "kind": "deterministic-template",
+      "version": "0.1.0",
+      "seed": "bank:5"
+    }
+  },
+  {
+    "id": "number-gcd-17s23lf",
+    "title": "An invariant greatest common divisor",
+    "statement": "Prove that gcd(n, n + 10) = gcd(n, 10) for every positive integer n.",
+    "topic": "number-theory",
+    "difficulty": "advanced",
+    "requestedDifficulty": "advanced",
+    "exam": "CMI",
+    "type": "proof",
+    "maxMarks": 10,
+    "solution": "If d divides both n and n+10, it divides their difference 10; hence d is a common divisor of n and 10. Conversely, if d divides n and 10, it divides n+10. The sets of positive common divisors coincide, so their greatest members coincide.",
+    "rubric": [
+      {
+        "id": "step-1",
+        "description": "Prove every common divisor of n and n+k divides k.",
+        "points": 4
+      },
+      {
+        "id": "step-2",
+        "description": "Prove the converse inclusion of common divisors.",
+        "points": 4
+      },
+      {
+        "id": "step-3",
+        "description": "Conclude equality of the greatest positive common divisors.",
+        "points": 2
+      }
+    ],
+    "source": {
+      "kind": "original",
+      "label": "Noether original practice · validated template",
+      "rights": "Original wording and solutions; standard mathematical results."
+    },
+    "templateId": "number-gcd",
+    "parameters": {
+      "k": 10
+    },
+    "generator": {
+      "kind": "deterministic-template",
+      "version": "0.1.0",
+      "seed": "bank:6"
+    }
+  }
+]
