@@ -23,7 +23,7 @@ const char* help =
 
 Json parse(std::string_view text) {
     std::vector<std::set<std::string>> keys;
-    return Json::parse(text, [&](int depth, Json::parse_event_t event, Json& parsed) {
+    const auto bounded_objects = [&](int depth, Json::parse_event_t event, Json& parsed) {
         if (depth > 64) throw std::invalid_argument("JSON nesting exceeds 64.");
         if (event == Json::parse_event_t::object_start) keys.emplace_back();
         if (event == Json::parse_event_t::key && !keys.back().insert(parsed.get<std::string>()).second) {
@@ -31,7 +31,15 @@ Json parse(std::string_view text) {
         }
         if (event == Json::parse_event_t::object_end) keys.pop_back();
         return true;
-    });
+    };
+    try {
+        return Json::parse(text, bounded_objects);
+    } catch (const Json::parse_error& error) {
+        // The upstream diagnostic can contain a submitted proof or a private service reply.
+        throw std::invalid_argument("Invalid JSON at byte " + std::to_string(error.byte) + ".");
+    } catch (const Json::exception&) {
+        throw std::invalid_argument("Invalid JSON value.");
+    }
 }
 
 int integer(const Json& value) {
@@ -199,6 +207,9 @@ int main(int argc, char** argv) {
         if (input->bad()) throw std::runtime_error("Request read failed.");
         std::cout << run(argv[1], parse(text)).dump() << '\n';
         return 0;
+    } catch (const Json::exception&) {
+        std::cerr << "{\"error\":\"A required JSON field is missing or has the wrong type.\"}\n";
+        return 2;
     } catch (const std::exception& error) {
         std::cerr << Json{{"error", error.what()}}.dump(-1, ' ', false, Json::error_handler_t::replace) << '\n';
         return 2;

@@ -57,6 +57,10 @@ try {
   const dishonest=httpServer((_req,res)=>{const row=i=>({reviewer:i,status:'proposal',criterionScores:{even:2,odd:2},rationale:'A claim.',evidence:[{criterionId:'even',quote:input.answer},{criterionId:'odd',quote:'invented'}]});res.end(JSON.stringify({answer:input.answer,questionId:input.question.id,score:4,suggestedScore:4,reviews:[row(1),row(2)]}));});
   services.push(dishonest);const falseUrl=(await listen(dishonest))+'/evaluate';
   call=await invoke('review',input,{NOETHER_GRADER_URL:falseUrl});assert.equal(call.value.suggestedScore,null);assert.equal(call.value.score,null);
+  const privateText='SYNTHETIC_PRIVATE_SERVICE_REPLY_SENTINEL';
+  const truncated=httpServer((_req,res)=>res.end('{"answer":"'+privateText));services.push(truncated);
+  call=await invoke('review',input,{NOETHER_GRADER_URL:(await listen(truncated))+'/evaluate'});
+  assert.equal(call.code,2);assert.match(call.stderr,/Invalid JSON at byte/);assert.ok(!call.stderr.includes(privateText));
   console.log('Native CLI → authenticated Noether service → two independent HTTP fixture readings → native evidence/consensus checks passed.');
 } finally {
   for(const server of services) {server.closeAllConnections();server.close();}

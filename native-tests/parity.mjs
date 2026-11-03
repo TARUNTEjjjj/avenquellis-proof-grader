@@ -52,4 +52,7 @@ for(const raw of ['{"question": {},"question": {}}','{"a":'+ '['.repeat(66)+'0'+
   const run=spawnSync(binary,['assess'],{input:raw,encoding:'utf8'});
   assert.equal(run.status,2);assert.match(run.stderr,/error/);
 }
+const privateText='SYNTHETIC_PRIVATE_STUDENT_PROOF_SENTINEL';
+const broken=spawnSync(binary,['assess'],{input:'{"question":{},"answer":"'+privateText,encoding:'utf8'});
+assert.equal(broken.status,2);assert.match(broken.stderr,/Invalid JSON at byte/);assert.ok(!broken.stderr.includes(privateText));
 console.log(assertions+' certificate/prose differential cases across all supported parameters.');
