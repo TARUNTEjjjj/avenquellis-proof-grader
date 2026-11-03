@@ -138,7 +138,7 @@ Build the optional runtime into a static asset directory:
 
 ```sh
 npm ci
-npm run build:device -- ../noether-web/dist/device-runtime
+npm run build:device -- ../avenquellis-web/dist/device-runtime
 ```
 
 The build bundles `@mlc-ai/web-llm@0.2.87`, retrieves a model library at an immutable upstream commit, verifies its SHA-256 digest and writes license files and provenance. It does not download language-model weights. Exclude `device-runtime/` from automatic offline precaching. The host needs same-origin script/WASM access, `'wasm-unsafe-eval'` for WebAssembly compilation and `connect-src` permission for `https://huggingface.co` and its `https://*.hf.co` regional CDN redirects. No external JavaScript loader is required. [WebLLM release](https://github.com/mlc-ai/web-llm/releases/tag/v0.2.87)
@@ -163,7 +163,7 @@ For a local benchmark, run the installed Chrome executable against a separate pe
 
 ```sh
 npm run benchmark:device -- \
-  --fixtures fixtures.json --assets ../noether-web/dist/device-runtime \
+  --fixtures fixtures.json --assets ../avenquellis-web/dist/device-runtime \
   --profile benchmark-results/chrome-profile --out benchmark-results/predictions.json \
   --chrome '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' \
   --port 48173 --resume

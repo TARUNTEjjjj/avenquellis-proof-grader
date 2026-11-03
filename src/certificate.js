@@ -1,4 +1,4 @@
-/** A small proof language for two exact Noether templates. All numeral checks use BigInt. */
+/** A small proof language for two exact number-theory templates. All numeral checks use BigInt. */
 const HEADER = 'AVENQUELLIS-PROOF/1';
 const MAX_TEXT = 2048;
 const MAX_COEFFICIENT = 1000000n;

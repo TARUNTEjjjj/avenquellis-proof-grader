@@ -18,5 +18,5 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
   const port=Number(process.env.PORT || 4175),host=process.env.HOST || '127.0.0.1';
   const publicDeployment=!['127.0.0.1','localhost','::1'].includes(host);
   if (publicDeployment && (!process.env.EVALUATOR_ACCESS_TOKEN || process.env.EVALUATOR_ACCESS_TOKEN.length < 32)) throw new Error('Public binding requires EVALUATOR_ACCESS_TOKEN (at least 32 characters).');
-  createServer({publicDeployment}).listen(port,host,()=>console.log(`Noether proof review API: http://${host}:${port}`));
+  createServer({publicDeployment}).listen(port,host,()=>console.log(`Avenquellis proof review API: http://${host}:${port}`));
 }

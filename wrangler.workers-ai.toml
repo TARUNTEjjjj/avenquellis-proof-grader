@@ -1,4 +1,4 @@
-name = "noether-proof-grader"
+name = "avenquellis-proof-grader"
 main = "src/worker.js"
 compatibility_date = "2026-11-03"
 workers_dev = true
