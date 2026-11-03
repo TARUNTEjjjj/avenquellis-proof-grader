@@ -42,5 +42,5 @@
       "seed": "bank:6"
     }
   },
-  "answer": "NOETHER-PROOF/1\nfamily: number-gcd\nk: 10\nforward: -1 1\nreverse: 1 1\nconclusion: same-positive-divisors -> equal-maxima"
+  "answer": "VEYRA-PROOF/1\nfamily: number-gcd\nk: 10\nforward: -1 1\nreverse: 1 1\nconclusion: same-positive-divisors -> equal-maxima"
 }

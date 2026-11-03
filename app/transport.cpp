@@ -36,9 +36,11 @@ void add_header(Headers& headers, const std::string& value) {
 
 std::string request_reviews(std::string_view request) {
     if (request.size() > 100000) throw std::invalid_argument("Review request exceeds server's 100,000-byte limit.");
-    const char* endpoint = std::getenv("NOETHER_GRADER_URL");
-    if (!endpoint || !*endpoint) throw std::invalid_argument("Set NOETHER_GRADER_URL to the Noether /evaluate endpoint.");
-    const char* token_env = std::getenv("NOETHER_GRADER_TOKEN");
+    const char* endpoint = std::getenv("VEYRA_GRADER_URL");
+    if (!endpoint) endpoint = std::getenv("NOETHER_GRADER_URL");
+    if (!endpoint || !*endpoint) throw std::invalid_argument("Set VEYRA_GRADER_URL to the Noether /evaluate endpoint.");
+    const char* token_env = std::getenv("VEYRA_GRADER_TOKEN");
+    if (!token_env) token_env = std::getenv("NOETHER_GRADER_TOKEN");
     const std::string token = token_env ? token_env : "";
     if (std::any_of(token.begin(), token.end(), [](unsigned char c) { return c < 32 || c == 127; })) {
         throw std::invalid_argument("Invalid bearer-token characters.");
@@ -57,7 +59,7 @@ std::string request_reviews(std::string_view request) {
         part(url.get(), CURLUPART_PATH) != "/evaluate") {
         throw std::invalid_argument("Use HTTPS /evaluate or loopback HTTP /evaluate with no query or fragment.");
     }
-    if (!loopback && token.empty()) throw std::invalid_argument("Remote review endpoints require NOETHER_GRADER_TOKEN.");
+    if (!loopback && token.empty()) throw std::invalid_argument("Remote review endpoints require VEYRA_GRADER_TOKEN.");
     Client client(curl_easy_init(), curl_easy_cleanup);
     if (!client) throw std::runtime_error("Could not initialize review request.");
     Headers headers(nullptr, curl_slist_free_all);

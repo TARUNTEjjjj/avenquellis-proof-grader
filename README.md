@@ -1,4 +1,4 @@
-# Noether Proof Grader
+# Veyra Math Proof Grader
 
 The offline certificate checker awards exact marks for complete structured proofs in two original number-theory families. Free-form submissions use the proof-review service, with optional model-assisted mark proposals. Two blind reviewer calls assess the same answer against a problem-specific rubric. When every criterion score agrees, the service returns a **suggested score awaiting human review**. Disagreement, invalid evidence or transport failure produces no combined score. Teacher decisions are recorded through a separate validated review endpoint.
 
@@ -6,13 +6,13 @@ No CMI/ISI professor, olympiad examiner or benchmark has certified this software
 
 ## Native C++ backend
 
-Build the C++20 backend with CMake. The `noether-grader` CLI checks proof certificates, sends ungraded free-form proofs to a configured two-reader service, validates returned rubric evidence and records explicit human marks. The static library is available as `NoetherGrader::grader`. [Build, JSON examples and offline or networked workflows](docs/NATIVE.md)
+Build the C++20 backend with CMake. The `veyra-grader` CLI checks proof certificates, sends ungraded free-form proofs to a configured two-reader service, validates returned rubric evidence and records explicit human marks. The static library is available as `NoetherGrader::grader`. [Build, JSON examples and offline or networked workflows](docs/NATIVE.md)
 
 ```sh
 cmake -S . -B build/native -DCMAKE_BUILD_TYPE=Release
 cmake --build build/native --parallel
 ctest --test-dir build/native --output-on-failure
-build/native/noether-grader assess examples/checked-gcd.json
+build/native/veyra-grader assess examples/checked-gcd.json
 ```
 
 ## Run locally
@@ -50,7 +50,7 @@ if (help) {
 }
 ```
 
-The first certificate line must be `NOETHER-PROOF/1`. The next two fields identify the template family and its `k`. Use one named field per line, ASCII integer coefficients separated by spaces, and at most 2,048 characters total. Coefficients are capped at an absolute value of 1,000,000. The parser rejects duplicate or unknown fields and extra prose. A learner can submit another valid proof in the ordinary review workflow.
+The first certificate line is `VEYRA-PROOF/1` (legacy `NOETHER-PROOF/1` remains supported). The next two fields identify the template family and its `k`. Use one named field per line, ASCII integer coefficients separated by spaces, and at most 2,048 characters total. Coefficients are capped at an absolute value of 1,000,000. The parser rejects duplicate or unknown fields and extra prose. A learner can submit another valid proof in the ordinary review workflow.
 
 | Supported template | Certificate obligations | Marks |
 | --- | --- | --- |

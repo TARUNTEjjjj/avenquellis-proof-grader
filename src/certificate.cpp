@@ -10,7 +10,7 @@
 
 namespace noether::grader {
 namespace {
-constexpr std::string_view header = "NOETHER-PROOF/1";
+constexpr std::string_view header = "VEYRA-PROOF/1";
 constexpr std::string_view conclusion = "same-positive-divisors -> equal-maxima";
 enum class Family { consecutive, gcd };
 
@@ -213,7 +213,10 @@ std::optional<std::string> scaffold(const Question& question) {
 namespace detail {
 std::optional<Assessment> verify(const Question& question, std::string_view answer) {
     const auto family = identify(question);
-    if (!family || !(answer == header || answer.starts_with("NOETHER-PROOF/1\n") || answer.starts_with("NOETHER-PROOF/1\r\n"))) return {};
+    const auto first_line = answer.substr(0, answer.find('\n'));
+    const bool recognized = first_line == header || first_line == "NOETHER-PROOF/1" ||
+        (first_line.size() < answer.size() && (first_line == "VEYRA-PROOF/1\r" || first_line == "NOETHER-PROOF/1\r"));
+    if (!family || !recognized) return {};
     auto fields = parse_fields(answer, *question.generated, *family);
     const int k = question.generated->k;
     std::array<bool, 3> steps{};
