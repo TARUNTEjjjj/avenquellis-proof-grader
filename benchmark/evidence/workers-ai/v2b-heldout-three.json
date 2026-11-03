@@ -1,0 +1,133 @@
+{
+  "dataset": "TROJAN(H) response-disjoint V2 replacement holdout, three USAMO problems",
+  "date": "2026-11-03",
+  "model": "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+  "protocol": "span-v2",
+  "promptVersion": "noether-workers-ai-span-review-2026-11-03-v2",
+  "selection": "Same original public hash ranking among the remaining 21 responses, with one case per distinct problem. Excluded the original 24 device cases (including their six nested hosted cases) and all three transport-only V2a cases regardless of outcomes.",
+  "fixtureSha256": "e4fcd0e13129daf2f92995f561f5b475c6d3e0ac0c38f3b6ec4ac59a544a5532",
+  "selectionSha256": "ef9c3a8121990829f99284d8d55c1960c2677281bae05d87ff894ae2427a18ae",
+  "sealedTargetsSha256": "8f3a9eb8e7d0eae44292759eca66a3d8d1ebb0a6673eb1a28693c2c9bef717cf",
+  "lockedPredictionSha256": "30b8566952cdf1ae81eb90151f933d93c84a3c1cee09361b2d539b0045d1a8bc",
+  "metrics": {
+    "labeledCases": 3,
+    "offeredScores": 3,
+    "abstentions": 0,
+    "coverage": 1.0,
+    "onScoredCases": {
+      "exactAgreement": 0,
+      "withinOneMark": 0,
+      "meanAbsoluteErrorMarks": 5.666666666666667,
+      "meanAbsoluteErrorFractionOfMaximum": 0.8095238095238095,
+      "rootMeanSquareErrorMarks": 5.686240703077327,
+      "meanSignedErrorMarks": 5.666666666666667,
+      "overgradingRate": 1
+    }
+  },
+  "budget": {
+    "plannedNeuronsReservation": 1589.41,
+    "validatedModelReadings": 6,
+    "actualNeurons": null,
+    "usageNote": "The native preview returned validated model proposals but did not expose per-reading neuron receipts."
+  },
+  "transport": "Closed Pages preview using a native Workers AI binding, a successful synthetic bodyless POST control, rejection of nonempty bodies, exactly three preloaded response IDs, separate bearer authorization and expiry. The harness locked each dispatch, recorded HTTP/timing diagnostics, made no retries, and joined human marks after all three predictions were hashed.",
+  "cases": [
+    {
+      "id": "trojan-h-005",
+      "problem": "usamo-2025-1",
+      "expertScore": 1,
+      "maxMarks": 7,
+      "reviewerScores": [
+        7,
+        7
+      ],
+      "criterionScores": [
+        {
+          "c1": 1,
+          "c2": 3,
+          "c3": 2,
+          "c4": 1
+        },
+        {
+          "c1": 1,
+          "c2": 3,
+          "c3": 2,
+          "c4": 1
+        }
+      ],
+      "suggestedScore": 7,
+      "failureCodes": [
+        null,
+        null
+      ],
+      "httpStatus": 200,
+      "elapsedMs": 10448,
+      "protocol": "span-v2",
+      "promptVersion": "noether-workers-ai-span-review-2026-11-03-v2"
+    },
+    {
+      "id": "trojan-h-015",
+      "problem": "usamo-2025-2",
+      "expertScore": 2,
+      "maxMarks": 7,
+      "reviewerScores": [
+        7,
+        7
+      ],
+      "criterionScores": [
+        {
+          "c1": 1,
+          "c2": 2,
+          "c3": 3,
+          "c4": 1
+        },
+        {
+          "c1": 1,
+          "c2": 2,
+          "c3": 3,
+          "c4": 1
+        }
+      ],
+      "suggestedScore": 7,
+      "failureCodes": [
+        null,
+        null
+      ],
+      "httpStatus": 200,
+      "elapsedMs": 15135,
+      "protocol": "span-v2",
+      "promptVersion": "noether-workers-ai-span-review-2026-11-03-v2"
+    },
+    {
+      "id": "trojan-h-040",
+      "problem": "usamo-2025-5",
+      "expertScore": 1,
+      "maxMarks": 7,
+      "reviewerScores": [
+        7,
+        7
+      ],
+      "criterionScores": [
+        {
+          "c1": 1,
+          "c2": 3,
+          "c3": 3
+        },
+        {
+          "c1": 1,
+          "c2": 3,
+          "c3": 3
+        }
+      ],
+      "suggestedScore": 7,
+      "failureCodes": [
+        null,
+        null
+      ],
+      "httpStatus": 200,
+      "elapsedMs": 16332,
+      "protocol": "span-v2",
+      "promptVersion": "noether-workers-ai-span-review-2026-11-03-v2"
+    }
+  ]
+}

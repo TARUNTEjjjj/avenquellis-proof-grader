@@ -1,6 +1,6 @@
 # Hosted proof-review comparisons
 
-The V1 hosted reviewer offered no combined marks on six expert-scored USAMO research responses. It offered 7/7 on one published full-credit IMO proof. These are separate evaluations with different source populations and rubric designs. They cannot be pooled into a general accuracy estimate.
+The V1 hosted reviewer offered no combined marks on six expert-scored USAMO research responses. It offered 7/7 on one published full-credit IMO proof. On three new held-out USAMO responses, both V2 reviewers gave full marks to every proof; the expert marks were 1, 2 and 1 out of seven. These are separate evaluations with different source populations, cohorts and rubric designs. They cannot be pooled into a general accuracy estimate.
 
 ## Six-case V1 pilot
 
@@ -42,3 +42,21 @@ Three new USAMO research variants were selected by hash from the 24 cases left a
 The temporary Pages benchmark's authenticated status check succeeded, but all three case requests returned `preview_transport_failure` in 68–112 ms, without a provider-level payload or usage receipt. We froze these three abstentions before joining the reference marks. Coverage is 0/3; agreement and error on offered scores are undefined. The client’s exception handler collapsed transport, HTTP and invalid-response errors into one label and did not preserve the actual HTTP statuses or response bodies. This experiment therefore cannot establish V2 mathematical accuracy or show that it improves on V1. The 1,520.15-neuron figure is a planning reservation, not a usage measurement. [V2 scorecard](v2-heldout-three.json)
 
 For instrumented uses of V2, set `EVALUATOR_PROTOCOL='span-v2'` on the server. `makeSpanReviewRequest` in `src/span-v2.js` constructs the exact payload used by the native reviewer and is available for token budgeting. `resolveSpanReview` rejects unknown or duplicate references, out-of-range scores, missing positive-credit support and malformed row shapes before final evidence validation. Native results carry their protocol and prompt version in `provenance`. A new prospective study should preserve specific transport/status diagnostics before any claim about coverage or accuracy.
+
+## Response-disjoint V2 replacement
+
+A no-inference control reproduced the original preview failure. The same bodyless POST arrived in Pages with `Content-Length: 0` but a non-null request body stream, so the old guard returned HTTP 400 before `AI.run`. A safe control POST on the original branch also returned 400, and its authenticated GET readiness check returned 200. The original three case requests remain recorded as transport failures. Their historical HTTP statuses were not preserved, and no authoritative per-case usage bill was available.
+
+A separately preregistered holdout used three fresh case IDs from different problems. The selection excluded all 27 previously used IDs, including every abstention. It reused the original ranking salt, unchanged V2 model and prompt, the 900-token output cap and one dispatch per case. The corrected preview accepted an empty synthetic bodyless POST and rejected an arbitrary request body before the study began. Human labels were sealed outside the endpoint. The complete predictions were hashed before any label join. [Replacement scorecard and hashes](v2b-heldout-three.json)
+
+| Case | Problem | Expert mark / 7 | Reviewer A | Reviewer B | Provisional suggestion |
+| --- | --- | ---: | ---: | ---: | ---: |
+| trojan-h-005 | USAMO 2025 P1 | 1 | 7 | 7 | 7 |
+| trojan-h-015 | USAMO 2025 P2 | 2 | 7 | 7 | 7 |
+| trojan-h-040 | USAMO 2025 P5 | 1 | 7 | 7 | 7 |
+
+All three requests returned HTTP 200 and six locally validated readings. Coverage was 3/3, exact agreement 0/3, agreement within one mark 0/3, and mean absolute error **5.67/7**. All three total suggestions overgraded the submitted proof. This is direct evidence that valid citations and identical model marks can accompany substantial logical errors. Use the proposals only as material for a qualified human to inspect. The 1,589.41-neuron figure is a conservative preflight reservation. The native preview did not return actual neuron receipts.
+
+Because the V1 and V2 response sets differ, their observed coverage cannot establish a causal protocol improvement. The tiny sample and shared, publicly available USAMO problem pool also limit generalization. The V2 result supplies no evidence of high-accuracy automatic proof grading.
+
+To reconstruct the two V2 blind fixture files, first regenerate the pinned 48-case source with `benchmark/evidence/trojan-h/prepare.py --size 48 --out benchmark-results/all48`. Then run `python3 benchmark/evidence/workers-ai/prepare-heldout.py benchmark-results/all48/fixtures.json benchmark-results/heldout`. This verifies both frozen fixture hashes without opening labels. A new inference run must keep its own predictions distinct from these recorded results.

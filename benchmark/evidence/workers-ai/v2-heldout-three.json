@@ -74,5 +74,6 @@
       ],
       "milliseconds": 112
     }
-  ]
+  ],
+  "subsequentControl": "Using the same bodyless POST method/headers, the Cloudflare control received Content-Length: 0 and request.body !== null. The original guard rejected this request framing before AI.run. A safe original-branch POST returned HTTP 400; its authenticated GET status returned 200. Historical per-case statuses and actual usage receipts were not recorded."
 }
