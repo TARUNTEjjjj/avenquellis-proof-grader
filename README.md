@@ -4,6 +4,17 @@ The offline certificate checker awards exact marks for complete structured proof
 
 No CMI/ISI professor, olympiad examiner or benchmark has certified this software's grading accuracy. The tests verify transport, validation and review behavior. They do not establish mathematical marking accuracy.
 
+## Native C++ backend
+
+Build the C++20 backend with CMake. The `noether-grader` CLI checks proof certificates, sends ungraded free-form proofs to a configured two-reader service, validates returned rubric evidence and records explicit human marks. The static library is available as `NoetherGrader::grader`. [Build, JSON examples and offline or networked workflows](docs/NATIVE.md)
+
+```sh
+cmake -S . -B build/native -DCMAKE_BUILD_TYPE=Release
+cmake --build build/native --parallel
+ctest --test-dir build/native --output-on-failure
+build/native/noether-grader assess examples/checked-gcd.json
+```
+
 ## Run locally
 
 Node.js 20+ runs the offline review core and HTTP service without installed dependencies. The optional browser-model build and benchmark use the locked development packages installed by `npm ci`.

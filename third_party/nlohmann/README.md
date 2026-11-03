@@ -1,0 +1,1 @@
+The CLI uses the unmodified MIT-licensed single header from [nlohmann/json v3.12.0](https://github.com/nlohmann/json/releases/tag/v3.12.0). Its SHA-256 is `aaf127c04cb31c406e5b04a63f1ae89369fccde6d8fa7cdda1ed4f32dfc5de63`. The typed grader library itself uses the C++ standard library only. The upstream license is included in this directory.

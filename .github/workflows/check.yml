@@ -11,3 +11,6 @@ jobs:
         with:
           node-version: 22
       - run: npm test
+      - run: cmake -S . -B build/native -DCMAKE_BUILD_TYPE=Release -DNOETHER_GRADER_WARNINGS_AS_ERRORS=ON
+      - run: cmake --build build/native --parallel
+      - run: ctest --test-dir build/native --output-on-failure

@@ -1,0 +1,46 @@
+{
+  "question": {
+    "id": "number-gcd-17s23lf",
+    "title": "An invariant greatest common divisor",
+    "statement": "Prove that gcd(n, n + 10) = gcd(n, 10) for every positive integer n.",
+    "topic": "number-theory",
+    "difficulty": "advanced",
+    "requestedDifficulty": "advanced",
+    "exam": "CMI",
+    "type": "proof",
+    "maxMarks": 10,
+    "solution": "If d divides both n and n+10, it divides their difference 10; hence d is a common divisor of n and 10. Conversely, if d divides n and 10, it divides n+10. The sets of positive common divisors coincide, so their greatest members coincide.",
+    "rubric": [
+      {
+        "id": "step-1",
+        "description": "Prove every common divisor of n and n+k divides k.",
+        "points": 4
+      },
+      {
+        "id": "step-2",
+        "description": "Prove the converse inclusion of common divisors.",
+        "points": 4
+      },
+      {
+        "id": "step-3",
+        "description": "Conclude equality of the greatest positive common divisors.",
+        "points": 2
+      }
+    ],
+    "source": {
+      "kind": "original",
+      "label": "Noether original practice · validated template",
+      "rights": "Original wording and solutions; standard mathematical results."
+    },
+    "templateId": "number-gcd",
+    "parameters": {
+      "k": 10
+    },
+    "generator": {
+      "kind": "deterministic-template",
+      "version": "0.1.0",
+      "seed": "bank:6"
+    }
+  },
+  "answer": "NOETHER-PROOF/1\nfamily: number-gcd\nk: 10\nforward: -1 1\nreverse: 1 1\nconclusion: same-positive-divisors -> equal-maxima"
+}
