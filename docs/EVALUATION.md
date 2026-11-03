@@ -1,6 +1,6 @@
 # Evaluation and release protocol
 
-No benchmark has been run yet. The current software tests workflow correctness and score validation, not mathematical grading accuracy.
+The offline benchmark smoke test and local fake-provider integration tests have run successfully. No live-model or expert-labelled accuracy benchmark has been run. The tests verify workflow, transport and validation; they do not establish mathematical grading accuracy. The runnable CLI is documented in the repository README. It omits error metrics without separately supplied human labels.
 
 1. Recruit qualified mathematical proof evaluators and document their relevant experience. Do not call reviewers CMI/ISI faculty unless their actual affiliations support that statement.
 2. Collect consented, anonymized submissions across algebra, geometry, number theory, combinatorics, calculus and probability. Include correct alternate proofs, short elegant proofs, long invalid proofs, partial progress, missing cases, circular arguments and deliberately irrelevant instructions.

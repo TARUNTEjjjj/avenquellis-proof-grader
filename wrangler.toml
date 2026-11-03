@@ -1,0 +1,11 @@
+name = "noether-proof-grader"
+main = "src/worker.js"
+compatibility_date = "2026-11-03"
+workers_dev = true
+
+# Configure model and endpoint explicitly before enabling evaluation.
+# API keys and access tokens belong in Wrangler secrets, never this file.
+[vars]
+EVALUATOR_TIMEOUT_MS = "25000"
+EVALUATOR_MAX_TOKENS = "4000"
+EVALUATOR_TOKEN_PARAMETER = "max_completion_tokens"
