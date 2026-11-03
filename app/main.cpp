@@ -45,6 +45,11 @@ int integer(const Json& value) {
     throw std::invalid_argument("Expected an in-range native integer.");
 }
 
+std::string metadata_text(const Json& object, const char* key) {
+    const auto it = object.find(key);
+    return it != object.end() && it->is_string() ? it->get<std::string>() : std::string{};
+}
+
 Question question_from(const Json& data) {
     Question question;
     question.id = data.at("id").get<std::string>();
@@ -63,9 +68,9 @@ Question question_from(const Json& data) {
         data.contains("source") && data["source"].is_object() && data.contains("generator") && data["generator"].is_object()) {
         const auto k = data["parameters"]["k"];
         if (k >= 1 && k <= 30) {
-            question.generated = TemplateMetadata{data.value("templateId", ""), data.value("title", ""), data.value("type", ""),
-                data.value("topic", ""), data.value("difficulty", ""), data["source"].value("kind", ""),
-                data["generator"].value("kind", ""), data["generator"].value("version", ""), integer(k)};
+            question.generated = TemplateMetadata{metadata_text(data, "templateId"), metadata_text(data, "title"), metadata_text(data, "type"),
+                metadata_text(data, "topic"), metadata_text(data, "difficulty"), metadata_text(data["source"], "kind"),
+                metadata_text(data["generator"], "kind"), metadata_text(data["generator"], "version"), integer(k)};
         }
     }
     validate(question);

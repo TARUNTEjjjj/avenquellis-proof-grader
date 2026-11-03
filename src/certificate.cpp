@@ -58,7 +58,10 @@ std::optional<Fields> parse_fields(std::string_view answer, const TemplateMetada
     std::string line;
     std::getline(input, line); // Header checked before dispatch.
     while (std::getline(input, line)) {
-        if (line.ends_with('\r')) line.pop_back();
+        if (line.ends_with('\r')) {
+            if (input.eof() && !trim(line).empty()) return {}; // Only CRLF is a line ending.
+            line.pop_back();
+        }
         if (trim(line).empty()) continue;
         const auto colon = line.find(':');
         if (colon == line.npos) return {};

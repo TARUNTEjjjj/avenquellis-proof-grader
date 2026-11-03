@@ -4,7 +4,7 @@ The C++20 library evaluates the two exact Noether proof certificates, prepares a
 
 ## Build and install
 
-The library needs a C++20 compiler and CMake 3.20+. The CLI also needs libcurl 7.62+ development headers. The repository includes the pinned JSON parser used by the CLI. Building the core requires no network access. Node 20+ enables the browser-parity and HTTP integration tests.
+The library needs a C++20 compiler and CMake 3.20+. The CLI also needs libcurl 7.62+ development headers (on Debian/Ubuntu, `libcurl4-openssl-dev`). The repository includes the pinned JSON parser used by the CLI. Building the core requires no network access. Node 20+ enables the browser-parity and HTTP integration tests.
 
 ```sh
 cmake -S . -B build/native -DCMAKE_BUILD_TYPE=Release
@@ -66,4 +66,4 @@ This test starts a real authenticated Noether service and a local scripted chat-
 
 ## Validation scope
 
-CTest compares 229 native outcomes with the browser verifier across all 36 supported parameter settings plus incomplete, adversarial and tampered inputs. The C++ tests exercise unsupported prose, human review, unknown criteria, overflow, same-total disagreements, missing readings and false quotations. These tests do not make free-form reasoning exact. Earlier human-labelled studies show both incorrect model proposals and abstentions. [Evaluation evidence and limitations](EVALUATION.md)
+CTest compares 233 native outcomes with the browser verifier across all 36 supported parameter settings plus incomplete, adversarial and tampered inputs. The C++ tests exercise unsupported prose, human review, unknown criteria, overflow, same-total disagreements, missing readings and false quotations. These tests do not make free-form reasoning exact. Earlier human-labelled studies show both incorrect model proposals and abstentions. [Evaluation evidence and limitations](EVALUATION.md)

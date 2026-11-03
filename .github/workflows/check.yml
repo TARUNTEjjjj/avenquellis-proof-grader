@@ -11,6 +11,7 @@ jobs:
         with:
           node-version: 22
       - run: npm test
+      - run: sudo apt-get update && sudo apt-get install -y --no-install-recommends libcurl4-openssl-dev
       - run: cmake -S . -B build/native -DCMAKE_BUILD_TYPE=Release -DNOETHER_GRADER_WARNINGS_AS_ERRORS=ON
       - run: cmake --build build/native --parallel
       - run: ctest --test-dir build/native --output-on-failure

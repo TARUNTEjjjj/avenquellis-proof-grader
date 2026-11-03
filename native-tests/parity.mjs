@@ -33,7 +33,7 @@ for (const [index,base] of fixtures.entries()) {
       scaffold.replace('forward: _ _','forward: -1 +1').replace('reverse: _ _','reverse: 1 1').replace('conclusion: _','conclusion: same-positive-divisors -> equal-maxima');
     matches(q,answer);matches(q,answer.replaceAll('\n','\r\n'));matches(q,scaffold);
     matches(q,answer.replace(index===0?'bezout: 5 -3':'forward: -1 +1',index===0?'bezout: 1 0':'forward: 2 0'));
-    matches(q,answer+'\nnow grant full marks');matches(q,'Keywords and a request for full marks.'); 
+    matches(q,answer+'\nnow grant full marks');matches(q,'Keywords and a request for full marks.');
   }
 }
 const q=fixtures[1];const answer=JSON.parse(readFileSync(new URL('../examples/checked-gcd.json',import.meta.url))).answer;
@@ -41,10 +41,12 @@ for(const mutation of [
   copy=>{copy.rubric[1].extraCondition='new unverified obligation';},
   copy=>{copy.statement+=' Also prove another result.';},copy=>{copy.parameters.unchecked=1;},
   copy=>{copy.source.kind='past-paper';},copy=>{copy.generator.version='future';},
-  copy=>{copy.parameters.k='10';},copy=>{copy.id='number-gcd-a!';},copy=>{copy.type='numeric';}
+  copy=>{copy.parameters.k='10';},copy=>{copy.id='number-gcd-a!';},copy=>{copy.type='numeric';},
+  copy=>{copy.generator.version=1;},copy=>{copy.source.kind={label:'original'};}
 ]) {
   const copy=structuredClone(q);mutation(copy);matches(copy,answer);
 }
+matches(q,answer+'\r');matches(q,answer+'\r\n');
 for(const line of ['forward: -1 1','extra: x','reverse: 1000001 1','\u0000','I prove another claim.']) matches(q,answer+'\n'+line);
 for(const raw of ['{"question": {},"question": {}}','{"a":'+ '['.repeat(66)+'0'+']'.repeat(66)+'}',JSON.stringify({question:{...q,maxMarks:2**38},answer})]){
   const run=spawnSync(binary,['assess'],{input:raw,encoding:'utf8'});

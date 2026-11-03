@@ -37,6 +37,22 @@ int main() {
         other.evidence.back().quote = "invented"; auto invalid = compare(q, proof, {first, other});
         check(!invalid.suggested_score && !invalid.reader_scores[1] && !invalid.reader_errors[1].empty());
         check(!compare(q, proof, {std::nullopt, first}).suggested_score);
+        const Reading zero{{{"even", 0}, {"odd", 0}}, "No relevant deductions established.", {}};
+        check(compare(q, proof, {zero, zero}).suggested_score == 0);
+
+        Question gcd{"number-gcd-demo", "Prove that gcd(n, n + 10) = gcd(n, 10) for every positive integer n.", 10,
+            {{"step-1", "Prove every common divisor of n and n+k divides k.", 4},
+             {"step-2", "Prove the converse inclusion of common divisors.", 4},
+             {"step-3", "Conclude equality of the greatest positive common divisors.", 2}},
+            TemplateMetadata{"number-gcd", "An invariant greatest common divisor", "proof", "number-theory",
+                             "advanced", "original", "deterministic-template", "0.1.0", 10}};
+        const std::string forward = "NOETHER-PROOF/1\nfamily: number-gcd\nk: 10\nforward: -1 1";
+        const auto incomplete = assess(gcd, forward);
+        check(incomplete.status == Status::incomplete_certificate && incomplete.lower_bound == 4 && !incomplete.score);
+        const auto full = assess(gcd, forward + "\nreverse: 1 1\nconclusion: same-positive-divisors -> equal-maxima");
+        check(full.status == Status::verified_certificate && full.score == 10);
+        gcd.statement += " Prove an additional result.";
+        check(!scaffold(gcd) && assess(gcd, forward).status == Status::needs_review);
         return 0;
     } catch (const std::exception& error) { std::cerr << error.what() << '\n'; return 1; }
 }
