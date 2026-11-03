@@ -14,9 +14,90 @@ constexpr std::string_view header = "NOETHER-PROOF/1";
 constexpr std::string_view conclusion = "same-positive-divisors -> equal-maxima";
 enum class Family { consecutive, gcd };
 
+// ECMAScript String.trim includes Unicode space separators at field boundaries.
+// Inside a coefficient sequence only ASCII space and tab delimit the integers.
 std::string_view trim(std::string_view value) {
-    const auto first = value.find_first_not_of(" \t\r\n");
-    return first == value.npos ? std::string_view{} : value.substr(first, value.find_last_not_of(" \t\r\n") - first + 1);
+    static constexpr std::string_view spaces[] = {
+        " ", "\t", "\n", "\v", "\f", "\r", "\u00a0", "\u1680", "\u2000", "\u2001", "\u2002", "\u2003", "\u2004",
+        "\u2005", "\u2006", "\u2007", "\u2008", "\u2009", "\u200a", "\u2028", "\u2029", "\u202f", "\u205f", "\u3000", "\ufeff"
+    };
+    while (!value.empty()) {
+        const auto match = std::find_if(std::begin(spaces), std::end(spaces), [&](auto space) { return value.starts_with(space); });
+        if (match == std::end(spaces)) break;
+        value.remove_prefix(match->size());
+    }
+    while (!value.empty()) {
+        const auto match = std::find_if(std::begin(spaces), std::end(spaces), [&](auto space) { return value.ends_with(space); });
+        if (match == std::end(spaces)) break;
+        value.remove_suffix(match->size());
+    }
+    return value;
+}
+
+// Matches the question engine's UTF-8 decoding and JavaScript for-of + charCodeAt(0)
+// hashing. For a supplementary scalar only its first UTF-16 unit is hashed.
+std::optional<std::uint32_t> seed_hash(std::string_view seed) {
+    if (seed.empty() || seed.size() > 1024) return {};
+    std::uint32_t hash = 2166136261u;
+    unsigned units = 0;
+    for (std::size_t pos = 0; pos < seed.size();) {
+        const unsigned first = static_cast<unsigned char>(seed[pos++]);
+        std::uint32_t cp = first;
+        unsigned extra = 0;
+        if (first >= 0x80) {
+            if (first >= 0xc2 && first <= 0xdf) { cp = first & 31u; extra = 1; }
+            else if (first >= 0xe0 && first <= 0xef) { cp = first & 15u; extra = 2; }
+            else if (first >= 0xf0 && first <= 0xf4) { cp = first & 7u; extra = 3; }
+            else return {};
+            if (seed.size() - pos < extra) return {};
+            for (unsigned j = 0; j < extra; ++j) {
+                const unsigned byte = static_cast<unsigned char>(seed[pos++]);
+                if ((byte & 0xc0u) != 0x80u) return {};
+                cp = (cp << 6u) | (byte & 63u);
+            }
+            if ((extra == 2 && cp < 0x800) || (extra == 3 && cp < 0x10000) ||
+                (cp >= 0xd800 && cp <= 0xdfff) || cp > 0x10ffff) return {};
+        }
+        units += cp > 0xffff ? 2u : 1u;
+        if (units > 256) return {};
+        const auto unit = cp > 0xffff ? 0xd800u + ((cp - 0x10000u) >> 10u) : cp;
+        hash = (hash ^ unit) * 16777619u;
+    }
+    return hash;
+}
+
+bool replay_instance(const Question& question, Family family) {
+    const auto& meta = *question.generated;
+    const auto hash = seed_hash(meta.seed);
+    if (!hash) return false;
+    std::array<char, 7> suffix{};
+    const auto conversion = std::to_chars(suffix.data(), suffix.data() + suffix.size(), *hash, 36);
+    if (conversion.ec != std::errc{} || question.id != meta.family + "-" + std::string(suffix.data(), conversion.ptr)) return false;
+    const bool consecutive = family == Family::consecutive;
+    const std::string_view bank = consecutive ? "number-consecutive-1821pae" : "number-gcd-17s23lf";
+    if (question.id == bank) {
+        if (meta.seed != (consecutive ? "bank:5" : "bank:6") ||
+            meta.exam != "CMI" || meta.requested_difficulty != meta.difficulty) return false;
+    } else {
+        if (meta.exam != "CMI" && meta.exam != "ISI" && meta.exam != "RMO") return false;
+        if (meta.requested_difficulty != "foundation" && meta.requested_difficulty != "advanced" && meta.requested_difficulty != "olympiad") return false;
+        if (!meta.seed.ends_with(":variant")) {
+            const auto pos = meta.seed.rfind(":mock:");
+            if (pos == std::string::npos) return false;
+            const auto attempt = std::string_view(meta.seed).substr(pos + 6);
+            unsigned index{};
+            if (attempt.empty() || attempt.size() > 4 || (attempt.size() > 1 && attempt.front() == '0')) return false;
+            const auto read = std::from_chars(attempt.data(), attempt.data() + attempt.size(), index);
+            if (read.ec != std::errc{} || read.ptr != attempt.data() + attempt.size() || index >= 4096) return false;
+        }
+    }
+    const std::uint32_t state = *hash + 0x6d2b79f5u;
+    auto mixed = (state ^ (state >> 15u)) * (1u | state);
+    mixed ^= mixed + (mixed ^ (mixed >> 7u)) * (61u | mixed);
+    const auto draw = mixed ^ (mixed >> 14u);
+    const auto width = consecutive ? 12u : 24u;
+    const int k = (consecutive ? 1 : 7) + static_cast<int>((static_cast<std::uint64_t>(draw) * width) >> 32u);
+    return meta.k == k;
 }
 
 std::optional<Family> identify(const Question& question) {
@@ -47,12 +128,18 @@ std::optional<Family> identify(const Question& question) {
                   {"step-2", "Prove the converse inclusion of common divisors.", 4},
                   {"step-3", "Conclude equality of the greatest positive common divisors.", 2}};
     } else return {};
-    return question.statement == statement && question.rubric == rubric ? std::optional{family} : std::nullopt;
+    return question.statement == statement && question.rubric == rubric && replay_instance(question, family) ? std::optional{family} : std::nullopt;
 }
 
 using Fields = std::map<std::string, std::string>;
 std::optional<Fields> parse_fields(std::string_view answer, const TemplateMetadata& meta, Family family) {
-    if (answer.size() > 2048) return {};
+    if (answer.size() > 8192) return {};
+    std::size_t units = 0;
+    for (const char c : answer) {
+        const auto byte = static_cast<unsigned char>(c);
+        if ((byte & 0xc0u) != 0x80u) units += byte >= 0xf0 ? 2u : 1u;
+    }
+    if (units > 2048) return {};
     Fields fields;
     std::istringstream input{std::string(answer)};
     std::string line;
@@ -92,7 +179,11 @@ std::optional<std::array<std::int64_t, N>> integers(std::string_view text) {
         const auto parsed = std::from_chars(token.data(), token.data() + token.size(), number);
         if (parsed.ec != std::errc{} || number > 1000000) return {};
         if (negative) number = -number;
-        text = boundary == text.npos ? std::string_view{} : trim(text.substr(boundary));
+        if (boundary == text.npos) text = {};
+        else {
+            const auto next = text.find_first_not_of(" \t", boundary);
+            text = next == text.npos ? std::string_view{} : text.substr(next);
+        }
     }
     return text.empty() ? std::optional{result} : std::nullopt;
 }

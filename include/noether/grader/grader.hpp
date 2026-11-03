@@ -17,10 +17,12 @@ struct Criterion {
     bool operator==(const Criterion&) const = default;
 };
 
-// Populate only from a trusted question record with exactly one integral parameter k.
+// Import the complete generator reference and exactly one integral parameter k.
+// Exam assignments and reviewer identities must come from the hosting application.
 struct TemplateMetadata {
     std::string family, title, type, topic, difficulty, source_kind, generator_kind, version;
     int k{};
+    std::string seed, exam, requested_difficulty;
 };
 
 struct Question {

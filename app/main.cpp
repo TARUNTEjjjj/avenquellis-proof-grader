@@ -78,7 +78,8 @@ Question question_from(const Json& data) {
         if (k >= 1 && k <= 30) {
             question.generated = TemplateMetadata{metadata_text(data, "templateId"), metadata_text(data, "title"), metadata_text(data, "type"),
                 metadata_text(data, "topic"), metadata_text(data, "difficulty"), metadata_text(data["source"], "kind"),
-                metadata_text(data["generator"], "kind"), metadata_text(data["generator"], "version"), integer(k)};
+                metadata_text(data["generator"], "kind"), metadata_text(data["generator"], "version"), integer(k),
+                metadata_text(data["generator"], "seed"), metadata_text(data, "exam"), metadata_text(data, "requestedDifficulty")};
         }
     }
     validate(question);

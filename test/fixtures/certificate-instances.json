@@ -1,0 +1,322 @@
+[
+  {
+    "id": "number-consecutive-1821pae",
+    "templateId": "number-consecutive",
+    "seed": "bank:5",
+    "exam": "CMI",
+    "requestedDifficulty": "foundation",
+    "k": 9
+  },
+  {
+    "id": "number-gcd-17s23lf",
+    "templateId": "number-gcd",
+    "seed": "bank:6",
+    "exam": "CMI",
+    "requestedDifficulty": "advanced",
+    "k": 10
+  },
+  {
+    "id": "number-consecutive-14l3zk5",
+    "templateId": "number-consecutive",
+    "seed": "π😀-native-34:variant",
+    "exam": "ISI",
+    "requestedDifficulty": "foundation",
+    "k": 1
+  },
+  {
+    "id": "number-consecutive-spfrjy",
+    "templateId": "number-consecutive",
+    "seed": "π😀-native-62:variant",
+    "exam": "RMO",
+    "requestedDifficulty": "foundation",
+    "k": 2
+  },
+  {
+    "id": "number-consecutive-1839wze",
+    "templateId": "number-consecutive",
+    "seed": "π😀-native-88:variant",
+    "exam": "ISI",
+    "requestedDifficulty": "foundation",
+    "k": 3
+  },
+  {
+    "id": "number-consecutive-16hozym",
+    "templateId": "number-consecutive",
+    "seed": "π😀-native-48:variant",
+    "exam": "CMI",
+    "requestedDifficulty": "foundation",
+    "k": 4
+  },
+  {
+    "id": "number-consecutive-1r6zkue",
+    "templateId": "number-consecutive",
+    "seed": "π😀-native-84:variant",
+    "exam": "CMI",
+    "requestedDifficulty": "foundation",
+    "k": 5
+  },
+  {
+    "id": "number-consecutive-q905at",
+    "templateId": "number-consecutive",
+    "seed": "π😀-native-70:variant",
+    "exam": "ISI",
+    "requestedDifficulty": "foundation",
+    "k": 6
+  },
+  {
+    "id": "number-consecutive-1vpep4n",
+    "templateId": "number-consecutive",
+    "seed": "π😀-native-54:variant",
+    "exam": "CMI",
+    "requestedDifficulty": "foundation",
+    "k": 7
+  },
+  {
+    "id": "number-consecutive-1u2hod9",
+    "templateId": "number-consecutive",
+    "seed": "π😀-native-78:variant",
+    "exam": "CMI",
+    "requestedDifficulty": "foundation",
+    "k": 8
+  },
+  {
+    "id": "number-consecutive-1vv6snc",
+    "templateId": "number-consecutive",
+    "seed": "π😀-native-24:variant",
+    "exam": "CMI",
+    "requestedDifficulty": "foundation",
+    "k": 9
+  },
+  {
+    "id": "number-consecutive-ewisc8",
+    "templateId": "number-consecutive",
+    "seed": "π😀-native-86:variant",
+    "exam": "RMO",
+    "requestedDifficulty": "foundation",
+    "k": 10
+  },
+  {
+    "id": "number-consecutive-195y9j0",
+    "templateId": "number-consecutive",
+    "seed": "π😀-native-28:variant",
+    "exam": "ISI",
+    "requestedDifficulty": "foundation",
+    "k": 11
+  },
+  {
+    "id": "number-consecutive-8datsy",
+    "templateId": "number-consecutive",
+    "seed": "π😀-native-80:variant",
+    "exam": "RMO",
+    "requestedDifficulty": "foundation",
+    "k": 12
+  },
+  {
+    "id": "number-gcd-1rfh47h",
+    "templateId": "number-gcd",
+    "seed": "π😀-native-81:variant",
+    "exam": "CMI",
+    "requestedDifficulty": "advanced",
+    "k": 7
+  },
+  {
+    "id": "number-gcd-1ne9ent",
+    "templateId": "number-gcd",
+    "seed": "π😀-native-63:variant",
+    "exam": "CMI",
+    "requestedDifficulty": "advanced",
+    "k": 8
+  },
+  {
+    "id": "number-gcd-oaoibp",
+    "templateId": "number-gcd",
+    "seed": "π😀-native-89:variant",
+    "exam": "RMO",
+    "requestedDifficulty": "advanced",
+    "k": 9
+  },
+  {
+    "id": "number-gcd-iu1mrk",
+    "templateId": "number-gcd",
+    "seed": "π😀-native-45:mock:0",
+    "exam": "CMI",
+    "requestedDifficulty": "advanced",
+    "k": 10
+  },
+  {
+    "id": "number-gcd-hvwckp",
+    "templateId": "number-gcd",
+    "seed": "π😀-native-7:variant",
+    "exam": "ISI",
+    "requestedDifficulty": "advanced",
+    "k": 11
+  },
+  {
+    "id": "number-gcd-dxfp0q",
+    "templateId": "number-gcd",
+    "seed": "π😀-native-28:mock:3",
+    "exam": "ISI",
+    "requestedDifficulty": "foundation",
+    "k": 12
+  },
+  {
+    "id": "number-gcd-pd44h7",
+    "templateId": "number-gcd",
+    "seed": "π😀-native-87:variant",
+    "exam": "CMI",
+    "requestedDifficulty": "advanced",
+    "k": 13
+  },
+  {
+    "id": "number-gcd-1ogfcj2",
+    "templateId": "number-gcd",
+    "seed": "π😀-native-75:variant",
+    "exam": "CMI",
+    "requestedDifficulty": "advanced",
+    "k": 14
+  },
+  {
+    "id": "number-gcd-1oyvfjp",
+    "templateId": "number-gcd",
+    "seed": "π😀-native-16:mock:3",
+    "exam": "ISI",
+    "requestedDifficulty": "foundation",
+    "k": 15
+  },
+  {
+    "id": "number-gcd-thgeh6",
+    "templateId": "number-gcd",
+    "seed": "π😀-native-71:variant",
+    "exam": "RMO",
+    "requestedDifficulty": "advanced",
+    "k": 16
+  },
+  {
+    "id": "number-gcd-1rk70y0",
+    "templateId": "number-gcd",
+    "seed": "π😀-native-6:mock:3",
+    "exam": "CMI",
+    "requestedDifficulty": "foundation",
+    "k": 17
+  },
+  {
+    "id": "number-gcd-1fu1pf6",
+    "templateId": "number-gcd",
+    "seed": "π😀-native-79:variant",
+    "exam": "ISI",
+    "requestedDifficulty": "advanced",
+    "k": 18
+  },
+  {
+    "id": "number-gcd-11wmv7g",
+    "templateId": "number-gcd",
+    "seed": "π😀-native-73:variant",
+    "exam": "ISI",
+    "requestedDifficulty": "advanced",
+    "k": 19
+  },
+  {
+    "id": "number-gcd-15tqb8n",
+    "templateId": "number-gcd",
+    "seed": "π😀-native-21:variant",
+    "exam": "CMI",
+    "requestedDifficulty": "advanced",
+    "k": 20
+  },
+  {
+    "id": "number-gcd-h1wjw4",
+    "templateId": "number-gcd",
+    "seed": "π😀-native-55:variant",
+    "exam": "ISI",
+    "requestedDifficulty": "advanced",
+    "k": 21
+  },
+  {
+    "id": "number-gcd-w60mjp",
+    "templateId": "number-gcd",
+    "seed": "π😀-native-67:variant",
+    "exam": "ISI",
+    "requestedDifficulty": "advanced",
+    "k": 22
+  },
+  {
+    "id": "number-gcd-uhgz4w",
+    "templateId": "number-gcd",
+    "seed": "π😀-native-77:variant",
+    "exam": "RMO",
+    "requestedDifficulty": "advanced",
+    "k": 23
+  },
+  {
+    "id": "number-gcd-1s4s4gn",
+    "templateId": "number-gcd",
+    "seed": "π😀-native-83:variant",
+    "exam": "RMO",
+    "requestedDifficulty": "advanced",
+    "k": 24
+  },
+  {
+    "id": "number-gcd-1ubghio",
+    "templateId": "number-gcd",
+    "seed": "π😀-native-59:variant",
+    "exam": "RMO",
+    "requestedDifficulty": "advanced",
+    "k": 25
+  },
+  {
+    "id": "number-gcd-1fhpxxl",
+    "templateId": "number-gcd",
+    "seed": "π😀-native-49:variant",
+    "exam": "ISI",
+    "requestedDifficulty": "advanced",
+    "k": 26
+  },
+  {
+    "id": "number-gcd-19abkw1",
+    "templateId": "number-gcd",
+    "seed": "π😀-native-85:variant",
+    "exam": "ISI",
+    "requestedDifficulty": "advanced",
+    "k": 27
+  },
+  {
+    "id": "number-gcd-1j9vyx3",
+    "templateId": "number-gcd",
+    "seed": "π😀-native-47:variant",
+    "exam": "RMO",
+    "requestedDifficulty": "advanced",
+    "k": 28
+  },
+  {
+    "id": "number-gcd-wsqgwb",
+    "templateId": "number-gcd",
+    "seed": "π😀-native-69:variant",
+    "exam": "CMI",
+    "requestedDifficulty": "advanced",
+    "k": 29
+  },
+  {
+    "id": "number-gcd-iv9hyl",
+    "templateId": "number-gcd",
+    "seed": "π😀-native-38:mock:3",
+    "exam": "RMO",
+    "requestedDifficulty": "foundation",
+    "k": 30
+  },
+  {
+    "id": "number-consecutive-1e6fo58",
+    "templateId": "number-consecutive",
+    "seed": "π😀-native-0:variant",
+    "exam": "CMI",
+    "requestedDifficulty": "foundation",
+    "k": 2
+  },
+  {
+    "id": "number-consecutive-1relijb",
+    "templateId": "number-consecutive",
+    "seed": "π😀-native-0:mock:0",
+    "exam": "CMI",
+    "requestedDifficulty": "foundation",
+    "k": 5
+  }
+]

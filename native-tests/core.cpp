@@ -40,12 +40,12 @@ int main() {
         const Reading zero{{{"even", 0}, {"odd", 0}}, "No relevant deductions established.", {}};
         check(compare(q, proof, {zero, zero}).suggested_score == 0);
 
-        Question gcd{"number-gcd-demo", "Prove that gcd(n, n + 10) = gcd(n, 10) for every positive integer n.", 10,
+        Question gcd{"number-gcd-17s23lf", "Prove that gcd(n, n + 10) = gcd(n, 10) for every positive integer n.", 10,
             {{"step-1", "Prove every common divisor of n and n+k divides k.", 4},
              {"step-2", "Prove the converse inclusion of common divisors.", 4},
              {"step-3", "Conclude equality of the greatest positive common divisors.", 2}},
             TemplateMetadata{"number-gcd", "An invariant greatest common divisor", "proof", "number-theory",
-                             "advanced", "original", "deterministic-template", "0.1.0", 10}};
+                             "advanced", "original", "deterministic-template", "0.1.0", 10, "bank:6", "CMI", "advanced"}};
         const std::string forward = "NOETHER-PROOF/1\nfamily: number-gcd\nk: 10\nforward: -1 1";
         const auto incomplete = assess(gcd, forward);
         check(incomplete.status == Status::incomplete_certificate && incomplete.lower_bound == 4 && !incomplete.score);

@@ -37,7 +37,7 @@ node --env-file=.env src/server.js
 
 ## Exact offline proof certificates
 
-`src/certificate.js` is a standalone browser-safe module with no imports or network requirements. `certificateHelp(question)` returns instructions and a blank scaffold for a supported question. `verifyCertificate(question, answer)` verifies an explicit certificate and returns a score of 10 only when every required inference is established. Partial results have `score: null`, `lowerBoundPoints` for verified steps, and feedback for each criterion. Ordinary prose and unsupported questions return `null` and use the existing review workflow.
+`src/certificate.js` is a standalone browser-safe module with no imports or network requirements. `certificateHelp(question)` returns instructions and a blank scaffold for a supported question. `verifyCertificate(question, answer)` verifies an explicit certificate and returns a score of 10 only when every required inference is established. Partial results have `score: null`, `lowerBoundPoints` for verified steps, and feedback for each criterion. Ordinary prose and unsupported questions return `null` and use the existing review workflow. Both implementations reconstruct the instance ID and parameter from the supplied generator seed. Bank questions must also match their original track and requested difficulty. A public service must resolve the assigned question from its own catalog before accepting marks.
 
 ```js
 import {certificateHelp, verifyCertificate} from 'noether-proof-grader/certificate';

@@ -77,18 +77,38 @@ test('blank scaffolds expose field names without autofilling proof witnesses', (
   }
 });
 
-test('certificate obligations cover the parameter endpoints of both families', () => {
-  for (const k of [1, 12]) {
-    const q = structuredClone(consecutive); q.parameters.k = k;
-    q.statement = `Prove that (n + ${k})(n + ${k+1})(n + ${k+2}) is divisible by 6 for every integer n.`;
-    // Use negative representatives, yielding the same congruence classes as nonnegative n.
-    const offsets = m => Array.from({length:m}, (_, r) => [0,1,2].find(j => (r-30+k+j)%m === 0)).join(' ');
-    const proof = certificate(q, [`mod3: ${offsets(3)}`, `mod2: ${offsets(2)}`, 'bezout: -1 1']);
-    checkResult(verifyCertificate(q, proof), [true, true, true], true);
+const instances = JSON.parse(await readFile(new URL('./fixtures/certificate-instances.json', import.meta.url),'utf8'));
+
+function realInstance(ref) {
+  const q = structuredClone(ref.templateId === 'number-gcd' ? gcd : consecutive);
+  const {k}=ref;
+  q.id=ref.id; q.generator.seed=ref.seed; q.parameters.k=k; q.exam=ref.exam; q.requestedDifficulty=ref.requestedDifficulty;
+  q.statement = ref.templateId === 'number-gcd' ? `Prove that gcd(n, n + ${k}) = gcd(n, ${k}) for every positive integer n.`
+      : `Prove that (n + ${k})(n + ${k+1})(n + ${k+2}) is divisible by 6 for every integer n.`;
+  return q;
+}
+
+test('every canonical generated parameter, including Unicode variant and mock seeds, can be verified', () => {
+  for (const ref of instances) {
+    const q = realInstance(ref), k = ref.k;
+    const offsets = m => Array.from({length:m}, (_,r) => [0,1,2].find(j=>(r+k+j)%m===0)).join(' ');
+    const proof = q.templateId === 'number-gcd' ? gcdAnswer.replace('k: 10', `k: ${k}`)
+        : certificate(q, [`mod3: ${offsets(3)}`, `mod2: ${offsets(2)}`, 'bezout: -1 1']);
+    checkResult(verifyCertificate(q,proof),[true,true,true],true);
   }
-  for (const k of [7, 30]) {
-    const q = structuredClone(gcd); q.parameters.k = k;
-    q.statement = `Prove that gcd(n, n + ${k}) = gcd(n, ${k}) for every positive integer n.`;
-    checkResult(verifyCertificate(q, gcdAnswer.replace('k: 10', `k: ${k}`)), [true, true, true], true);
+});
+
+test('the same public ID cannot be retargeted by substituting a valid parameter and theorem', () => {
+  const changed=structuredClone(consecutive);
+  changed.parameters.k=10;
+  changed.statement='Prove that (n + 10)(n + 11)(n + 12) is divisible by 6 for every integer n.';
+  assert.equal(certificateHelp(changed),null);
+  assert.equal(verifyCertificate(changed,certificate(changed,['mod3: 2 1 0','mod2: 0 1','bezout: -1 1'])),null);
+  const sample=instances.find(ref=>!ref.seed.startsWith('bank:'));
+  for (const mutate of [q=>{q.id+='1';},q=>{q.generator.seed+='other:variant';},q=>{q.exam='invalid';},q=>{q.requestedDifficulty='invalid';}]) {
+    const q=realInstance(sample);mutate(q);assert.equal(certificateHelp(q),null);
+  }
+  for (const mutate of [q=>{q.exam='ISI';},q=>{q.requestedDifficulty='olympiad';},q=>{delete q.generator.seed;}]) {
+    const q=structuredClone(gcd);mutate(q);assert.equal(certificateHelp(q),null);
   }
 });
