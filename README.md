@@ -6,7 +6,7 @@ No CMI/ISI professor, olympiad examiner or benchmark has certified this software
 
 ## Run locally
 
-Node.js 20+; no runtime dependencies. Offline review preparation requires no API key.
+Node.js 20+ runs the offline review core and HTTP service without installed dependencies. The optional browser-model build and benchmark use the locked development packages installed by `npm ci`.
 
 ```sh
 npm test
@@ -111,6 +111,49 @@ Each credited criterion must cite exact text from the submitted answer. Scores m
 Both reviewers receive different audit instructions but the same isolated question/answer input. Neither receives the other's output. They currently use the same configured model; different prompts do not guarantee independent errors. The student answer is always untrusted data in the user message, never a system instruction. Prompt injection remains an evaluation concern; teacher moderation is required even if the proposals agree.
 
 `assessProof` remains browser-safe and offline. It returns exact submission spans, the rubric and general writing prompts without guessing mathematical correctness from keywords or length. `runIndependentReview` remains available for custom evaluator functions. `evaluateProof` in `src/provider.js` supports both the compatible HTTP integration and native Workers AI.
+
+## Browser-local proof review
+
+A learner with a compatible GPU can explicitly download Qwen3 1.7B and run both reviewers in the browser. No model API key or inference service is required. Only model files and application assets are downloaded. The submitted proof and rubric remain in the browser during local inference.
+
+The pinned quantized model has 968,001,536 weight bytes. Allow approximately 1 GB for the first download and at least 2.04 GB of GPU memory plus browser overhead. Loading requires a secure context and a WebGPU adapter with `shader-f16`. Browser storage can reuse the weights on later visits to the same origin, subject to eviction. A fresh browser profile or different site origin needs its own download. [Pinned model files](https://huggingface.co/mlc-ai/Qwen3-1.7B-q4f16_1-MLC/tree/80b3abcec6c3b3f5355dc0cc99cc4fb578f192bc) · [WebLLM API reference](https://webllm.mlc.ai/docs/user/api_reference.html)
+
+Build the optional runtime into a static asset directory:
+
+```sh
+npm ci
+npm run build:device -- ../noether-web/dist/device-runtime
+```
+
+The build bundles `@mlc-ai/web-llm@0.2.87`, retrieves a model library at an immutable upstream commit, verifies its SHA-256 digest and writes license files and provenance. It does not download language-model weights. Exclude `device-runtime/` from automatic offline precaching. The host needs same-origin script/WASM access, `'wasm-unsafe-eval'` for WebAssembly compilation and `connect-src` permission for `https://huggingface.co` and its `https://*.hf.co` regional CDN redirects. No external JavaScript loader is required. [WebLLM release](https://github.com/mlc-ai/web-llm/releases/tag/v0.2.87)
+
+Display the download size and requirements before starting a review. Load the module when the learner selects local review:
+
+```js
+const {deviceModelInfo, deviceAvailability, gradeOnDevice, releaseDeviceModel} =
+  await import('./device-runtime/device.js');
+const info = deviceModelInfo();           // Metadata only, no model download.
+const availability = await deviceAvailability();
+// After the learner accepts the shown download size and availability.available is true:
+const result = await gradeOnDevice(question, answer, progress => showStatus(progress.text));
+// Optional after grading: await releaseDeviceModel() to free GPU resources.
+```
+
+The two reviewers run sequentially in separate reset chats with different instructions and the same original submission. They cite numbered submission spans. The verifier retrieves the exact text of those spans and validates criterion limits and supporting evidence. `suggestedScore` requires exact criterion agreement. `score` stays `null`, and disputed marks remain available for human review. This small model has a 4,096-token context window. Inputs beyond the local transport bounds are rejected before downloading the model. Truncated or incomplete model generations abstain. No student reasoning is silently shortened to fit.
+
+In the preregistered 24-case TROJAN(H) pilot, this device model suggested marks on 12 cases and exactly matched three of those 12 expert marks. Its mean absolute error on suggested cases was 2.83 marks out of seven. All six suggested full-credit marks were wrong, including one expert score of zero. Keep these local opinions separate from assigned grades. [Pilot report and reproduction packet](benchmark/evidence/trojan-h/README.md)
+
+For a local benchmark, run the installed Chrome executable against a separate persistent profile. This infers scores from `{id,question,answer}` fixtures and writes one prediction per row, including abstentions. It accepts no reference-label file. Lock the predictions before comparing them with human labels.
+
+```sh
+npm run benchmark:device -- \
+  --fixtures fixtures.json --assets ../noether-web/dist/device-runtime \
+  --profile benchmark-results/chrome-profile --out benchmark-results/predictions.json \
+  --chrome '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' \
+  --port 48173 --resume
+```
+
+Keep the same port, host and isolated profile to reuse cached model weights. The harness uses `127.0.0.1` and accepts an installed Chrome path on other operating systems. The local GPU and driver must support WebGPU and FP16. Progress is checkpointed atomically after each case. See [the evaluation protocol](docs/EVALUATION.md) for the interpretation of coverage, error metrics and examiner-label provenance.
 
 ## Native Cloudflare Workers AI
 

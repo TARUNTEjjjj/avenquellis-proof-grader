@@ -87,7 +87,7 @@ const approaches = [
   'Review A: Begin from the student’s strategy and assess whether its deductions establish the full claim; map sound achievements to the rubric.',
   'Review B: Independently audit the proof for counterexamples, missing cases, unjustified implications and alternative valid arguments; then assign rubric credit. You have no other reviewer result.'
 ];
-function reviewerMessages(question, submission, reviewerIndex) {
+export function reviewerMessages(question, submission, reviewerIndex) {
   return [
     {role: 'system', content: commonPrompt + '\n' + approaches[reviewerIndex]},
     {role: 'user', content: JSON.stringify({question, submission})}
@@ -175,7 +175,7 @@ export function createHttpEvaluator({config,reviewerIndex,fetchImpl=globalThis.f
     } finally {clearTimeout(timer);}
   };
 }
-function boundedInput({question,answer}) {
+export function boundedInput({question,answer}) {
   assessProof({question,answer});
   if (typeof question.statement !== 'string' || !question.statement.trim() || question.statement.length > 15000) throw new TypeError('Evaluation requires a statement of 1–15,000 characters.');
   if (!answer.trim() || answer.length > 20000) throw new TypeError('Evaluation requires an answer of 1–20,000 characters.');
@@ -189,11 +189,18 @@ function boundedInput({question,answer}) {
 export async function evaluateProof(input,{env={},fetchImpl=globalThis.fetch}={}) {
   const prepared=boundedInput(input);
   const config=readEvaluatorConfig(env);
-  const errors=[null,null];
-  const evaluators=[0,1].map(index=>{
-    const evaluate = config.provider === 'workers-ai'
-      ? createWorkersAiEvaluator({config, reviewerIndex:index})
-      : createHttpEvaluator({config, reviewerIndex:index, fetchImpl});
+  return evaluatePreparedReview(prepared, {
+    provider: config.provider, model: config.model,
+    makeReviewer: index => config.provider === 'workers-ai'
+      ? createWorkersAiEvaluator({config, reviewerIndex: index})
+      : createHttpEvaluator({config, reviewerIndex: index, fetchImpl})
+  });
+}
+
+export async function evaluatePreparedReview(prepared, {provider, model, makeReviewer, promptVersion = PROMPT_VERSION}) {
+  const errors = [null, null];
+  const evaluators = [0, 1].map(index => {
+    const evaluate = makeReviewer(index);
     return async value=>{try{return await evaluate(value);}catch(error){errors[index]={code:error.code || 'provider_failure',message:error.message};throw error;}};
   });
   const result=await runIndependentReview({...prepared,evaluators});
@@ -224,6 +231,6 @@ export async function evaluateProof(input,{env={},fetchImpl=globalThis.fetch}={}
     suggestedCriterionScores:agreed?{...result.reviews[0].criterionScores}:null,
     criterionProposals, reviewerScoreRange, uncertainty,
     reviews:result.reviews.map((review,index)=>errors[index]?{...review,failure:errors[index]}:review),
-    provenance:{provider:config.provider,model:config.model,promptVersion:PROMPT_VERSION,reviewerCount:2,blindReviews:true,expertValidated:false},
+    provenance:{provider,model,promptVersion,reviewerCount:2,blindReviews:true,expertValidated:false},
     notice:agreed?'Both reviewers propose the same rubric marks. This is a suggested score awaiting human review, not a certified grade.':'Reviewers disagreed or could not complete a valid review. Examine the individual proposals; a human must resolve the result.'};
 }

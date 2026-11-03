@@ -8,3 +8,4 @@ coverage/
 .dev.vars.*
 .wrangler/
 benchmark-results/
+build/
