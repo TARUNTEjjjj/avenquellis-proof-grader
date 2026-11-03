@@ -1,0 +1,9 @@
+{
+  "population": "Novel Problem IMO-GradingBench responses with expert research scores out of seven, selected in the protocol and confirmation manifests before inference.",
+  "current": {"model":"@cf/meta/llama-3.3-70b-instruct-fp8-fast","protocol":"verbatim-v1","limit":900,"reads":2},
+  "primary": {"model":"@cf/qwen/qwen3-30b-a3b-fp8","protocol":"milestone partial-credit candidate with two blind reads, code and caps frozen after synthetic format checks and before any trial call"},
+  "fallback": "Only for an incompatible primary transport demonstrated on synthetic non-holdout cases before prediction, gpt-oss-120b may be substituted with its model, prompt and cap frozen first. Never switch based on held-out marks.",
+  "pilot": {"registered":5,"minScored":4,"minPartialsScored":2,"minPartialsWithinOne":2,"endpointRule":"Both endpoints must be scored within one point.","largeErrorRule":"No offered mark may differ by three points or more.","comparison":"On partial proofs the candidate must have at least the baseline's number within one point per registered partial. Baseline and candidate see exactly the same inputs. Lock all predictions before revealing any marks."},
+  "confirmation": {"registered":14,"minScoredPartial":10,"minWithinOnePer12RegisteredPartial":9,"maxScoredPartialMAE":1.25,"endpointRule":"Both scored within one.","largeErrorRule":"No error of three or more and no full credit on a low partial.","release":"Pilot and separate confirmation must both pass and site integration must preserve consent, evidence and rubric semantics. Insufficient free allowance or inconclusive evidence keeps live scoring on the current model."},
+  "studyBudget":"Workers Free only. No enabling paid models, no retries after submitted holdout calls. Keep at least 1,000 daily neurons for regular use based on an actual usage snapshot plus conservative token reservations. Do not open confirmation labels when confirmation does not run."
+}

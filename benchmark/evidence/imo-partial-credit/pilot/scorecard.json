@@ -1,0 +1,290 @@
+{
+  "maximum": 7,
+  "groups": {
+    "all": {
+      "baseline": {
+        "registered": 5,
+        "scored": 0,
+        "abstentions": 5,
+        "coverage": 0.0,
+        "exactCount": 0,
+        "withinOneCount": 0,
+        "exactPerRegistered": 0.0,
+        "withinOnePerRegistered": 0.0,
+        "exactAmongScored": null,
+        "withinOneAmongScored": null,
+        "maeAmongScored": null,
+        "signedBiasAmongScored": null,
+        "overCountAmongScored": 0,
+        "underCountAmongScored": 0
+      },
+      "candidate": {
+        "registered": 5,
+        "scored": 0,
+        "abstentions": 5,
+        "coverage": 0.0,
+        "exactCount": 0,
+        "withinOneCount": 0,
+        "exactPerRegistered": 0.0,
+        "withinOnePerRegistered": 0.0,
+        "exactAmongScored": null,
+        "withinOneAmongScored": null,
+        "maeAmongScored": null,
+        "signedBiasAmongScored": null,
+        "overCountAmongScored": 0,
+        "underCountAmongScored": 0
+      }
+    },
+    "partial": {
+      "baseline": {
+        "registered": 3,
+        "scored": 0,
+        "abstentions": 3,
+        "coverage": 0.0,
+        "exactCount": 0,
+        "withinOneCount": 0,
+        "exactPerRegistered": 0.0,
+        "withinOnePerRegistered": 0.0,
+        "exactAmongScored": null,
+        "withinOneAmongScored": null,
+        "maeAmongScored": null,
+        "signedBiasAmongScored": null,
+        "overCountAmongScored": 0,
+        "underCountAmongScored": 0
+      },
+      "candidate": {
+        "registered": 3,
+        "scored": 0,
+        "abstentions": 3,
+        "coverage": 0.0,
+        "exactCount": 0,
+        "withinOneCount": 0,
+        "exactPerRegistered": 0.0,
+        "withinOnePerRegistered": 0.0,
+        "exactAmongScored": null,
+        "withinOneAmongScored": null,
+        "maeAmongScored": null,
+        "signedBiasAmongScored": null,
+        "overCountAmongScored": 0,
+        "underCountAmongScored": 0
+      }
+    },
+    "zeroEndpoint": {
+      "baseline": {
+        "registered": 1,
+        "scored": 0,
+        "abstentions": 1,
+        "coverage": 0.0,
+        "exactCount": 0,
+        "withinOneCount": 0,
+        "exactPerRegistered": 0.0,
+        "withinOnePerRegistered": 0.0,
+        "exactAmongScored": null,
+        "withinOneAmongScored": null,
+        "maeAmongScored": null,
+        "signedBiasAmongScored": null,
+        "overCountAmongScored": 0,
+        "underCountAmongScored": 0
+      },
+      "candidate": {
+        "registered": 1,
+        "scored": 0,
+        "abstentions": 1,
+        "coverage": 0.0,
+        "exactCount": 0,
+        "withinOneCount": 0,
+        "exactPerRegistered": 0.0,
+        "withinOnePerRegistered": 0.0,
+        "exactAmongScored": null,
+        "withinOneAmongScored": null,
+        "maeAmongScored": null,
+        "signedBiasAmongScored": null,
+        "overCountAmongScored": 0,
+        "underCountAmongScored": 0
+      }
+    },
+    "fullEndpoint": {
+      "baseline": {
+        "registered": 1,
+        "scored": 0,
+        "abstentions": 1,
+        "coverage": 0.0,
+        "exactCount": 0,
+        "withinOneCount": 0,
+        "exactPerRegistered": 0.0,
+        "withinOnePerRegistered": 0.0,
+        "exactAmongScored": null,
+        "withinOneAmongScored": null,
+        "maeAmongScored": null,
+        "signedBiasAmongScored": null,
+        "overCountAmongScored": 0,
+        "underCountAmongScored": 0
+      },
+      "candidate": {
+        "registered": 1,
+        "scored": 0,
+        "abstentions": 1,
+        "coverage": 0.0,
+        "exactCount": 0,
+        "withinOneCount": 0,
+        "exactPerRegistered": 0.0,
+        "withinOnePerRegistered": 0.0,
+        "exactAmongScored": null,
+        "withinOneAmongScored": null,
+        "maeAmongScored": null,
+        "signedBiasAmongScored": null,
+        "overCountAmongScored": 0,
+        "underCountAmongScored": 0
+      }
+    }
+  },
+  "paired": {
+    "all": {
+      "registered": 5,
+      "bothScored": 0,
+      "candidateImproved": 0,
+      "candidateTied": 0,
+      "candidateWorse": 0,
+      "meanCandidateMinusBaselineAbsoluteError": null,
+      "intersectionBaselineMAE": null,
+      "intersectionCandidateMAE": null
+    },
+    "partial": {
+      "registered": 3,
+      "bothScored": 0,
+      "candidateImproved": 0,
+      "candidateTied": 0,
+      "candidateWorse": 0,
+      "meanCandidateMinusBaselineAbsoluteError": null,
+      "intersectionBaselineMAE": null,
+      "intersectionCandidateMAE": null
+    },
+    "zeroEndpoint": {
+      "registered": 1,
+      "bothScored": 0,
+      "candidateImproved": 0,
+      "candidateTied": 0,
+      "candidateWorse": 0,
+      "meanCandidateMinusBaselineAbsoluteError": null,
+      "intersectionBaselineMAE": null,
+      "intersectionCandidateMAE": null
+    },
+    "fullEndpoint": {
+      "registered": 1,
+      "bothScored": 0,
+      "candidateImproved": 0,
+      "candidateTied": 0,
+      "candidateWorse": 0,
+      "meanCandidateMinusBaselineAbsoluteError": null,
+      "intersectionBaselineMAE": null,
+      "intersectionCandidateMAE": null
+    }
+  },
+  "directionalMistakes": {
+    "baseline": {
+      "overgrade": [],
+      "undergrade": []
+    },
+    "candidate": {
+      "overgrade": [],
+      "undergrade": []
+    }
+  },
+  "cases": [
+    {
+      "id": "r-b4a37542bfb0073a",
+      "humanScore": 1,
+      "candidate": {
+        "suggestedScore": null,
+        "readings": [
+          null,
+          null
+        ]
+      },
+      "baseline": {
+        "suggestedScore": null,
+        "readings": [
+          5,
+          null
+        ]
+      }
+    },
+    {
+      "id": "r-5533b68a823846f9",
+      "humanScore": 7,
+      "candidate": {
+        "suggestedScore": null,
+        "readings": [
+          null,
+          null
+        ]
+      },
+      "baseline": {
+        "suggestedScore": null,
+        "readings": [
+          null,
+          null
+        ]
+      }
+    },
+    {
+      "id": "r-1e18d1140a00fbf2",
+      "humanScore": 4,
+      "candidate": {
+        "suggestedScore": null,
+        "readings": []
+      },
+      "baseline": {
+        "suggestedScore": null,
+        "readings": [
+          null,
+          null
+        ]
+      }
+    },
+    {
+      "id": "r-c3180fb3b8a9305b",
+      "humanScore": 0,
+      "candidate": {
+        "suggestedScore": null,
+        "readings": []
+      },
+      "baseline": {
+        "suggestedScore": null,
+        "readings": []
+      }
+    },
+    {
+      "id": "r-498fb30bc6a0f822",
+      "humanScore": 5,
+      "candidate": {
+        "suggestedScore": null,
+        "readings": [
+          null,
+          null
+        ]
+      },
+      "baseline": {
+        "suggestedScore": null,
+        "readings": []
+      }
+    }
+  ],
+  "studyStage": "pilot",
+  "fixtureSha256": "ed26a252ae9aae2bc080c4e273a6def9f96c3be3cfc665e7f96f100a6ade5e60",
+  "targetSha256": "b1b88669cc517b32fb7b73f4c71566ed65da343012b09fd005fd12aa26630d01",
+  "baselinePredictionSha256": "9d67f8c4ce1fb8c34af88867d7200cc7f98042e2a958064fd4fe4e1ea72f54ee",
+  "candidatePredictionSha256": "f75ed9301f54069b94366fd0407599658ce04fade45bc56f4b07ed13f71ebe25",
+  "decision": {
+    "checks": {
+      "bothEndpointsScoredWithinOne": false,
+      "noOfferedErrorOfThreeOrMore": true,
+      "candidateCoverageFloor": false,
+      "partialCoverageFloor": false,
+      "partialWithinOneCountFloor": false,
+      "candidateAtLeastBaselineWithinOnePerRegisteredPartial": true
+    },
+    "passed": false,
+    "decisionSha256": "6fb145252e98cc8975d931946dd0e873ed7b9dad4e1c34256051f3ec823fd01b"
+  }
+}

@@ -1,0 +1,267 @@
+{
+  "definition": "HTTP 200 means the study service returned a case record. Two server-side receipts indicate the native binding was called twice. A client transport failure has no returned model result; its grade remains null.",
+  "methods": {
+    "baseline": {
+      "all": {
+        "registered": 5,
+        "serverReturnedWithTwoBindingReceipts": 3,
+        "clientFailures": 2,
+        "scoredAmongReached": 0,
+        "returnedReadingAttempts": 6,
+        "validIndividualScores": 1,
+        "individualExact": 0,
+        "individualWithinOne": 0,
+        "individualMAEOnValidOnly": 4,
+        "individualSignedBiasOnValidOnly": 4,
+        "failureCodeCounts": {
+          "invalid_output": 5
+        }
+      },
+      "partial": {
+        "registered": 3,
+        "serverReturnedWithTwoBindingReceipts": 2,
+        "clientFailures": 1,
+        "scoredAmongReached": 0,
+        "returnedReadingAttempts": 4,
+        "validIndividualScores": 1,
+        "individualExact": 0,
+        "individualWithinOne": 0,
+        "individualMAEOnValidOnly": 4,
+        "individualSignedBiasOnValidOnly": 4,
+        "failureCodeCounts": {
+          "invalid_output": 3
+        }
+      },
+      "zero": {
+        "registered": 1,
+        "serverReturnedWithTwoBindingReceipts": 0,
+        "clientFailures": 1,
+        "scoredAmongReached": 0,
+        "returnedReadingAttempts": 0,
+        "validIndividualScores": 0,
+        "individualExact": 0,
+        "individualWithinOne": 0,
+        "individualMAEOnValidOnly": null,
+        "individualSignedBiasOnValidOnly": null,
+        "failureCodeCounts": {}
+      },
+      "seven": {
+        "registered": 1,
+        "serverReturnedWithTwoBindingReceipts": 1,
+        "clientFailures": 0,
+        "scoredAmongReached": 0,
+        "returnedReadingAttempts": 2,
+        "validIndividualScores": 0,
+        "individualExact": 0,
+        "individualWithinOne": 0,
+        "individualMAEOnValidOnly": null,
+        "individualSignedBiasOnValidOnly": null,
+        "failureCodeCounts": {
+          "invalid_output": 2
+        }
+      }
+    },
+    "candidate": {
+      "all": {
+        "registered": 5,
+        "serverReturnedWithTwoBindingReceipts": 3,
+        "clientFailures": 2,
+        "scoredAmongReached": 0,
+        "returnedReadingAttempts": 6,
+        "validIndividualScores": 0,
+        "individualExact": 0,
+        "individualWithinOne": 0,
+        "individualMAEOnValidOnly": null,
+        "individualSignedBiasOnValidOnly": null,
+        "failureCodeCounts": {
+          "incomplete_output": 2,
+          "invalid_ledger": 3,
+          "invalid_span": 1
+        }
+      },
+      "partial": {
+        "registered": 3,
+        "serverReturnedWithTwoBindingReceipts": 2,
+        "clientFailures": 1,
+        "scoredAmongReached": 0,
+        "returnedReadingAttempts": 4,
+        "validIndividualScores": 0,
+        "individualExact": 0,
+        "individualWithinOne": 0,
+        "individualMAEOnValidOnly": null,
+        "individualSignedBiasOnValidOnly": null,
+        "failureCodeCounts": {
+          "incomplete_output": 1,
+          "invalid_ledger": 3
+        }
+      },
+      "zero": {
+        "registered": 1,
+        "serverReturnedWithTwoBindingReceipts": 0,
+        "clientFailures": 1,
+        "scoredAmongReached": 0,
+        "returnedReadingAttempts": 0,
+        "validIndividualScores": 0,
+        "individualExact": 0,
+        "individualWithinOne": 0,
+        "individualMAEOnValidOnly": null,
+        "individualSignedBiasOnValidOnly": null,
+        "failureCodeCounts": {}
+      },
+      "seven": {
+        "registered": 1,
+        "serverReturnedWithTwoBindingReceipts": 1,
+        "clientFailures": 0,
+        "scoredAmongReached": 0,
+        "returnedReadingAttempts": 2,
+        "validIndividualScores": 0,
+        "individualExact": 0,
+        "individualWithinOne": 0,
+        "individualMAEOnValidOnly": null,
+        "individualSignedBiasOnValidOnly": null,
+        "failureCodeCounts": {
+          "incomplete_output": 1,
+          "invalid_span": 1
+        }
+      }
+    }
+  },
+  "cases": {
+    "r-b4a37542bfb0073a": {
+      "humanScore": 1,
+      "baseline": {
+        "httpStatus": 200,
+        "receivedTwoBindingReceipts": true,
+        "outcome": "evaluator_failure",
+        "suggestedScore": null,
+        "readingScores": [
+          5,
+          null
+        ],
+        "readingFailureCodes": [
+          null,
+          "invalid_output"
+        ]
+      },
+      "candidate": {
+        "httpStatus": 200,
+        "receivedTwoBindingReceipts": true,
+        "outcome": "invalid_or_failed_reading",
+        "suggestedScore": null,
+        "readingScores": [
+          null,
+          null
+        ],
+        "readingFailureCodes": [
+          "invalid_ledger",
+          "invalid_ledger"
+        ]
+      }
+    },
+    "r-5533b68a823846f9": {
+      "humanScore": 7,
+      "baseline": {
+        "httpStatus": 200,
+        "receivedTwoBindingReceipts": true,
+        "outcome": "evaluator_failure",
+        "suggestedScore": null,
+        "readingScores": [
+          null,
+          null
+        ],
+        "readingFailureCodes": [
+          "invalid_output",
+          "invalid_output"
+        ]
+      },
+      "candidate": {
+        "httpStatus": 200,
+        "receivedTwoBindingReceipts": true,
+        "outcome": "invalid_or_failed_reading",
+        "suggestedScore": null,
+        "readingScores": [
+          null,
+          null
+        ],
+        "readingFailureCodes": [
+          "invalid_span",
+          "incomplete_output"
+        ]
+      }
+    },
+    "r-1e18d1140a00fbf2": {
+      "humanScore": 4,
+      "baseline": {
+        "httpStatus": 200,
+        "receivedTwoBindingReceipts": true,
+        "outcome": "evaluator_failure",
+        "suggestedScore": null,
+        "readingScores": [
+          null,
+          null
+        ],
+        "readingFailureCodes": [
+          "invalid_output",
+          "invalid_output"
+        ]
+      },
+      "candidate": {
+        "httpStatus": null,
+        "receivedTwoBindingReceipts": false,
+        "outcome": "transport_curl_16",
+        "suggestedScore": null,
+        "readingScores": [],
+        "readingFailureCodes": []
+      }
+    },
+    "r-c3180fb3b8a9305b": {
+      "humanScore": 0,
+      "baseline": {
+        "httpStatus": null,
+        "receivedTwoBindingReceipts": false,
+        "outcome": "transport_curl_28",
+        "suggestedScore": null,
+        "readingScores": [],
+        "readingFailureCodes": []
+      },
+      "candidate": {
+        "httpStatus": null,
+        "receivedTwoBindingReceipts": false,
+        "outcome": "transport_curl_28",
+        "suggestedScore": null,
+        "readingScores": [],
+        "readingFailureCodes": []
+      }
+    },
+    "r-498fb30bc6a0f822": {
+      "humanScore": 5,
+      "baseline": {
+        "httpStatus": null,
+        "receivedTwoBindingReceipts": false,
+        "outcome": "transport_curl_16",
+        "suggestedScore": null,
+        "readingScores": [],
+        "readingFailureCodes": []
+      },
+      "candidate": {
+        "httpStatus": 200,
+        "receivedTwoBindingReceipts": true,
+        "outcome": "invalid_or_failed_reading",
+        "suggestedScore": null,
+        "readingScores": [
+          null,
+          null
+        ],
+        "readingFailureCodes": [
+          "invalid_ledger",
+          "incomplete_output"
+        ]
+      }
+    }
+  },
+  "pairedBothReturned": {
+    "count": 2,
+    "partialCount": 1,
+    "bothScored": 0
+  }
+}

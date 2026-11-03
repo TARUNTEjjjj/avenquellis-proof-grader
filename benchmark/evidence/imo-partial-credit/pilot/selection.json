@@ -1,0 +1,94 @@
+{
+  "protocol": {
+    "version": "noether-imo-partial-paired-v1",
+    "sourceUrl": "https://raw.githubusercontent.com/google-deepmind/superhuman/9b620a92886b3a7655b30ddcfe36e725e9596509/imobench/gradingbench.csv",
+    "sourceSha256": "e85a520c2bbb5a89f2db35088c7935d485922f26cf2bbd04f15e1d967af26cfe",
+    "selectionSalt": "noether-imo-partial-paired-v1:rank:",
+    "presentationSalt": "noether-imo-partial-paired-v1:presentation:",
+    "questionSalt": "noether-imo-partial-paired-v1:question:",
+    "caseSalt": "noether-imo-partial-paired-v1:case:",
+    "eligible": "Source-tagged Novel Problem only. Exclude all 18 problem IDs from the earlier 24-case IMO smoke fixture. Normalize Unicode and whitespace and exclude a response text if repeated anywhere in the 1,000-row source. Exclude any problem whose statement matches a previously used USAMO or official-comparator fixture after normalization. Apply the same production question/submission limits before ranking.",
+    "bands": [
+      {
+        "name": "lower partial",
+        "marks": [
+          1,
+          2
+        ]
+      },
+      {
+        "name": "middle partial",
+        "marks": [
+          3,
+          4
+        ]
+      },
+      {
+        "name": "upper partial",
+        "marks": [
+          5,
+          6
+        ]
+      },
+      {
+        "name": "zero endpoint",
+        "marks": [
+          0
+        ]
+      },
+      {
+        "name": "full endpoint",
+        "marks": [
+          7
+        ]
+      }
+    ],
+    "select": "Within each band sort by SHA-256(selectionSalt + original Grading ID); tie-break by source ID. In the declared band order, take the lexicographically earliest sequence of rank positions such that all five problems are distinct. Eligibility does not depend on answer quality beyond the declared source score band. Re-order the resulting five by presentation hash, anonymize problem and case IDs independently, leave labels and band membership with the data custodian.",
+    "evaluation": "Freeze both code/prompt/model versions and the case IDs before launch. Use identical blind inputs for baseline and candidate. Make two independent readings per method per case for any hosted marks, with the same model and 900-token cap if testing a prompt-only change. Consume every registered case once per method, preserve failures as abstentions, no retries after looking at results, and lock both prediction files before opening targets.",
+    "report": "Per method give scored/5 coverage, exact/within-one/MAE on scored proposals, errors and abstentions case by case, and paired signed absolute-error changes only on the intersection of scored cases. Report the three interior marks separately from the two endpoint controls. Do not impute abstentions as zero or pool denominators. A sample of five enriched cases cannot validate overall contest accuracy."
+  },
+  "manifest": {
+    "version": "noether-imo-partial-paired-v1",
+    "sourceSha256": "e85a520c2bbb5a89f2db35088c7935d485922f26cf2bbd04f15e1d967af26cfe",
+    "protocolSha256": "bb8fbb1790fc1b543c5d616b9eafed6e7a789b4180c526d404015c7b91c70637",
+    "priorSmokeProblemCount": 18,
+    "unseenSourceProblemCount": 12,
+    "sourceRows": 1000,
+    "sourceProblems": 30,
+    "sourceScoreHistogram": {
+      "0": 300,
+      "1": 171,
+      "2": 46,
+      "3": 21,
+      "4": 64,
+      "5": 57,
+      "6": 41,
+      "7": 300
+    },
+    "unseenNovelProblemRows": 186,
+    "eligibleRows": 181,
+    "eligibleProblems": 6,
+    "eligibleScoreHistogram": {
+      "0": 44,
+      "1": 58,
+      "2": 4,
+      "3": 2,
+      "4": 3,
+      "5": 8,
+      "6": 6,
+      "7": 56
+    },
+    "caseCount": 5,
+    "distinctProblems": 5,
+    "caseIdsInBlindOrder": [
+      "r-b4a37542bfb0073a",
+      "r-5533b68a823846f9",
+      "r-1e18d1140a00fbf2",
+      "r-c3180fb3b8a9305b",
+      "r-498fb30bc6a0f822"
+    ],
+    "fixtureSha256": "ed26a252ae9aae2bc080c4e273a6def9f96c3be3cfc665e7f96f100a6ade5e60",
+    "sealedTargetsSha256": "b1b88669cc517b32fb7b73f4c71566ed65da343012b09fd005fd12aa26630d01",
+    "individualLabelAvailability": "Custodian only. No score, reward class, source grading ID, expert justification, band name or presentation-position label is in inference input."
+  }
+}

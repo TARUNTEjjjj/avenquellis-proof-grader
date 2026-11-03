@@ -1,0 +1,35 @@
+{
+  "phase": "pilot",
+  "frozenAt": "2026-11-03T15:43:28.805Z",
+  "fixtureSha256": "ed26a252ae9aae2bc080c4e273a6def9f96c3be3cfc665e7f96f100a6ade5e60",
+  "decisionSha256": "6fb145252e98cc8975d931946dd0e873ed7b9dad4e1c34256051f3ec823fd01b",
+  "frozenSourceArtifacts": {
+    "server/fixtures.json": "ed26a252ae9aae2bc080c4e273a6def9f96c3be3cfc665e7f96f100a6ade5e60",
+    "server/worker.js": "81882be7b70a477b09d7542b9f9a33b506ca35e4533b9c161df5de6a5e207ede",
+    "server/candidate.js": "10fe9ece445481a9c5696d2d891f571c40879edfd9ac3a4bebae83a5c4564738",
+    "server/settings.js": "01ca74b850c1e4cca7a173ad502c90b71c8dddc96701ceef12095cdec4a716a2",
+    "server/grader/partial-credit.js": "ed486813cddbd3999d2fba39d6decda9e551ed6185f542c61fa8caa707623ce8",
+    "server/grader/provider.js": "c9f1efbb1988c6b72dc0255260bd8460d3501b5d62f3b588c31043e980da1fb8",
+    "server/grader/index.js": "d4d7b77c8b3ae07266474e7d8e8a369eeb02113448376ebaefb2af7e0e36690f",
+    "server/grader/span-v2.js": "b7c39c48f3d7d9156eb0cd784393e167cc12bc07515bf22fd4f15860551070ee",
+    "wrangler.jsonc": "1baed4727b8f43c611aca6845ba7b398b6f8ecba9021a7816f5ff7757231492b"
+  },
+  "production": {
+    "model": "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+    "protocol": "verbatim-v1",
+    "readings": 2,
+    "maxOutputTokensPerReading": 900
+  },
+  "candidate": {
+    "model": "@cf/qwen/qwen3-30b-a3b-fp8",
+    "protocol": "noether-point-ledger-2026-11-03-candidate3",
+    "readings": 2,
+    "maxOutputTokensPerReading": 2400
+  },
+  "predictionSha256": {
+    "baseline": "9d67f8c4ce1fb8c34af88867d7200cc7f98042e2a958064fd4fe4e1ea72f54ee",
+    "candidate": "f75ed9301f54069b94366fd0407599658ce04fade45bc56f4b07ed13f71ebe25"
+  },
+  "confirmationRun": false,
+  "confirmationJoined": false
+}
