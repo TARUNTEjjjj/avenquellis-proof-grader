@@ -35,7 +35,7 @@ void add_header(Headers& headers, const std::string& value) {
 }
 
 std::string request_reviews(std::string_view request) {
-    if (request.size() > 100000) throw std::invalid_argument("Review request exceeds server's 100,000-byte limit.");
+    if (request.size() > 100000) throw std::invalid_argument("Review request exceeds the CLI's 100,000-byte limit.");
     const char* endpoint = std::getenv("AVENQUELLIS_GRADER_URL");
     if (!endpoint) endpoint = std::getenv("NOETHER_GRADER_URL");
     if (!endpoint || !*endpoint) throw std::invalid_argument("Set AVENQUELLIS_GRADER_URL to the Avenquellis /evaluate endpoint.");
