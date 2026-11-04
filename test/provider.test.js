@@ -47,6 +47,16 @@ test('HTTP error responses never expose provider body or promote partial result'
   const result=await evaluateProof({question,answer},{env});
   assert.equal(result.suggestedScore,null);assert.equal(result.reviews[1].failure.code,'provider_http_error');assert.ok(!JSON.stringify(result).includes('internal secret'));
 });
+test('provider redirects are rejected, not followed, with a redirect mode Workers accepts',async t=>{
+  const {env,requests}=await provider(t,({res})=>{res.writeHead(307,{Location:'/v1/redirected'});res.end();});
+  // Workers fetch refuses redirect:'error' outright, as this stub does.
+  const workersFetch=(url,init)=>init.redirect==='error'?Promise.reject(new TypeError('Invalid redirect value')):fetch(url,init);
+  const result=await evaluateProof({question,answer},{env,fetchImpl:workersFetch});
+  assert.equal(requests.length,2);assert.ok(requests.every(r=>r.url==='/v1/chat/completions'));
+  assert.equal(result.suggestedScore,null);assert.ok(result.reviews.every(r=>r.failure.code==='provider_http_error'));
+  const opaque=await evaluateProof({question,answer},{env,fetchImpl:async()=>({ok:false,status:0,type:'opaqueredirect',body:null})});
+  assert.ok(opaque.reviews.every(r=>r.failure.code==='provider_http_error'));
+});
 test('timeout is bounded and leads to human review',async t=>{
   const {env}=await provider(t,({res})=>new Promise(resolve=>setTimeout(()=>{res.end(JSON.stringify(completion()));resolve();},150)));
   const started=Date.now();
