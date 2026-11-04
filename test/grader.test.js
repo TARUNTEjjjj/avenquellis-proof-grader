@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {assessProof, finalizeReview, runIndependentReview, validateCritique, extractSpans, isWellFormedText} from '../src/index.js';
 import {createServer} from '../src/server.js';
+import {createRequestHandler} from '../src/service.js';
 
 const question = {id:'even-product', statement:'Prove that n(n+1) is even for every integer n.',maxMarks:7,rubric:[{id:'parity',description:'Establish that consecutive integers have opposite parity.',points:3},{id:'product',description:'Deduce that the product contains an even factor and is even.',points:4}]};
 const answer = 'One of the consecutive integers n and n+1 is even.\nTheir product is therefore divisible by 2.';
@@ -80,6 +81,18 @@ test('HTTP API rejects oversized bodies, long answers and malformed data', async
   // Last: the server answers 413 without reading the rest of the body, so this connection is not reused.
   const oversized = await post(JSON.stringify({question,answer:'a'.repeat(200001)}));
   assert.equal(oversized.status,413); assert.equal((await oversized.json()).error,'Request too large.');
+});
+test('malformed JSON and UTF-8 never echo a submitted proof or replace its bytes', async()=>{
+  const handle=createRequestHandler({publicDeployment:false});
+  const post=body=>handle(new Request('http://localhost/assess',{method:'POST',headers:{'Content-Type':'application/json'},body}));
+  for(const body of ['S3CRET_PRIVATE_PROOF','{"answer":S3CRET_PRIVATE_PROOF}',
+    Buffer.concat([Buffer.from('{"answer":"'),Buffer.from([0xc3,0x28]),Buffer.from('"}')]),
+    Buffer.concat([Buffer.from('{"answer":"'),Buffer.from([0xe2,0x82])])]) {
+    const response=await post(body);assert.equal(response.status,400);
+    assert.deepEqual(await response.json(),{error:'Malformed UTF-8 JSON request.'});
+  }
+  const response=await post(JSON.stringify({question,answer:'An intentional replacement character � and 𝑛.'}));
+  assert.equal(response.status,200);assert.equal((await response.json()).answer,'An intentional replacement character � and 𝑛.');
 });
 test('unpaired surrogates are refused in answers and critique text, with or without String.prototype.isWellFormed', () => {
   const text = 'Since 𝑛 is even, n(n+1) is even.', half = text.slice(6,7);

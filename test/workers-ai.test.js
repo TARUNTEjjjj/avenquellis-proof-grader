@@ -76,6 +76,15 @@ test('Workers AI malformed output, excess fields and fabricated evidence yield n
     assert.equal(result.reviewerScoreRange, null);
   }
 });
+test('an explicitly incomplete binding response cannot earn a proposal even if its JSON is valid',async()=>{
+  for(const fields of [{finish_reason:'length'},{finish_reason:'content_filter'},{refusal:'Cannot complete review.'}]) {
+    const result=await evaluateProof({question,answer},{env:makeEnv(async()=>({response:full,...fields}))});
+    assert.equal(result.suggestedScore,null);assert.equal(result.reviewerScoreRange,null);
+    assert.ok(result.reviews.every(r=>r.failure.code==='incomplete_output'));
+  }
+  const complete=await evaluateProof({question,answer},{env:makeEnv(async()=>({response:full,finish_reason:'stop'}))});
+  assert.equal(complete.suggestedScore,7);assert.equal(complete.score,null);
+});
 
 test('a binding call the runtime never settles frees its slot after the deadline plus the grace period', async () => {
   const realNow = Date.now;
