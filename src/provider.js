@@ -185,7 +185,7 @@ export function createHttpEvaluator({config,reviewerIndex,fetchImpl=globalThis.f
     const timer=setTimeout(()=>controller.abort(),config.timeoutMs);
     try {
       const body={model:config.model,stream:false,messages:reviewerMessages(question,submission,reviewerIndex),response_format:{type:'json_schema',json_schema:{name:'proof_review',strict:true,schema:reviewSchema(question)}},[config.tokenParameter]:config.maxTokens};
-      const response=await fetchImpl(config.endpoint,{method:'POST',redirect:'error',signal:controller.signal,headers:{'Content-Type':'application/json',...(config.apiKey?{Authorization:`Bearer ${config.apiKey}`}:{})},body:JSON.stringify(body)});
+      const response=await fetchImpl(config.endpoint,{method:'POST',redirect:'manual',signal:controller.signal,headers:{'Content-Type':'application/json',...(config.apiKey?{Authorization:`Bearer ${config.apiKey}`}:{})},body:JSON.stringify(body)});
       if (!response.ok) {await response.body?.cancel();throw new EvaluatorError('provider_http_error',`Evaluator returned HTTP ${response.status}.`);}
       let payload; try {payload=JSON.parse(await boundedBody(response));} catch (error) {if(error instanceof EvaluatorError) throw error;throw new EvaluatorError('invalid_output','Evaluator returned malformed JSON.');}
       const choice=payload?.choices?.[0];
