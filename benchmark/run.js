@@ -3,7 +3,7 @@ import {dirname} from 'node:path';
 import {fixtures as defaults} from './fixtures.js';
 import {computeMetrics} from './metrics.js';
 import {assessProof} from '../src/index.js';
-import {evaluateProof,PROMPT_VERSION} from '../src/provider.js';
+import {boundedInput,evaluateProof,PROMPT_VERSION} from '../src/provider.js';
 
 const args=process.argv.slice(2),options={};
 for (let i=0;i<args.length;i++) {
@@ -17,7 +17,7 @@ const read=async file=>JSON.parse(await readFile(file,'utf8'));
 const fixtures=options.fixtures?await read(options.fixtures):defaults;
 if (!Array.isArray(fixtures) || !fixtures.length || fixtures.length>500) throw new Error('Fixtures must contain 1–500 records.');
 const ids=new Set();
-for (const f of fixtures) {if(!f || typeof f.id!=='string' || ids.has(f.id))throw new Error('Fixture ids must be unique strings.');ids.add(f.id);assessProof(f);}
+for (const f of fixtures) {if(!f || typeof f.id!=='string' || ids.has(f.id))throw new Error('Fixture ids must be unique strings.');ids.add(f.id);options.live?boundedInput(f):assessProof(f);}
 const labels=options.labels?await read(options.labels):[];
 computeMetrics({fixtures,predictions:[],labels}); // Validate labels before any paid provider call.
 let predictions=[];
