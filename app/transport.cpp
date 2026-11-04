@@ -38,7 +38,7 @@ std::string request_reviews(std::string_view request) {
     if (request.size() > 100000) throw std::invalid_argument("Review request exceeds server's 100,000-byte limit.");
     const char* endpoint = std::getenv("AVENQUELLIS_GRADER_URL");
     if (!endpoint) endpoint = std::getenv("NOETHER_GRADER_URL");
-    if (!endpoint || !*endpoint) throw std::invalid_argument("Set AVENQUELLIS_GRADER_URL to the Noether /evaluate endpoint.");
+    if (!endpoint || !*endpoint) throw std::invalid_argument("Set AVENQUELLIS_GRADER_URL to the Avenquellis /evaluate endpoint.");
     const char* token_env = std::getenv("AVENQUELLIS_GRADER_TOKEN");
     if (!token_env) token_env = std::getenv("NOETHER_GRADER_TOKEN");
     const std::string token = token_env ? token_env : "";

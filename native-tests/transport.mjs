@@ -62,7 +62,7 @@ try {
   const truncated=httpServer((_req,res)=>res.end('{"answer":"'+privateText));services.push(truncated);
   call=await invoke('review',input,{NOETHER_GRADER_URL:(await listen(truncated))+'/evaluate'});
   assert.equal(call.code,2);assert.match(call.stderr,/Invalid JSON at byte/);assert.ok(!call.stderr.includes(privateText));
-  console.log('Native CLI → authenticated Noether service → two independent HTTP fixture readings → native evidence/consensus checks passed.');
+  console.log('Native CLI → authenticated Avenquellis service → two independent HTTP fixture readings → native evidence/consensus checks passed.');
 } finally {
   for(const server of services) {server.closeAllConnections();server.close();}
 }
