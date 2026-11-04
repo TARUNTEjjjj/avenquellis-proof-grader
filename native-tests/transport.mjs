@@ -8,7 +8,8 @@ const binary=process.argv[2];
 const input=JSON.parse(readFileSync(new URL('../examples/human-review.json',import.meta.url),'utf8'));
 const listen=async service=>{service.listen(0,'127.0.0.1');await once(service,'listening');return 'http://127.0.0.1:'+service.address().port;};
 function invoke(action,request,environment={}) {
-  const proc=spawn(binary,[action],{env:{...process.env,NOETHER_GRADER_URL:'',NOETHER_GRADER_TOKEN:'',...environment}});
+  const base={...process.env};delete base.AVENQUELLIS_GRADER_URL;delete base.AVENQUELLIS_GRADER_TOKEN;
+  const proc=spawn(binary,[action],{env:{...base,NOETHER_GRADER_URL:'',NOETHER_GRADER_TOKEN:'',...environment}});
   let stdout='',stderr='';
   proc.stdout.on('data',b=>stdout+=b);proc.stderr.on('data',b=>stderr+=b);
   proc.stdin.end(JSON.stringify(request));
@@ -61,7 +62,7 @@ try {
   const truncated=httpServer((_req,res)=>res.end('{"answer":"'+privateText));services.push(truncated);
   call=await invoke('review',input,{NOETHER_GRADER_URL:(await listen(truncated))+'/evaluate'});
   assert.equal(call.code,2);assert.match(call.stderr,/Invalid JSON at byte/);assert.ok(!call.stderr.includes(privateText));
-  console.log('Native CLI → authenticated Noether service → two independent HTTP fixture readings → native evidence/consensus checks passed.');
+  console.log('Native CLI → authenticated Avenquellis service → two independent HTTP fixture readings → native evidence/consensus checks passed.');
 } finally {
   for(const server of services) {server.closeAllConnections();server.close();}
 }

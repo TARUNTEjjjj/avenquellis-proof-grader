@@ -31,11 +31,11 @@ target_include_directories(noether_grader PUBLIC
 noether_configure(noether_grader)
 
 if(NOETHER_GRADER_BUILD_CLI)
-    find_package(CURL 7.62 REQUIRED)
+    find_package(CURL 7.63 REQUIRED)
     # A static libcurl returned by FindCURL may require the additional libraries in its pkg-config record.
     find_package(PkgConfig QUIET)
     if(PkgConfig_FOUND)
-        pkg_check_modules(NOETHER_CURL QUIET IMPORTED_TARGET libcurl>=7.62)
+        pkg_check_modules(NOETHER_CURL QUIET IMPORTED_TARGET libcurl>=7.63)
     endif()
     add_executable(avenquellis-grader app/main.cpp app/transport.cpp src/json_api.cpp)
     target_include_directories(avenquellis-grader PRIVATE src)

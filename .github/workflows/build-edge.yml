@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
   push:
     branches: [main]
-    paths: ["src/*.cpp", "src/json_api.hpp", "include/**", "wasm/**", "edge/runtime.js", "scripts/build-edge.mjs", ".github/workflows/build-edge.yml"]
+    paths: ["src/*.cpp", "src/json_api.hpp", "include/**", "third_party/**", "wasm/**", "edge/runtime.js", "scripts/build-edge.mjs", ".github/workflows/build-edge.yml"]
 permissions:
   contents: read
 jobs:

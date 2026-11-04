@@ -77,6 +77,25 @@ test('Workers AI malformed output, excess fields and fabricated evidence yield n
   }
 });
 
+test('a binding call the runtime never settles frees its slot after the deadline plus the grace period', async () => {
+  const realNow = Date.now;
+  let clock = realNow();
+  Date.now = () => clock;
+  try {
+    const env = {...makeEnv(() => new Promise(() => {})), EVALUATOR_TIMEOUT_MS: '50'};
+    const timedOut = await Promise.all([evaluateProof({question, answer}, {env}), evaluateProof({question, answer}, {env})]);
+    assert.ok(timedOut.every(result => result.reviews.every(r => r.failure.code === 'timeout')));
+    clock += 50 + 60000 - 1;
+    const busy = await evaluateProof({question, answer}, {env});
+    assert.ok(busy.reviews.every(r => r.failure.code === 'provider_busy'));
+    clock += 1;
+    const freed = await evaluateProof({question, answer}, {env: makeEnv(async () => ({response: full}))});
+    assert.equal(freed.suggestedScore, 7);
+  } finally {
+    Date.now = realNow;
+  }
+});
+
 test('binding timeout releases caller but counts still-running upstream requests against concurrency', async () => {
   const releases = [];
   const env = {...makeEnv(() => new Promise(resolve => releases.push(() => resolve({response: full})))), EVALUATOR_TIMEOUT_MS: '50'};

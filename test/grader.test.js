@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {assessProof, finalizeReview, runIndependentReview, validateCritique, extractSpans} from '../src/index.js';
+import {assessProof, finalizeReview, runIndependentReview, validateCritique, extractSpans, isWellFormedText} from '../src/index.js';
 import {createServer} from '../src/server.js';
 
 const question = {id:'even-product', statement:'Prove that n(n+1) is even for every integer n.',maxMarks:7,rubric:[{id:'parity',description:'Establish that consecutive integers have opposite parity.',points:3},{id:'product',description:'Deduce that the product contains an even factor and is even.',points:4}]};
@@ -70,13 +70,30 @@ test('synchronous evaluator throws are captured and both reviewers are invoked',
 });
 test('HTTP API rejects oversized bodies, long answers and malformed data', async t => {
   const server = createServer(); await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
-  t.after(()=>new Promise(resolve=>server.close(resolve)));
+  t.after(()=>new Promise(resolve=>{server.closeAllConnections();server.close(resolve);}));
   const url = `http://127.0.0.1:${server.address().port}/assess`;
   const post = (body,type='application/json') => fetch(url,{method:'POST',headers:{'Content-Type':type},body});
-  const oversized = await post(JSON.stringify({question,answer:'a'.repeat(130000)}));
-  assert.equal(oversized.status,413); assert.equal((await oversized.json()).error,'Request too large.');
   assert.equal((await post(JSON.stringify({question,answer:'a'.repeat(50001)}))).status,400);
   assert.equal((await post('null')).status,400);
   assert.equal((await post(JSON.stringify({question,answer:42}))).status,400);
   assert.equal((await post('{}','application/json-malformed')).status,415);
+  // Last: the server answers 413 without reading the rest of the body, so this connection is not reused.
+  const oversized = await post(JSON.stringify({question,answer:'a'.repeat(200001)}));
+  assert.equal(oversized.status,413); assert.equal((await oversized.json()).error,'Request too large.');
+});
+test('unpaired surrogates are refused in answers and critique text, with or without String.prototype.isWellFormed', () => {
+  const text = 'Since 𝑛 is even, n(n+1) is even.', half = text.slice(6,7);
+  const reading = {criterionScores:{parity:0,product:0},rationale:'No credit yet.',evidence:[],gaps:[]};
+  const checks = () => {
+    assert.equal(isWellFormedText(text),true); assert.equal(isWellFormedText(half),false);
+    assert.throws(() => assessProof({question,answer:'n is even \ud835'}), /well-formed/);
+    assert.throws(() => validateCritique({question,answer:text,critique:{...reading,evidence:[{criterionId:'parity',quote:half}]}}), /Evidence/);
+    assert.throws(() => validateCritique({question,answer:text,critique:{...reading,rationale:'Partial \ud835'}}), /rationale/);
+    assert.throws(() => validateCritique({question,answer:text,critique:{...reading,gaps:['\udc00']}}), /gap/);
+    assert.equal(validateCritique({question,answer:text,critique:{...reading,evidence:[{criterionId:'parity',quote:'𝑛'}]}}).score,0);
+  };
+  checks();
+  const native = Object.getOwnPropertyDescriptor(String.prototype,'isWellFormed');
+  delete String.prototype.isWellFormed;
+  try { checks(); } finally { if (native) Object.defineProperty(String.prototype,'isWellFormed',native); }
 });

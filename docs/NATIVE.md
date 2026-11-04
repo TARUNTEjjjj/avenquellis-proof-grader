@@ -4,7 +4,7 @@ The C++20 library evaluates the two exact Avenquellis proof certificates, prepar
 
 ## Build and install
 
-The library needs a C++20 compiler and CMake 3.20+. The CLI also needs libcurl 7.62+ development headers (on Debian/Ubuntu, `libcurl4-openssl-dev`). The repository includes the pinned JSON parser used by the CLI. Building the core requires no network access. Node 20+ enables the browser-parity and HTTP integration tests.
+The library needs a C++20 compiler and CMake 3.20+. The CLI also needs libcurl 7.63+ development headers (on Debian/Ubuntu, `libcurl4-openssl-dev`). The repository includes the pinned JSON parser used by the CLI. Building the core requires no network access. Node 20+ enables the browser-parity and HTTP integration tests.
 
 ```sh
 cmake -S . -B build/native -DCMAKE_BUILD_TYPE=Release
