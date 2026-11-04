@@ -8,7 +8,8 @@ const binary=process.argv[2];
 const input=JSON.parse(readFileSync(new URL('../examples/human-review.json',import.meta.url),'utf8'));
 const listen=async service=>{service.listen(0,'127.0.0.1');await once(service,'listening');return 'http://127.0.0.1:'+service.address().port;};
 function invoke(action,request,environment={}) {
-  const proc=spawn(binary,[action],{env:{...process.env,NOETHER_GRADER_URL:'',NOETHER_GRADER_TOKEN:'',...environment}});
+  const base={...process.env};delete base.AVENQUELLIS_GRADER_URL;delete base.AVENQUELLIS_GRADER_TOKEN;
+  const proc=spawn(binary,[action],{env:{...base,NOETHER_GRADER_URL:'',NOETHER_GRADER_TOKEN:'',...environment}});
   let stdout='',stderr='';
   proc.stdout.on('data',b=>stdout+=b);proc.stderr.on('data',b=>stderr+=b);
   proc.stdin.end(JSON.stringify(request));
