@@ -28,6 +28,8 @@ test('WASM matches browser certificate outcomes for every real bank, generated a
       const expected=verifyCertificate(q,answer),actual=grader.assess(q,answer);
       assert.equal(actual.status,expected?.status||'needs_review');assert.equal(actual.score,expected?.score??null);
       assert.equal(actual.lowerBoundPoints,expected?.lowerBoundPoints);assert.equal(actual.provenance.nativeGrader,NATIVE_GRADER_VERSION);
+      // An unparsable certificate lists its layout message once, as the browser checker does.
+      assert.equal(actual.feedback?.length,expected?.feedback.length);
     }
   }
 });

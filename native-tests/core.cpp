@@ -1,4 +1,7 @@
 #include <noether/grader/grader.hpp>
+#include <nlohmann/json.hpp>
+
+#include "json_api.hpp"
 
 #include <iostream>
 #include <limits>
@@ -51,6 +54,16 @@ int main() {
         check(incomplete.status == Status::incomplete_certificate && incomplete.lower_bound == 4 && !incomplete.score);
         const auto full = assess(gcd, forward + "\nreverse: 1 1\nconclusion: same-positive-divisors -> equal-maxima");
         check(full.status == Status::verified_certificate && full.score == 10);
+        // An unparsable certificate repeats one layout message on every criterion; the JSON feedback lists it once.
+        const auto& meta = *gcd.generated;
+        nlohmann::json question{{"id", gcd.id}, {"statement", gcd.statement}, {"maxMarks", gcd.max_marks}, {"rubric", nlohmann::json::array()},
+            {"templateId", meta.family}, {"title", meta.title}, {"type", meta.type}, {"topic", meta.topic}, {"difficulty", meta.difficulty},
+            {"exam", meta.exam}, {"requestedDifficulty", meta.requested_difficulty}, {"parameters", {{"k", meta.k}}},
+            {"source", {{"kind", meta.source_kind}}}, {"generator", {{"kind", meta.generator_kind}, {"version", meta.version}, {"seed", meta.seed}}}};
+        for (const auto& row : gcd.rubric) question["rubric"].push_back({{"id", row.id}, {"description", row.description}, {"points", row.points}});
+        const auto layout = nlohmann::json::parse(grade_json("assess", nlohmann::json{{"question", question}, {"answer", forward + "\nextra: x"}}.dump()));
+        check(layout.at("status") == "incomplete_certificate" && layout.at("feedback").size() == 1U && layout.at("criteria").size() == 3U);
+        for (const auto& row : layout.at("criteria")) check(row.at("feedback") == layout.at("feedback").at(0));
         gcd.statement += " Prove an additional result.";
         check(!scaffold(gcd) && assess(gcd, forward).status == Status::needs_review);
         return 0;

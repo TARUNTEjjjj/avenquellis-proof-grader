@@ -99,7 +99,11 @@ Json assessment_json(const Question& question, const Assessment& result) {
     if (result.lower_bound) {
         output["schemaVersion"] = "AVENQUELLIS-PROOF/1";
         output["feedback"] = Json::array();
-        for (const auto& row : result.criteria) if (!row.points.value_or(0)) output["feedback"].push_back(row.feedback);
+        // An unparsable certificate gives every criterion the same layout message; list each message once.
+        std::set<std::string> listed;
+        for (const auto& row : result.criteria) {
+            if (!row.points.value_or(0) && listed.insert(row.feedback).second) output["feedback"].push_back(row.feedback);
+        }
         output["notice"] = result.status == Status::verified_certificate
             ? "Every required inference in this structured proof was checked with exact integer arithmetic."
             : "Only verified deductions count toward this lower bound. A human can assess other arguments.";
