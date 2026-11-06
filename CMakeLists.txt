@@ -64,6 +64,15 @@ if(BUILD_TESTING)
         add_test(NAME installed-consumer COMMAND ${CMAKE_COMMAND} -DBUILD_DIR=${CMAKE_CURRENT_BINARY_DIR}
             -DSOURCE_DIR=${CMAKE_CURRENT_SOURCE_DIR} -DCOMPILER=${CMAKE_CXX_COMPILER} -DCONFIG=$<CONFIG>
             -DCONFIG_UPPER=$<UPPER_CASE:$<CONFIG>> -DEXE_SUFFIX=${CMAKE_EXECUTABLE_SUFFIX} -P ${CMAKE_CURRENT_SOURCE_DIR}/native-tests/install.cmake)
+        get_property(multi_config GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
+        if(NOT multi_config)
+            # A build without CMAKE_BUILD_TYPE, like the documented install command, names no configuration.
+            add_test(NAME installed-consumer-no-config COMMAND ${CMAKE_COMMAND} -DBUILD_DIR=${CMAKE_CURRENT_BINARY_DIR}
+                -DSOURCE_DIR=${CMAKE_CURRENT_SOURCE_DIR} -DCOMPILER=${CMAKE_CXX_COMPILER} -DCONFIG= -DCONFIG_UPPER=
+                -DEXE_SUFFIX=${CMAKE_EXECUTABLE_SUFFIX} -P ${CMAKE_CURRENT_SOURCE_DIR}/native-tests/install.cmake)
+            # Both tests install this build tree into the same staging directory.
+            set_tests_properties(installed-consumer installed-consumer-no-config PROPERTIES RESOURCE_LOCK installed-consumer-check)
+        endif()
     endif()
     find_program(NOETHER_NODE node)
     if(NOETHER_GRADER_BUILD_CLI AND NOETHER_NODE)
