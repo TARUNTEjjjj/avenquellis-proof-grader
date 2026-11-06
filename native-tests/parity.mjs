@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import {spawnSync} from 'node:child_process';
-import {readFileSync} from 'node:fs';
+import {closeSync,openSync,readFileSync} from 'node:fs';
 import {certificateHelp,verifyCertificate} from '../src/certificate.js';
 
 const binary=process.argv[2];
@@ -65,4 +65,12 @@ for(const raw of ['{"question": {},"question": {}}','{"a":'+ '['.repeat(66)+'0'+
 const privateText='SYNTHETIC_PRIVATE_STUDENT_PROOF_SENTINEL';
 const broken=spawnSync(binary,['assess'],{input:'{"question":{},"answer":"'+privateText,encoding:'utf8'});
 assert.equal(broken.status,2);assert.match(broken.stderr,/Invalid JSON at byte/);assert.ok(!broken.stderr.includes(privateText));
+// Output that cannot be written, here to a read-only descriptor, is a failure rather than a silent success.
+const unwritable=openSync(new URL('../examples/checked-gcd.json',import.meta.url),'r');
+try {
+  for(const [args,input] of [[['assess'],JSON.stringify({question:q,answer})],[['--help'],'']]){
+    const run=spawnSync(binary,args,{input,stdio:['pipe',unwritable,'pipe'],encoding:'utf8'});
+    assert.equal(run.status,2,args[0]);assert.match(run.stderr,/"error":.*stdout/);
+  }
+} finally {closeSync(unwritable);}
 console.log(assertions+' certificate/prose differential cases across all supported parameters.');
