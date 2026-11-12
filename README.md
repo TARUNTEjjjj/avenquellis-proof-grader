@@ -83,7 +83,7 @@ The checker binds each theorem to its exact generated statement, bounded paramet
 
 HTTPS is required for remote providers. HTTP is permitted only on localhost/127.0.0.1/::1. Redirects are rejected. Keys never appear in request payloads returned to the caller, client code, source-controlled configuration or error messages.
 
-For the HTTP provider, the API request limit is 200KB. Evaluator input is further restricted to a 20,000-character answer, 15,000-character statement, at most 32 rubric criteria and a 65KB serialized mathematical payload. Each response is capped at 64KB. Two evaluations may be active per handler instance, and each evaluation makes two parallel reviewer requests with no automatic retries. This is an instance-level concurrency limit, not a distributed billing quota.
+For the HTTP provider, the API request limit is 200KB. Evaluator input is further restricted to a 20,000-character answer, 15,000-character statement, at most 32 rubric criteria and a 65KB serialized mathematical payload. Each response is capped at 64KB and must contain well-formed UTF-8; malformed bytes are never replaced inside a review. The configured deadline bounds both fetch and response reading even when a custom transport ignores cancellation. Rejected-body cleanup is best-effort and cannot delay the error response. Two evaluations may be active per handler instance, and each evaluation makes two parallel reviewer requests with no automatic retries. This is an instance-level concurrency limit, not a distributed billing quota.
 
 ## API contract
 
