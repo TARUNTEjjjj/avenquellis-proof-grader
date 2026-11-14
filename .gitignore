@@ -9,3 +9,7 @@ coverage/
 .wrangler/
 benchmark-results/
 build/
+
+# Private transport cache; publish only the normalized resource snapshot.
+resources/*.cache.json
+resources/*.tmp
