@@ -253,3 +253,7 @@ The transport implements [OpenAI's Chat Completions request/response contract](h
 ## Reliability review — 7 November 2026
 
 Rejected request bodies are cancelled without waiting for cleanup to finish. A stalled or failed cancellation can no longer hold an oversized-request response or replace the safe validation message. Early content-type/size failures and malformed UTF-8 discard their unread remainder. The 85 JavaScript tests, compiled edge artifact check, and four native CTest suites passed locally; tests used synthetic or local providers and made no paid model calls. The production-dependency audit reported no known vulnerabilities. These checks validate the implementation, not mathematical examiner accuracy or concurrent-user capacity.
+
+## GitHub resource collection
+
+Explore the project-specific [resource catalog](resources/README.md): curated references, star-ranked discovery, dated source metadata, cached failure recovery and an optional read-only server API. The repository includes a daily refresh workflow; hosted sites still follow their existing deployment process.

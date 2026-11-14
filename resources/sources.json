@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "project": "avenquellis-proof-grader",
+  "title": "Avenquellis proof references",
+  "minStars": 500,
+  "maxPerCategory": 12,
+  "categories": [
+    {
+      "id": "proofs",
+      "title": "Formal proof references",
+      "queries": [
+        "topic:theorem-proving"
+      ],
+      "seeds": [
+        "leanprover-community/mathlib4",
+        "leanprover/lean4",
+        "z3prover/z3"
+      ]
+    },
+    {
+      "id": "symbolic",
+      "title": "Symbolic computation",
+      "queries": [
+        "topic:computer-algebra"
+      ],
+      "seeds": [
+        "sympy/sympy",
+        "symengine/symengine"
+      ]
+    }
+  ]
+}

@@ -1,3 +1,4 @@
+import {handleResources} from './resources.js';
 import http from 'node:http';
 import {Readable} from 'node:stream';
 import {pathToFileURL} from 'node:url';
@@ -7,6 +8,7 @@ export function createServer({env=process.env,fetchImpl=globalThis.fetch,publicD
   const handle=createRequestHandler({env,fetchImpl,publicDeployment});
   return http.createServer(async (req,res)=>{
     try {
+      if (await handleResources(req, res)) return;
       const request=new Request(`http://localhost${req.url}`,{method:req.method,headers:req.headers,...(!['GET','HEAD'].includes(req.method)?{body:Readable.toWeb(req),duplex:'half'}:{})});
       const response=await handle(request);
       res.writeHead(response.status,Object.fromEntries(response.headers));
