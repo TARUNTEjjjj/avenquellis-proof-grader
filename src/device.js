@@ -85,26 +85,45 @@ function normalizeDeviceReview(question, answer, spans, output) {
   } catch {throw error('invalid_output', 'The local model supplied unsupported points or evidence.');}
 }
 
-// A timed-out GPU request can finish after its caller. Avoid resetting the same engine while it is still generating.
-const pendingGenerations = new WeakSet();
+// The prompt a review pass sends: the shared reviewer instructions plus the device protocol, and numbered spans for the answer.
+function deviceMessages(question, spans, reviewerIndex) {
+  const messages = reviewerMessages(question, '', reviewerIndex);
+  messages[0].content += '\nDevice output protocol: return one object per rubric ID with points, span and reason. Select the numbered submission span that supports credit; use -1 when no span supports credit. A positive score requires a real supporting span. Inspect whether the cited passage actually establishes the criterion. Explain a specific mathematical success or logical gap per criterion in one short sentence.';
+  messages[1].content = JSON.stringify({question, submissionSpans: spans.map((text, id) => ({id, text}))});
+  return messages;
+}
+// Qwen's tokenizer splits NFC text with this pattern before byte-pair encoding, and each piece becomes at least one
+// token. So ordinary text has at least as many tokens as pieces, and the count needs no tokenizer download.
+const tokenPieces = /'[sS]|'[tT]|'[rR][eE]|'[vV][eE]|'[mM]|'[lL][lL]|'[dD]|[^\r\n\p{L}\p{N}]?\p{L}+|\p{N}| ?[^\s\p{L}\p{N}]+[\r\n]*|\s*[\r\n]+|\s+(?!\S)|\s+/gu;
+const promptTokenFloor = messages => messages.reduce((sum, m) => sum + (m.content.normalize('NFC').match(tokenPieces)?.length ?? 0), 0);
+
+// A timed-out GPU request can finish after its caller. Avoid resetting or unloading the same engine while it is
+// still generating. Each engine with a running generation maps to a promise that settles once it has stopped.
+const pendingGenerations = new WeakMap();
+// Resolves when `stopped` settles or after `ms`, whichever comes first.
+const stopsWithin = (stopped, ms) => new Promise(resolve => {
+  const timer = setTimeout(resolve, ms);
+  stopped.then(() => {clearTimeout(timer); resolve();});
+});
+// An interrupted generation stops at its next decode step. release() waits this long for that and no longer,
+// so a runtime that never stops cannot hold the caller for another review deadline.
+const RELEASE_WAIT_MS = 5000;
 async function reviewPass(engine, input, reviewerIndex, emit, timeoutMs) {
   const {question, submission} = input;
   const spans = sourceSpans(submission);
   const schema = deviceSchema(question, spans);
-  const messages = reviewerMessages(question, '', reviewerIndex);
-  messages[0].content += '\nDevice output protocol: return one object per rubric ID with points, span and reason. Select the numbered submission span that supports credit; use -1 when no span supports credit. A positive score requires a real supporting span. Inspect whether the cited passage actually establishes the criterion. Explain a specific mathematical success or logical gap per criterion in one short sentence.';
-  messages[1].content = JSON.stringify({question, submissionSpans: spans.map((text, id) => ({id, text}))});
+  const messages = deviceMessages(question, spans, reviewerIndex);
   emit({phase: 'review', reviewer: reviewerIndex + 1, text: `Local review ${reviewerIndex + 1} of 2 is checking the proof.`});
   // The two reviewers see the original submission in separate chats. A single engine runs them serially.
   if (pendingGenerations.has(engine)) throw error('device_busy', 'A previous GPU review is still stopping.');
   let deadline;
   try {
     await engine.resetChat(false);
-    pendingGenerations.add(engine);
     const completion = Promise.resolve().then(() => engine.chat.completions.create({
       messages, stream: false, max_tokens: 650, temperature: 0.15, seed: 991 + reviewerIndex,
       response_format: {type: 'json_object', schema: JSON.stringify(schema)}, extra_body: {enable_thinking: false}
     })).finally(() => pendingGenerations.delete(engine));
+    pendingGenerations.set(engine, completion.then(() => {}, () => {}));
     const timeout = new Promise((_, reject) => {
       deadline = setTimeout(() => {
         Promise.resolve().then(() => engine.interruptGenerate()).catch(() => {});
@@ -130,8 +149,12 @@ export function createDeviceGrader({loadEngine = loadDefaultEngine, reviewTimeou
   let engine = null, busy = false;
   async function grade(question, answer, onProgress = () => {}) {
     const prepared = boundedInput({question, answer});
+    const spans = sourceSpans(prepared.answer);
+    // Size what each review pass sends, including its instructions and span numbering, before any model download.
+    // A prompt that provably fills the context window leaves no room for a reply.
     if (prepared.question.rubric.length > 8 || prepared.question.rubric.some(c => c.points > 100) ||
-        new TextEncoder().encode(JSON.stringify(prepared)).length > 13000) {
+        new TextEncoder().encode(JSON.stringify(prepared)).length > 13000 ||
+        [0, 1].some(index => promptTokenFloor(deviceMessages(prepared.question, spans, index)) >= DEVICE_MODEL.contextWindowTokens)) {
       throw error('context_limit', 'This proof and rubric exceed the small local model’s input limit.');
     }
     if (busy) throw error('device_busy', 'A local review is already running.');
@@ -156,6 +179,12 @@ export function createDeviceGrader({loadEngine = loadDefaultEngine, reviewTimeou
   }
   return {grade, async release() {
     if (busy) throw error('device_busy', 'Finish the active review before releasing the model.');
+    // A timed-out generation can outlive grade(); unloading under it would dispose the engine mid-request.
+    // Its deadline interrupted it, so wait for it to stop, but only briefly and never longer than a review deadline.
+    const stopping = engine && pendingGenerations.get(engine);
+    if (stopping) await stopsWithin(stopping, Math.min(reviewTimeoutMs, RELEASE_WAIT_MS));
+    if (busy) throw error('device_busy', 'Finish the active review before releasing the model.');
+    if (engine && pendingGenerations.has(engine)) throw error('device_busy', 'A previous GPU review is still stopping.');
     const loaded = engine;
     engine = null;
     if (loaded) await loaded.unload();

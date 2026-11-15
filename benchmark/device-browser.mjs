@@ -30,8 +30,15 @@ if (flags.resume) {
     throw new Error('Existing predictions are from another dataset, model or prompt.');
   }
 }
-const seen = new Set(records.map(r => r.id));
-if (seen.size !== records.length) throw new Error('Duplicate saved prediction ID.');
+if (new Set(records.map(r => r.id)).size !== records.length) throw new Error('Duplicate saved prediction ID.');
+// A device that could not load never ran the model, so its row is no abstention. Older runs saved such rows
+// before aborting. Retry those cases; each saved row stays until its case completes and replaces it.
+const deviceFailed = r => r.reviewReason === 'model_load_failed' || r.reviewReason === 'device_unavailable';
+const seen = new Set(records.filter(r => !deviceFailed(r)).map(r => r.id));
+// Only reviewer results show that the model has loaded: gradeOnDevice returns them only after the load. A row
+// refused before the load (context_limit) or cut off by the harness deadline has none.
+const hasReviews = r => Array.isArray(r.failureCodes);
+let reviewStarted = false;
 await mkdir(dirname(resolve(flags.out)), {recursive: true});
 const assets = resolve(flags.assets);
 const files = new Set(['device.js','webllm-0.2.87.js','qwen3-1.7b-webgpu.wasm']);
@@ -57,13 +64,17 @@ try {
   async function freshPage() {
     page = await browser.newPage();
   page.on('console', message => {if (message.type() === 'error') console.error('browser:', message.text().slice(0, 250));});
-  await page.exposeFunction('reportProgress', progress => {if (progress.phase !== 'download' || !progress.progress || progress.progress >= 1) console.log(progress.text);});
+  await page.exposeFunction('reportProgress', progress => {
+    if (progress.phase === 'review') reviewStarted = true;
+    if (progress.phase !== 'download' || !progress.progress || progress.progress >= 1) console.log(progress.text);
+  });
   await page.goto(`http://127.0.0.1:${port}/`);
   }
   await freshPage();
   const capability = await page.evaluate(async () => (await import('/device-runtime/device.js')).deviceAvailability());
   if (!capability.available) throw new Error(capability.reason);
-  console.log(`WebGPU ready. ${input.length} selected cases, ${seen.size} already saved.`);
+  const retried = records.length - seen.size;
+  console.log(`WebGPU ready. ${input.length} selected cases, ${seen.size} already saved${retried ? `, ${retried} saved device failure(s) to retry` : ''}.`);
   for (const record of input) {
     if (seen.has(record.id)) continue;
     const start = Date.now();
@@ -81,7 +92,9 @@ try {
     }, {question: record.question, answer: record.answer});
     // This timer runs outside Chrome. It still fires if a GPU/runtime abort wedges the page.
     const externalDeadline = new Promise((_, reject) => {
-      const timeout = !seen.size && !records.length ? 35 * 60000 : 5 * 60000;
+      // Until the model has loaded once, a case may include its download: no review has started in this run
+      // and no saved row has reviewer results.
+      const timeout = reviewStarted || records.some(hasReviews) ? 5 * 60000 : 35 * 60000;
       timer = setTimeout(() => reject(new Error('browser_runtime_timeout')), timeout);
     });
     let result;
@@ -90,9 +103,14 @@ try {
       recycle = true;
       result = {status:'needs_review', suggestedScore:null, reviewReason:cause.message==='browser_runtime_timeout'?'browser_runtime_timeout':'browser_runtime_failure', reviewerScores:[null,null], criterionScores:[null,null]};
     } finally { clearTimeout(timer); }
+    // The model never attempted a case its device could not load. Stop before saving it, so --resume retries it.
+    if (deviceFailed(result)) {
+      throw new Error(`Device could not initialize (${result.reviewReason}) on ${record.id}. Diagnose before continuing; --resume retries this unsaved case.`);
+    }
     const row = {...result, id:record.id, milliseconds:Date.now()-start, modelId:DEVICE_MODEL.modelId,
       modelRevision:DEVICE_MODEL.modelRevision, runtimeVersion:DEVICE_MODEL.runtimeVersion,promptVersion:DEVICE_MODEL.promptVersion};
-    records.push(row);
+    const saved = records.findIndex(r => r.id === row.id);
+    if (saved < 0) records.push(row); else records[saved] = row;
     await writeFile(flags.out+'.tmp', JSON.stringify(records,null,2)+'\n');
     await rename(flags.out+'.tmp', flags.out);
     console.log(`${records.length}/${input.length} ${row.id}: ${row.suggestedScore ?? 'review'} [${row.reviewerScores.join(', ')}] ${row.milliseconds}ms`);
@@ -100,6 +118,5 @@ try {
       await page.close({runBeforeUnload:false}).catch(() => {});
       await freshPage();
     }
-    if (row.reviewReason === 'model_load_failed' || row.reviewReason === 'device_unavailable') throw new Error('Device could not initialize. Diagnose before continuing.');
   }
 } finally {if (browser) await browser.close();server.close();}

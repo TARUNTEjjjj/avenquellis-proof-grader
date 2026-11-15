@@ -3,7 +3,7 @@ import {dirname} from 'node:path';
 import {fixtures as defaults} from './fixtures.js';
 import {computeMetrics} from './metrics.js';
 import {assessProof} from '../src/index.js';
-import {boundedInput,evaluateProof,PROMPT_VERSION} from '../src/provider.js';
+import {boundedInput,evaluateProof} from '../src/provider.js';
 
 const args=process.argv.slice(2),options={};
 for (let i=0;i<args.length;i++) {
@@ -28,6 +28,11 @@ else {
     predictions.push({id:fixture.id,category:fixture.category,status:result.status,suggestedScore:result.suggestedScore ?? null,reviewReason:result.reviewReason || 'offline_preparation',reviews:result.reviews || [],provenance:result.provenance || null});
   }
 }
-const report={generatedAt:new Date().toISOString(),mode:options.live?'live_provider':options.predictions?'provided_predictions':'offline_preparation',promptVersion:PROMPT_VERSION,...computeMetrics({fixtures,predictions,labels}),predictions};
+const metrics=computeMetrics({fixtures,predictions,labels});
+// Name only a prompt the predictions record. Offline preparation runs none, bare {id,suggestedScore} rows record none,
+// and rows from several prompts share no single version.
+const versions=new Set(predictions.map(p=>[p.promptVersion,p.provenance?.promptVersion].find(v=>typeof v==='string') ?? null));
+const promptVersion=versions.size===1?[...versions][0]:null;
+const report={generatedAt:new Date().toISOString(),mode:options.live?'live_provider':options.predictions?'provided_predictions':'offline_preparation',promptVersion,...metrics,predictions};
 if (options.out) {await mkdir(dirname(options.out),{recursive:true});await writeFile(options.out,JSON.stringify(report,null,2)+'\n');}
 console.log(JSON.stringify(report,null,2));

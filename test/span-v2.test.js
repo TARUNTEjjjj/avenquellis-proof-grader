@@ -51,6 +51,17 @@ test('invalid point values, span IDs, absent evidence and incomplete schemas are
   const cut=await evaluateProof({question,answer},{env:env(async()=>({response,finish_reason:'length'}))});
   assert.ok(cut.reviews.every(r=>r.failure.code==='incomplete_output'));
 });
+test('reasons within the row limit keep the review even when they join past 10,000 characters, and malformed Unicode is a schema failure',async()=>{
+  const wide={...question,maxMarks:9,rubric:Array.from({length:9},(_,i)=>({id:`c${i+1}`,description:`Criterion ${i+1}.`,points:1}))};
+  const reason='The cited step shows that one of the two factors is even. '.repeat(20).trim();
+  assert.ok(reason.length<=1200);
+  const rows=Object.fromEntries(wide.rubric.map(c=>[c.id,{points:1,spans:[0],reason}]));
+  const long=await evaluateProof({question:wide,answer},{env:env(async()=>({response:rows}))});
+  assert.equal(long.suggestedScore,9);assert.ok(long.reviews.every(r=>r.rationale.length>10000));
+  const broken={...response,parity:{...response.parity,reason:'Parity gives an even factor \ud835.'}};
+  const malformed=await evaluateProof({question,answer},{env:env(async()=>({response:broken}))});
+  assert.equal(malformed.suggestedScore,null);assert.ok(malformed.reviews.every(r=>r.failure.code==='invalid_schema'));
+});
 test('zero points need no invented citation; protocol choice is server-controlled and defaults to measured V1',async()=>{
   const zero={parity:{points:0,spans:[],reason:'No reasoning supplied.'},product:{points:0,spans:[],reason:'No deduction.'}};
   assert.deepEqual(resolveSpanReview(question,answer,zero).evidence,[]);

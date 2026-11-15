@@ -86,3 +86,46 @@ test('replay the two recorded synthetic parity ledgers without inference',async(
   let index=0; const result=await evaluatePartialCredit({question:q,answer:a},{env:env(async()=>({choices:[{finish_reason:'stop',message:{content:visibleTexts[index++]}}]}))});
   assert.equal(result.primaryProposal,2);assert.equal(result.suggestedScore,null);assert.equal(result.readers[1].failureCode,'inconsistent_award');
 });
+
+test('a candidate call the runtime never settles frees its slot after the deadline plus the grace period',async()=>{
+  const realNow=Date.now;let clock=realNow();Date.now=()=>clock;
+  try {
+    const hung={...env(()=>new Promise(()=>{})),EVALUATOR_TIMEOUT_MS:'50'};
+    for(let i=0;i<2;i++)assert.deepEqual((await evaluatePartialCredit({question,answer},{env:hung})).readers.map(r=>r.failureCode),['timeout','timeout']);
+    let calls=0;const counted=env(async()=>{calls++;return output(partial);});
+    clock+=50+60000-1;
+    assert.deepEqual((await evaluatePartialCredit({question,answer},{env:counted})).readers.map(r=>r.failureCode),['busy','busy']);assert.equal(calls,0);
+    clock+=1;
+    assert.equal((await evaluatePartialCredit({question,answer},{env:counted})).suggestedScore,2);assert.equal(calls,2);
+  } finally {Date.now=realNow;}
+});
+
+test('both readers’ requests are sized before either model call',async()=>{
+  // Reading B's role is 44 bytes longer, so a request can fit for reader A alone.
+  const rubric=['a','b','c'].map(id=>({id,points:31,description:`Criterion ${id}.`}));
+  const sized=(when,extra)=>({...question,maxMarks:93,rubric,partialMarkingGuide:{version:1,source:'Synthetic size check',alternativeGuidance:'y'.repeat(extra),
+    criteria:rubric.map(c=>({id:c.id,levels:Array.from({length:32},(_,points)=>({points,when:'x'.repeat(when)}))}))}});
+  const size=(q,i)=>new TextEncoder().encode(JSON.stringify(makePartialCreditRequest(q,answer,i))).length;
+  const when=Math.floor((110000-size(sized(1,0),0))/96)+1;
+  const q=sized(when,110000-size(sized(when,0),0));
+  assert.equal(size(q,0),110000);assert.throws(()=>makePartialCreditRequest(q,answer,1),e=>e.code==='context_limit');
+  let calls=0;
+  await assert.rejects(evaluatePartialCredit({question:q,answer},{env:env(async()=>{calls++;return output(partial);})}),e=>e.code==='context_limit');
+  assert.equal(calls,0);
+});
+
+test('both readers start together or neither starts',async t=>{
+  const pending=[];
+  // Settle stalled calls even after a failed assertion, so their slots cannot leak into later tests.
+  t.after(async()=>{pending.forEach(finish=>finish());await new Promise(resolve=>setImmediate(resolve));});
+  const stall=()=>new Promise(resolve=>pending.push(()=>resolve(output(partial))));
+  // Three of the four slots stay held: two by a stalled evaluation, one by a stalled first reader.
+  await evaluatePartialCredit({question,answer},{env:{...env(stall),EVALUATOR_TIMEOUT_MS:'50'}});
+  await evaluatePartialCredit({question,answer},{env:{...env(async(_model,input)=>input.seed===77101?stall():output(partial)),EVALUATOR_TIMEOUT_MS:'50'}});
+  assert.equal(pending.length,3);
+  let calls=0;const counted=env(async()=>{calls++;return output(partial);});
+  assert.deepEqual((await evaluatePartialCredit({question,answer},{env:counted})).readers.map(r=>r.failureCode),['busy','busy']);
+  assert.equal(calls,0);
+  pending.forEach(finish=>finish());await new Promise(resolve=>setImmediate(resolve));
+  assert.equal((await evaluatePartialCredit({question,answer},{env:counted})).suggestedScore,2);assert.equal(calls,2);
+});

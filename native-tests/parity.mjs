@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import {spawnSync} from 'node:child_process';
 import {closeSync,openSync,readFileSync} from 'node:fs';
 import {certificateHelp,verifyCertificate} from '../src/certificate.js';
+import {finalizeReview} from '../src/index.js';
 
 const binary=process.argv[2];
 const fixtures=JSON.parse(readFileSync(new URL('../test/fixtures/certificate-questions.json',import.meta.url),'utf8'));
@@ -73,4 +74,28 @@ try {
     assert.equal(run.status,2,args[0]);assert.match(run.stderr,/"error":.*stdout/);
   }
 } finally {closeSync(unwritable);}
-console.log(assertions+' certificate/prose differential cases across all supported parameters.');
+// finalize: both validators accept or refuse the same human decision, and record the same marks and text.
+const review=JSON.parse(readFileSync(new URL('../examples/human-review.json',import.meta.url),'utf8'));
+let decisions=0;
+function finalizes(change) {
+  const request=structuredClone(review);change(request);
+  let expected=null;
+  try{expected=finalizeReview(request);}catch{}
+  const run=spawnSync(binary,['finalize'],{input:JSON.stringify(request),encoding:'utf8'});
+  assert.equal(run.status,expected?0:2,`finalize case ${decisions+1}: JavaScript ${expected?'accepts':'refuses'} it; native says ${run.stderr||'accepted'}`);
+  if(expected){
+    const result=JSON.parse(run.stdout);
+    assert.deepEqual([result.status,result.score,result.maxMarks,result.reviewer,result.rationale,result.reviewerIdentityVerified,result.criteria.map(row=>row.points)],
+      [expected.status,expected.score,expected.maxMarks,expected.reviewer,expected.rationale,expected.reviewerIdentityVerified,expected.criteria.map(row=>row.awarded)]);
+  } else assert.match(run.stderr,/"error"/);
+  decisions++;
+}
+for(const change of [
+  ()=>{},r=>{r.reviewer='Dr. Ñandú Ωmega';},r=>{r.reviewer='x'.repeat(200);},r=>{r.reviewer='x'.repeat(201);},
+  r=>{r.reviewer='';},r=>{r.reviewer=' \t\n';},r=>{r.rationale=' \r\n';},r=>{r.reviewer=7;},r=>{delete r.rationale;},
+  // Text cut inside a surrogate pair is refused on both sides.
+  r=>{r.reviewer='Ms. Ramanujan 🧮'.slice(0,-1);},r=>{r.rationale='The odd case 𝒜'.slice(0,-1);},
+  r=>{r.criterionScores.even=3;},r=>{r.criterionScores.odd=-1;},r=>{r.criterionScores.even=1.5;},
+  r=>{delete r.criterionScores.odd;},r=>{r.criterionScores.extra=0;},r=>{r.question.maxMarks=5;}
+]) finalizes(change);
+console.log(assertions+' certificate/prose differential cases across all supported parameters; '+decisions+' finalize cases.');

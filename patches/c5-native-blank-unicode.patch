@@ -1,0 +1,72 @@
+Pending fix for C5 (code review of 2026-11-09). Native blank() treats only ASCII whitespace as blank,
+so native compare and finalize accept a rationale, quote or reviewer made only of Unicode spaces
+(NBSP, U+3000, U+2028, U+FEFF and others), which every JavaScript validator rejects with trim().
+This patch makes the blank() in src/grader.cpp reuse the ECMAScript trim() in src/certificate.cpp
+and adds native-core cases.
+
+Both files are pinned by edge/build-info.json to the committed WebAssembly module, so apply the
+patch only together with a rebuild of that module:
+  1. git apply patches/c5-native-blank-unicode.patch, git rm this file, and commit.
+  2. From that commit, rebuild with emsdk 6.0.13 (EMSDK=/path/to/emsdk npm run build:edge, or the
+     build-edge.yml workflow).
+  3. node wasm/check.mjs
+  4. Write that commit's SHA to edge/source-commit.txt.
+  5. Commit edge/avenquellis-grader-runtime.js and .wasm, edge/build-info.json and
+     edge/source-commit.txt.
+  6. npm test, and ctest in a CMake build tree.
+patches/s2.4-native-reviewer-utf16-units.patch waits for the same rebuild. The two patches are
+independent and apply in either order: apply both in step 1 and rebuild once.
+Checked on a copy of the fix branch: a -Werror Release build with no warnings and CTest 5/5; the
+new native-core cases fail without the grader change; in JavaScript only the manifest hash test
+fails, as expected until the rebuild.
+
+--- a/src/grader.cpp
++++ b/src/grader.cpp
+@@ -6,11 +6,11 @@
+ namespace noether::grader {
+ namespace detail {
+ std::optional<Assessment> verify(const Question&, std::string_view);
++bool blank(std::string_view);
+ }
+ namespace {
+-bool blank(std::string_view value) {
+-    return value.find_first_not_of(" \n\r\t\v\f") == std::string_view::npos;
+-}
++// Text is blank when ECMAScript trim() would empty it, as in the JavaScript validators.
++bool blank(std::string_view value) { return detail::blank(value); }
+ 
+ void validate_answer(std::string_view answer) {
+     if (answer.size() > 200000) throw std::invalid_argument("Answer exceeds 200,000 UTF-8 bytes.");
+--- a/src/certificate.cpp
++++ b/src/certificate.cpp
+@@ -211,6 +211,9 @@
+ }
+ 
+ namespace detail {
++// The grader's required text fields share the ECMAScript whitespace rule.
++bool blank(std::string_view value) { return trim(value).empty(); }
++
+ std::optional<Assessment> verify(const Question& question, std::string_view answer) {
+     const auto family = identify(question);
+     const auto first_line = answer.substr(0, answer.find('\n'));
+--- a/native-tests/core.cpp
++++ b/native-tests/core.cpp
+@@ -42,6 +42,18 @@
+         check(!compare(q, proof, {std::nullopt, first}).suggested_score);
+         const Reading zero{{{"even", 0}, {"odd", 0}}, "No relevant deductions established.", {}};
+         check(compare(q, proof, {zero, zero}).suggested_score == 0);
++        // Blank follows ECMAScript trim(), like the JavaScript validators: NBSP, BOM and Unicode spaces are blank.
++        rejects([&] { (void)finalize(q, proof, {{"even", 2}, {"odd", 0}}, "\u3000", "reason"); });
++        rejects([&] { (void)finalize(q, proof, {{"even", 2}, {"odd", 0}}, "R", "\u00a0\u2028\ufeff"); });
++        const std::string spaced = "Even\u00a0n already supplies an even factor.";
++        const Reading blank_rationale{{{"even", 2}, {"odd", 0}}, "\u2003", {{"even", "even factor"}}};
++        const Reading blank_quote{{{"even", 2}, {"odd", 0}}, "Only even inputs are shown.", {{"even", "\u00a0"}}};
++        for (const auto& reading : {blank_rationale, blank_quote}) {
++            const auto result = compare(q, spaced, {reading, reading});
++            check(!result.suggested_score && !result.reader_errors[0].empty() && !result.reader_errors[1].empty());
++        }
++        bad = q; bad.id = "\u00a0"; rejects([&] { validate(bad); });
++        bad = q; bad.rubric[0].description = "\u3000"; rejects([&] { validate(bad); });
+ 
+         Question gcd{"number-gcd-17s23lf", "Prove that gcd(n, n + 10) = gcd(n, 10) for every positive integer n.", 10,
+             {{"step-1", "Prove every common divisor of n and n+k divides k.", 4},
