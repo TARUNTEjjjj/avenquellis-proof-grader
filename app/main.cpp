@@ -19,12 +19,18 @@ const char* help =
     "review     Request two model readings from AVENQUELLIS_GRADER_URL /evaluate.\n"
     "           Use AVENQUELLIS_GRADER_TOKEN for remote HTTPS or protected local service.\n";
 
+// Redirected output is buffered, so a write error may only appear when it is flushed.
+void write_stdout(std::string_view text) {
+    std::cout << text << std::flush;
+    if (!std::cout) throw std::runtime_error("Could not write to stdout.");
+}
+
 }
 
 int main(int argc, char** argv) {
-    if (argc == 2 && std::string_view(argv[1]) == "--help") { std::cout << help; return 0; }
     if (argc < 2 || argc > 3) { std::cerr << help; return 2; }
     try {
+        if (argc == 2 && std::string_view(argv[1]) == "--help") { write_stdout(help); return 0; }
         std::ifstream file;
         std::istream* input = &std::cin;
         if (argc == 3 && std::string_view(argv[2]) != "-") {
@@ -39,7 +45,7 @@ int main(int argc, char** argv) {
             text.append(buffer, static_cast<std::size_t>(input->gcount()));
         }
         if (input->bad()) throw std::runtime_error("Request read failed.");
-        std::cout << noether::grader::grade_json(argv[1], text, request_reviews) << '\n';
+        write_stdout(noether::grader::grade_json(argv[1], text, request_reviews) + '\n');
         return 0;
     } catch (const Json::exception&) {
         std::cerr << "{\"error\":\"A required JSON field is missing or has the wrong type.\"}\n";

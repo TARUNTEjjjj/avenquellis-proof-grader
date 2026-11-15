@@ -19,7 +19,9 @@ const args=['-std=c++20','-Oz','-fexceptions','-Iinclude','-Isrc','-Ithird_party
   '-sEXPORTED_FUNCTIONS=_malloc,_free,_avenquellis_grader_run,_avenquellis_grader_output_length,_avenquellis_grader_clear',
   '-sEXPORTED_RUNTIME_METHODS=HEAPU8','-sALLOW_MEMORY_GROWTH=1','-sINITIAL_MEMORY=16777216','-sMAXIMUM_MEMORY=67108864',
   '-sSTACK_SIZE=1048576','-sFILESYSTEM=0','-sDYNAMIC_EXECUTION=0','-o','edge/avenquellis-grader-runtime.js'];
-const build=spawnSync(empp,args,{cwd:root,env,stdio:'inherit'});if(build.error)throw build.error;if(build.status)process.exit(build.status);
+const build=spawnSync(empp,args,{cwd:root,env,stdio:'inherit'});if(build.error)throw build.error;
+// A compiler killed by a signal has a null status. Stop before pinning new source hashes to the old artifacts.
+if(build.status!==0){console.error(`em++ failed (${build.signal?'signal '+build.signal:'exit code '+build.status}).`);process.exit(build.status||1);}
 const artifacts={};
 for(const name of ['avenquellis-grader-runtime.js','avenquellis-grader-runtime.wasm']){
   const bytes=readFileSync(join(out,name));artifacts[name]={bytes:bytes.length,sha256:createHash('sha256').update(bytes).digest('hex')};
