@@ -83,7 +83,7 @@ The checker binds each theorem to its exact generated statement, bounded paramet
 
 HTTPS is required for remote providers. HTTP is permitted only on localhost/127.0.0.1/::1. Redirects are rejected. Keys never appear in request payloads returned to the caller, client code, source-controlled configuration or error messages.
 
-For the HTTP provider, the API request limit is 200KB. Evaluator input is further restricted to a 20,000-character answer, 15,000-character statement, at most 32 rubric criteria and a 65KB serialized mathematical payload. Each response is capped at 64KB. Two evaluations may be active per handler instance, and each evaluation makes two parallel reviewer requests with no automatic retries. This is an instance-level concurrency limit, not a distributed billing quota.
+For the HTTP provider, the API request limit is 200KB. Evaluator input is further restricted to a 20,000-character answer, 15,000-character statement, at most 32 rubric criteria and a 65KB serialized mathematical payload. Each response is capped at 64KB and must contain well-formed UTF-8; malformed bytes are never replaced inside a review. The configured deadline bounds both fetch and response reading even when a custom transport ignores cancellation. Rejected-body cleanup is best-effort and cannot delay the error response. Two evaluations may be active per handler instance, and each evaluation makes two parallel reviewer requests with no automatic retries. This is an instance-level concurrency limit, not a distributed billing quota.
 
 ## API contract
 
@@ -249,3 +249,11 @@ The [IMO General Regulations, §7](https://www.imo-official.org/regulations/) de
 The [UKMT BMO1 2023 markers' report, pp. 1–2](https://ukmt.org.uk/wp-content/uploads/2023/12/BMO1-2023-Markers-Report-.pdf) emphasizes coherent strategy, justification, gaps and meaningful partial progress. The reviewer prompts and checklist apply these principles. Its particular marking thresholds are not transplanted to CMI or ISI. Those exams need their own approved problem-specific schemes. Neither institution nor source endorses this software.
 
 The transport implements [OpenAI's Chat Completions request/response contract](https://developers.openai.com/api/reference/resources/chat/subresources/completions/methods/create) and [structured output format](https://developers.openai.com/api/docs/guides/structured-outputs?api-mode=chat), with additional local validation. Other providers must support that contract, including strict schema responses; compatibility is not assumed from branding alone. Documentation checked on 3 November 2026.
+
+## Reliability review — 7 November 2026
+
+Rejected request bodies are cancelled without waiting for cleanup to finish. A stalled or failed cancellation can no longer hold an oversized-request response or replace the safe validation message. Early content-type/size failures and malformed UTF-8 discard their unread remainder. The 85 JavaScript tests, compiled edge artifact check, and four native CTest suites passed locally; tests used synthetic or local providers and made no paid model calls. The production-dependency audit reported no known vulnerabilities. These checks validate the implementation, not mathematical examiner accuracy or concurrent-user capacity.
+
+## GitHub resource collection
+
+Explore the project-specific [resource catalog](resources/README.md): curated references, star-ranked discovery, dated source metadata, cached failure recovery and an optional read-only server API. The repository includes a daily refresh workflow; hosted sites still follow their existing deployment process.

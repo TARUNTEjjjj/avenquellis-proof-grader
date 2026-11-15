@@ -23,7 +23,10 @@
     "build:device": "node scripts/build-device.mjs",
     "benchmark:device": "node benchmark/device-browser.mjs",
     "build:edge": "node scripts/build-edge.mjs",
-    "check:edge": "node wasm/check.mjs"
+    "check:edge": "node wasm/check.mjs",
+    "resources:refresh": "node scripts/resources/resource-server.mjs refresh --config resources/sources.json --output resources/catalog.json",
+    "resources:serve": "node scripts/resources/resource-server.mjs serve --config resources/sources.json --snapshot resources/catalog.json",
+    "test:resources": "node --test scripts/resources/resource-catalog.test.mjs && node scripts/resources/check-catalog.mjs"
   },
   "engines": {
     "node": ">=20"
