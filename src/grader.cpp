@@ -6,11 +6,11 @@
 namespace noether::grader {
 namespace detail {
 std::optional<Assessment> verify(const Question&, std::string_view);
+bool blank(std::string_view);
 }
 namespace {
-bool blank(std::string_view value) {
-    return value.find_first_not_of(" \n\r\t\v\f") == std::string_view::npos;
-}
+// Text is blank when ECMAScript trim() would empty it, as in the JavaScript validators.
+bool blank(std::string_view value) { return detail::blank(value); }
 
 void validate_answer(std::string_view answer) {
     if (answer.size() > 200000) throw std::invalid_argument("Answer exceeds 200,000 UTF-8 bytes.");
@@ -88,8 +88,15 @@ Assessment finalize(const Question& question, std::string_view answer, const Sco
                     std::string_view reviewer, std::string_view rationale) {
     validate(question);
     validate_answer(answer);
-    if (blank(reviewer) || reviewer.size() > 200 || blank(rationale)) {
-        throw std::invalid_argument("A reviewer (at most 200 bytes) and mathematical rationale are required.");
+    // The reviewer limit counts UTF-16 code units, as JavaScript finalizeReview does. A UTF-8 lead byte opens
+    // one unit, or two for a four-byte sequence. The byte bound also limits text that is not UTF-8.
+    std::size_t units = 0;
+    for (const char c : reviewer) {
+        const auto byte = static_cast<unsigned char>(c);
+        if ((byte & 0xc0u) != 0x80u) units += byte >= 0xf0 ? 2u : 1u;
+    }
+    if (blank(reviewer) || reviewer.size() > 800 || units > 200 || blank(rationale)) {
+        throw std::invalid_argument("A reviewer (at most 200 UTF-16 code units) and mathematical rationale are required.");
     }
     Assessment result;
     result.status = Status::human_reviewed;

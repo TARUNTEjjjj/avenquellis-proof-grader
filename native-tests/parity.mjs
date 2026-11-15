@@ -93,6 +93,9 @@ function finalizes(change) {
 for(const change of [
   ()=>{},r=>{r.reviewer='Dr. Ñandú Ωmega';},r=>{r.reviewer='x'.repeat(200);},r=>{r.reviewer='x'.repeat(201);},
   r=>{r.reviewer='';},r=>{r.reviewer=' \t\n';},r=>{r.rationale=' \r\n';},r=>{r.reviewer=7;},r=>{delete r.rationale;},
+  // The reviewer limit counts UTF-16 code units on both sides, whatever the UTF-8 length.
+  r=>{r.reviewer='Ñ'.repeat(200);},r=>{r.reviewer='Ñ'.repeat(201);},r=>{r.reviewer='न'.repeat(200);},
+  r=>{r.reviewer='𝒜'.repeat(100);},r=>{r.reviewer='𝒜'.repeat(100)+'x';},
   // Text cut inside a surrogate pair is refused on both sides.
   r=>{r.reviewer='Ms. Ramanujan 🧮'.slice(0,-1);},r=>{r.rationale='The odd case 𝒜'.slice(0,-1);},
   r=>{r.criterionScores.even=3;},r=>{r.criterionScores.odd=-1;},r=>{r.criterionScores.even=1.5;},

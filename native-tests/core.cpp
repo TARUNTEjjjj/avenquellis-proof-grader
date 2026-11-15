@@ -28,6 +28,21 @@ int main() {
         check(marked.status == Status::human_reviewed && marked.score == 2 && marked.reviewer == "Test reader");
         rejects([&] { (void)finalize(q, proof, {{"even", 3}, {"odd", -1}}, "R", "reason"); });
         rejects([&] { (void)finalize(q, proof, {{"even", 2}, {"odd", 2}}, "", "reason"); });
+        // The reviewer limit is 200 UTF-16 code units, as in JavaScript: a two- or three-byte letter counts once
+        // and a character beyond the Basic Multilingual Plane counts twice.
+        const auto repeated = [](std::string_view piece, int times) {
+            std::string joined;
+            while (times-- > 0) joined += piece;
+            return joined;
+        };
+        check(finalize(q, proof, {{"even", 2}, {"odd", 0}}, repeated("\u00d1", 200), "reason").reviewer.size() == 400U);
+        rejects([&] { (void)finalize(q, proof, {{"even", 2}, {"odd", 0}}, repeated("\u00d1", 201), "reason"); });
+        check(finalize(q, proof, {{"even", 2}, {"odd", 0}}, repeated("\u0928", 200), "reason").reviewer.size() == 600U);
+        check(finalize(q, proof, {{"even", 2}, {"odd", 0}}, repeated("\U0001d49c", 100), "reason").score == 2);
+        rejects([&] { (void)finalize(q, proof, {{"even", 2}, {"odd", 0}}, repeated("\U0001d49c", 100) + "x", "reason"); });
+        rejects([&] { (void)finalize(q, proof, {{"even", 2}, {"odd", 0}}, std::string(201, 'x'), "reason"); });
+        // Bytes that are not UTF-8 open no unit, so the byte bound limits them.
+        rejects([&] { (void)finalize(q, proof, {{"even", 2}, {"odd", 0}}, std::string(801, '\x80'), "reason"); });
         auto bad = q; bad.rubric.back().id = "even"; rejects([&] { validate(bad); });
         bad = q; bad.max_marks = bad.rubric[0].points = std::numeric_limits<int>::max();
         rejects([&] { validate(bad); });
@@ -42,6 +57,18 @@ int main() {
         check(!compare(q, proof, {std::nullopt, first}).suggested_score);
         const Reading zero{{{"even", 0}, {"odd", 0}}, "No relevant deductions established.", {}};
         check(compare(q, proof, {zero, zero}).suggested_score == 0);
+        // Blank follows ECMAScript trim(), like the JavaScript validators: NBSP, BOM and Unicode spaces are blank.
+        rejects([&] { (void)finalize(q, proof, {{"even", 2}, {"odd", 0}}, "\u3000", "reason"); });
+        rejects([&] { (void)finalize(q, proof, {{"even", 2}, {"odd", 0}}, "R", "\u00a0\u2028\ufeff"); });
+        const std::string spaced = "Even\u00a0n already supplies an even factor.";
+        const Reading blank_rationale{{{"even", 2}, {"odd", 0}}, "\u2003", {{"even", "even factor"}}};
+        const Reading blank_quote{{{"even", 2}, {"odd", 0}}, "Only even inputs are shown.", {{"even", "\u00a0"}}};
+        for (const auto& reading : {blank_rationale, blank_quote}) {
+            const auto result = compare(q, spaced, {reading, reading});
+            check(!result.suggested_score && !result.reader_errors[0].empty() && !result.reader_errors[1].empty());
+        }
+        bad = q; bad.id = "\u00a0"; rejects([&] { validate(bad); });
+        bad = q; bad.rubric[0].description = "\u3000"; rejects([&] { validate(bad); });
 
         Question gcd{"number-gcd-17s23lf", "Prove that gcd(n, n + 10) = gcd(n, 10) for every positive integer n.", 10,
             {{"step-1", "Prove every common divisor of n and n+k divides k.", 4},
