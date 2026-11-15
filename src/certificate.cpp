@@ -211,6 +211,9 @@ std::optional<std::string> scaffold(const Question& question) {
 }
 
 namespace detail {
+// The grader's required text fields share the ECMAScript whitespace rule.
+bool blank(std::string_view value) { return trim(value).empty(); }
+
 std::optional<Assessment> verify(const Question& question, std::string_view answer) {
     const auto family = identify(question);
     const auto first_line = answer.substr(0, answer.find('\n'));
