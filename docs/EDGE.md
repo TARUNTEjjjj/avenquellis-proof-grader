@@ -8,7 +8,7 @@ Both routes accept `{questionId, answer, reference?}`. The client cannot supply 
 
 ## Reproduce
 
-The `edge` directory contains verified Emscripten 6.0.13 output plus a manifest with source and artifact SHA-256 hashes. Its source commit is recorded in `edge/source-commit.txt`. The native build workflow installs the pinned official SDK and runs both certificate formats and evidence validation before returning an artifact.
+The `edge` directory contains verified Emscripten 6.0.13 output plus a manifest with source and artifact SHA-256 hashes. Its source commit is recorded in `edge/source-commit.txt`. With the full git history, the test suite checks that this commit is in the history of `HEAD` and holds the manifest's source files. Record it only from a commit that will not be amended or rebased. The native build workflow installs the pinned official SDK and runs both certificate formats and evidence validation before returning an artifact.
 
 ```sh
 # With the official 6.0.13 SDK installed and activated

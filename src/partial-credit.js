@@ -1,5 +1,5 @@
 /** An experimental, separately enabled two-reader proof marker. The production scorer does not import this module. */
-import {boundedInput} from './provider.js';
+import {boundedInput, BINDING_SLOT_GRACE_MS} from './provider.js';
 import {proofSpans} from './span-v2.js';
 
 export const PARTIAL_CREDIT_VERSION = 'noether-point-ledger-2026-11-03-candidate3';
@@ -151,12 +151,21 @@ export function parsePartialCreditLedger(question,answer,text) {
   return {total,whole:{state,test,gap:criteria.filter(c=>c.gap).map(c=>c.id+': '+c.gap).join('; ')},criteria,needsReview:true};
 }
 
-let activeCalls=0;
-async function runReader(question,answer,index,env,model,cap,deadline) {
-  if(activeCalls>=4)fail('busy','The isolated candidate is busy.');
-  const input=makePartialCreditRequest(question,answer,index,{model,maxTokens:cap});
-  activeCalls++;
-  const inference=Promise.resolve().then(()=>env.AI.run(model,input)).finally(()=>{activeCalls--;});
+// As in provider.js, an unanswered call stays counted after the local deadline. The runtime may
+// cancel a subrequest without ever settling it, so its slot also expires BINDING_SLOT_GRACE_MS later.
+const activeCalls=new Set();
+// Both readers start together or not at all, so a busy isolate never pays for one reading whose partner is refused.
+function reserveReaderSlots(deadline) {
+  const now=Date.now();
+  for(const call of activeCalls)if(call.expires<=now)activeCalls.delete(call);
+  if(activeCalls.size+2>4)return null;
+  const slots=[0,1].map(()=>({expires:now+deadline+BINDING_SLOT_GRACE_MS}));
+  for(const slot of slots)activeCalls.add(slot);
+  return slots;
+}
+async function runReader(question,answer,input,env,model,deadline,call) {
+  if(!call)fail('busy','The isolated candidate is busy.');
+  const inference=Promise.resolve().then(()=>env.AI.run(model,input)).finally(()=>{activeCalls.delete(call);});
   let timer;
   try {
     const output=await Promise.race([inference,new Promise((_,reject)=>{timer=setTimeout(()=>reject(Object.assign(new Error('Candidate deadline exceeded.'),{code:'timeout'})),deadline);})]);
@@ -178,8 +187,10 @@ export async function evaluatePartialCredit({question,answer},{env={}}={}) {
   const model=env.EVALUATOR_MODEL||PRIMARY_MODEL,cap=Number(env.EVALUATOR_MAX_TOKENS||DEFAULT_CAP),deadline=Number(env.EVALUATOR_TIMEOUT_MS||55000);
   if(!MODEL_IDS.has(model)||!Number.isSafeInteger(deadline)||deadline<50||deadline>120000)fail('invalid_config','Invalid trial model or deadline.');
   if(model===FALLBACK_MODEL && env.PARTIAL_CREDIT_FALLBACK!=='synthetic-incompatibility')fail('fallback_disabled','The fallback must be chosen on synthetic compatibility evidence before the trial.');
-  makePartialCreditRequest(question,answer,0,{model,maxTokens:cap});
-  const results=await Promise.allSettled([0,1].map(i=>runReader(question,answer,i,env,model,cap,deadline)));
+  // Build and size both requests before either call; the readers' roles differ in length.
+  const inputs=[0,1].map(i=>makePartialCreditRequest(question,answer,i,{model,maxTokens:cap}));
+  const slots=reserveReaderSlots(deadline);
+  const results=await Promise.allSettled(inputs.map((input,i)=>runReader(question,answer,input,env,model,deadline,slots?.[i])));
   const knownCodes=new Set(['invalid_json','invalid_ledger','invalid_span','invalid_marks','missing_check','missing_support','inconsistent_award','guide_violation','incomplete_output','timeout','busy']);
   const readers=results.map((r,index)=>{
     if(r.status==='fulfilled') return {reader:index+1,status:r.value.total===null?'indeterminate':'proposal',...r.value};

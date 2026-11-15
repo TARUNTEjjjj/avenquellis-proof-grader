@@ -49,6 +49,34 @@ try {
   assert.equal(call.value.suggestedScore,null);assert.deepEqual(call.value.reviews.map(r=>r.score),[2,null]);assert.equal(modelCalls.length,6);
   const unauthorized=await invoke('review',input,{...env,NOETHER_GRADER_TOKEN:'wrong'});
   assert.equal(unauthorized.code,2);assert.match(unauthorized.stderr,/401/);assert.equal(modelCalls.length,6);
+  // A wrong token gets a plain 401, also when the same token is set under the other name.
+  assert.doesNotMatch(unauthorized.stderr,/takes only/);
+  call=await invoke('review',input,{...env,NOETHER_GRADER_TOKEN:'wrong',AVENQUELLIS_GRADER_TOKEN:'wrong'});
+  assert.equal(call.code,2);assert.match(call.stderr,/401/);assert.doesNotMatch(call.stderr,/takes only/);assert.equal(modelCalls.length,6);
+  // The URL and its token are read as one pair of names. A stale legacy token is never sent to AVENQUELLIS_GRADER_URL,
+  // and the 401 names the pairing, since the only token set is under the other name.
+  const stale={NOETHER_GRADER_URL:'https://old-service.invalid/evaluate',NOETHER_GRADER_TOKEN:token};
+  call=await invoke('review',input,{...stale,AVENQUELLIS_GRADER_URL:endpoint});
+  assert.equal(call.code,2);assert.equal(modelCalls.length,6);
+  assert.match(call.stderr,/HTTP 401\. AVENQUELLIS_GRADER_URL takes only AVENQUELLIS_GRADER_TOKEN, not the legacy NOETHER_GRADER_TOKEN\./);
+  call=await invoke('review',input,{...stale,AVENQUELLIS_GRADER_URL:'https://[::ffff:127.0.0.1]:9/evaluate'});
+  assert.equal(call.code,2);assert.match(call.stderr,/require AVENQUELLIS_GRADER_TOKEN/);
+  // and AVENQUELLIS_GRADER_TOKEN is never sent to a legacy NOETHER_GRADER_URL left in the environment. On loopback the
+  // 401 names the pairing, or it would look like a wrong token although the documented token is set.
+  const legacyPairing=/HTTP 401\. The legacy NOETHER_GRADER_URL takes only NOETHER_GRADER_TOKEN; set AVENQUELLIS_GRADER_URL to use AVENQUELLIS_GRADER_TOKEN\./;
+  call=await invoke('review',input,{NOETHER_GRADER_URL:endpoint,AVENQUELLIS_GRADER_TOKEN:token});
+  assert.equal(call.code,2);assert.match(call.stderr,legacyPairing);assert.equal(modelCalls.length,6);
+  call=await invoke('review',input,{NOETHER_GRADER_URL:endpoint,NOETHER_GRADER_TOKEN:'wrong',AVENQUELLIS_GRADER_TOKEN:token});
+  assert.equal(call.code,2);assert.match(call.stderr,legacyPairing);assert.equal(modelCalls.length,6);
+  // Only a 401 names the pairing; other refusals are not about the token.
+  const busy=httpServer((_req,res)=>{res.writeHead(503);res.end('{}');});services.push(busy);
+  call=await invoke('review',input,{NOETHER_GRADER_URL:(await listen(busy))+'/evaluate',AVENQUELLIS_GRADER_TOKEN:token});
+  assert.equal(call.code,2);assert.match(call.stderr,/HTTP 503/);assert.doesNotMatch(call.stderr,/takes only/);
+  call=await invoke('review',input,{NOETHER_GRADER_URL:'https://[::ffff:127.0.0.1]:9/evaluate',AVENQUELLIS_GRADER_TOKEN:token});
+  assert.equal(call.code,2);assert.match(call.stderr,/NOETHER_GRADER_URL takes only NOETHER_GRADER_TOKEN/);
+  // The new pair works on its own names, whatever the legacy pair still holds.
+  call=await invoke('review',input,{...stale,NOETHER_GRADER_TOKEN:'wrong',AVENQUELLIS_GRADER_URL:endpoint,AVENQUELLIS_GRADER_TOKEN:token});
+  assert.equal(call.code,0,call.stderr);assert.equal(modelCalls.length,8);
   const remote=await invoke('review',input,{NOETHER_GRADER_URL:'http://example.com/evaluate'});
   assert.equal(remote.code,2);assert.match(remote.stderr,/HTTPS/);
   const human=await invoke('finalize',input);assert.equal(human.value.status,'human_reviewed');assert.equal(human.value.score,2);

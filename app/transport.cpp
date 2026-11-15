@@ -36,11 +36,20 @@ void add_header(Headers& headers, const std::string& value) {
 
 std::string request_reviews(std::string_view request) {
     if (request.size() > 100000) throw std::invalid_argument("Review request exceeds the CLI's 100,000-byte limit.");
+    // The endpoint and its bearer token are read as one pair of names. A token is never sent to an endpoint set
+    // under the other name: not a stale legacy token to a new endpoint, nor the new token to a stale legacy endpoint.
     const char* endpoint = std::getenv("AVENQUELLIS_GRADER_URL");
-    if (!endpoint) endpoint = std::getenv("NOETHER_GRADER_URL");
+    const bool legacy = !endpoint;
+    if (legacy) endpoint = std::getenv("NOETHER_GRADER_URL");
+    const char* token_env = std::getenv(legacy ? "NOETHER_GRADER_TOKEN" : "AVENQUELLIS_GRADER_TOKEN");
+    // A token set only under the other name is never sent. Name the pairing where that can explain a refusal, or a
+    // 401 from a protected loopback service would look like a wrong token.
+    const char* unsent_token = std::getenv(legacy ? "AVENQUELLIS_GRADER_TOKEN" : "NOETHER_GRADER_TOKEN");
+    const char* pairing = legacy
+        ? "The legacy NOETHER_GRADER_URL takes only NOETHER_GRADER_TOKEN; "
+          "set AVENQUELLIS_GRADER_URL to use AVENQUELLIS_GRADER_TOKEN."
+        : "AVENQUELLIS_GRADER_URL takes only AVENQUELLIS_GRADER_TOKEN, not the legacy NOETHER_GRADER_TOKEN.";
     if (!endpoint || !*endpoint) throw std::invalid_argument("Set AVENQUELLIS_GRADER_URL to the Avenquellis /evaluate endpoint.");
-    const char* token_env = std::getenv("AVENQUELLIS_GRADER_TOKEN");
-    if (!token_env) token_env = std::getenv("NOETHER_GRADER_TOKEN");
     const std::string token = token_env ? token_env : "";
     if (std::any_of(token.begin(), token.end(), [](unsigned char c) { return c < 32 || c == 127; })) {
         throw std::invalid_argument("Invalid bearer-token characters.");
@@ -59,7 +68,10 @@ std::string request_reviews(std::string_view request) {
         part(url.get(), CURLUPART_PATH) != "/evaluate") {
         throw std::invalid_argument("Use HTTPS /evaluate or loopback HTTP /evaluate with no query or fragment.");
     }
-    if (!loopback && token.empty()) throw std::invalid_argument("Remote review endpoints require AVENQUELLIS_GRADER_TOKEN.");
+    if (!loopback && token.empty()) {
+        throw std::invalid_argument(legacy ? std::string("Remote review endpoints require a token. ") + pairing
+                                           : std::string("Remote review endpoints require AVENQUELLIS_GRADER_TOKEN."));
+    }
     Client client(curl_easy_init(), curl_easy_cleanup);
     if (!client) throw std::runtime_error("Could not initialize review request.");
     Headers headers(nullptr, curl_slist_free_all);
@@ -85,6 +97,11 @@ std::string request_reviews(std::string_view request) {
     if (status != CURLE_OK) throw std::runtime_error(std::string("Review transport failed: ") + curl_easy_strerror(status));
     long http = 0;
     curl_easy_getinfo(client.get(), CURLINFO_RESPONSE_CODE, &http);
-    if (http != 200) throw std::runtime_error("Review endpoint returned HTTP " + std::to_string(http));
+    if (http != 200) {
+        // Loopback HTTP may need no token, so the pairing is named only once the endpoint answers 401.
+        std::string error = "Review endpoint returned HTTP " + std::to_string(http);
+        if (http == 401 && unsent_token && *unsent_token && token != unsent_token) error.append(". ").append(pairing);
+        throw std::runtime_error(error);
+    }
     return response;
 }

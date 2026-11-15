@@ -1,9 +1,11 @@
 #!/usr/bin/env node
 /** Optional local API and explicit refresh CLI. No network requests when serving. */
 import { createServer } from 'node:http';
+import { realpathSync } from 'node:fs';
 import { readFile } from 'node:fs/promises';
+import { createRequire } from 'node:module';
 import { resolve } from 'node:path';
-import { pathToFileURL } from 'node:url';
+import { fileURLToPath } from 'node:url';
 import { validateConfig, readCatalog, refreshCatalog, queryCatalog, createSeedSnapshot, writeSnapshot } from './resource-catalog.mjs';
 
 export function createResourceServer(configInput, { snapshotPath, allowedOrigins = [], now } = {}) {
@@ -91,6 +93,13 @@ export async function main(args = process.argv.slice(2)) {
   return server;
 }
 
-if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href) {
+// Node loads the entry script by its real path, while process.argv[1] keeps the path as typed (a symlinked
+// checkout, macOS /tmp). Resolve it the same way, or a symlinked launch would exit 0 without running the command.
+function isEntryScript() {
+  try { return realpathSync(createRequire(import.meta.url).resolve(process.argv[1])) === realpathSync(fileURLToPath(import.meta.url)); }
+  catch { return false; }
+}
+
+if (process.argv[1] && isEntryScript()) {
   main().catch((error) => { process.stderr.write(`Resource catalog: ${error.message}\n`); process.exitCode = 1; });
 }

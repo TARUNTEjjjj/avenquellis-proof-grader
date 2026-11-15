@@ -1,10 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtemp, readFile, writeFile, rm, readdir } from 'node:fs/promises';
+import { mkdtemp, readFile, writeFile, rm, readdir, symlink } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { request as httpRequest } from 'node:http';
 import { spawnSync } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
 import { validateConfig, normalizeRepository, rankResources, createSeedSnapshot, refreshCatalog, readCatalog, queryCatalog } from './resource-catalog.mjs';
 import { createResourceServer } from './resource-server.mjs';
 
@@ -163,6 +164,17 @@ test('refresh CLI persists a partial catalog and returns the distinct partial-su
   assert.equal(snapshot.items[0].stars, 10000);
   assert.equal(snapshot.items[0].fetchedAt, NOW);
   assert.equal(snapshot.errors.length, 1);
+});
+
+test('the CLI runs its command when launched through a symlinked checkout', async (t) => {
+  const { directory } = await fixture(t);
+  const current = join(directory, 'current');
+  await symlink(fileURLToPath(new URL('../..', import.meta.url)), current, 'junction');
+  for (const entry of [fileURLToPath(new URL('./resource-server.mjs', import.meta.url)), join(current, 'scripts', 'resources', 'resource-server.mjs')]) {
+    const result = spawnSync(process.execPath, [entry, 'help'], { encoding: 'utf8', timeout: 5000 });
+    assert.equal(result.status, 0, result.stderr);
+    assert.match(result.stdout, /^Usage:/, `${entry} exited without running its command`);
+  }
 });
 
 test('rate limits stop further requests and persist cooldown across refreshes', async (t) => {
