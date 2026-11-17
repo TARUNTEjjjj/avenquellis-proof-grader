@@ -221,6 +221,8 @@ Server code that already performs those checks can use `evaluateProof({question,
 
 `src/worker.js` serves the token-protected `POST /assess`, `/evaluate` and `/review` routes and the public `GET /health`, which needs no token and contains no secrets. For native AI, select `wrangler.workers-ai.toml`, configure `EVALUATOR_ACCESS_TOKEN` as a secret of at least 32 characters, and deploy with that config. For an external HTTP provider, `wrangler.toml` retains the original mode. Set `EVALUATOR_BASE_URL`, `EVALUATOR_MODEL` and the `EVALUATOR_API_KEY` and `EVALUATOR_ACCESS_TOKEN` secrets. [Worker secrets](https://developers.cloudflare.com/workers/configuration/secrets/) · [Wrangler configuration](https://developers.cloudflare.com/workers/wrangler/configuration/)
 
+Both configurations enable `enable_request_signal` so client disconnects reach the existing request-body abort handler. Keep this flag in deployments pinned before `2026-11-17`; Cloudflare enables incoming request signals by default from that compatibility date. [Incoming request signals](https://developers.cloudflare.com/workers/configuration/compatibility-flags/#enable-requestsignal-for-incoming-requests)
+
 Unit and transport tests use simulated binding results and a local HTTP server. No production model grade or examiner accuracy measurement has been obtained from these tests.
 
 ## Benchmark CLI
