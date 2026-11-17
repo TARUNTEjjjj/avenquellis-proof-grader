@@ -1,6 +1,7 @@
 name = "avenquellis-proof-grader"
 main = "src/worker.js"
 compatibility_date = "2026-11-03"
+compatibility_flags = ["enable_request_signal"]
 workers_dev = true
 
 # Configure model and endpoint explicitly before enabling evaluation.
