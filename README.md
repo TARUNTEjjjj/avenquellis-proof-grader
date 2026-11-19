@@ -238,11 +238,16 @@ node --env-file=.env benchmark/run.js --live --out benchmark-results/live.json
 
 # Evaluate saved proposals against separately supplied human labels:
 node benchmark/run.js --predictions predictions.json --labels human-labels.json
+
+# Add criterion-level, flaw-recall and stratified results with confidence intervals:
+node benchmark/run.js --predictions predictions.json --labels human-labels.json --stratified
 ```
 
 `--fixtures fixtures.json` accepts a custom JSON array of up to 500 `{id,question,answer,category}` records. `--predictions` expects an array of `{id,suggestedScore}` with `null` for abstention. The report's `promptVersion` is the one version that every row records as `promptVersion` (as the device harness writes it) or `provenance.promptVersion`. It is `null` for offline preparation, for rows without a version and for rows from more than one prompt. `--labels` expects records such as `{id:'parity-complete',score:7,source:'human',reviewer:'Reviewer identifier',adjudicated:true}`. Labels are caller-supplied; the tool cannot authenticate their author or expertise.
 
-Reports include proposal coverage, coverage within the labelled subset, mean absolute error, root mean square error, exact agreement, agreement within one mark, signed error and overgrading rate. Error metrics are `null` unless human labels and corresponding proposals exist. The six small fixtures are a pipeline smoke test, not a representative accuracy study. See [the evaluation protocol](docs/EVALUATION.md) for the expert adjudication and held-out dataset needed before an accuracy claim.
+Reports include proposal coverage, coverage within the labelled subset, mean absolute error, root mean square error, exact agreement, agreement within one mark, signed error and overgrading rate. Error metrics are `null` unless human labels and corresponding proposals exist.
+
+`--stratified` adds a `stratified` object and leaves every other report field unchanged. It uses optional fields: predictions may carry `criterionScores` (rubric id to integer or `null`; the device harness's per-reviewer array is accepted and ignored) and `flawDetected` (boolean); labels may carry `criterionScores`, `substantialFlaw` (boolean) and `strata` (`subject`, `proofType`, `language`). It reports counts, abstention coverage, total and per-criterion error and agreement, quadratic weighted Cohen's kappa, substantial-flaw recall and 95% confidence intervals for the whole labelled set and for each subject, proof type, score band and language. [Methods and null outcomes](docs/EVALUATION.md#stratified-report). The six small fixtures are a pipeline smoke test, not a representative accuracy study. See [the evaluation protocol](docs/EVALUATION.md) for the expert adjudication and held-out dataset needed before an accuracy claim.
 
 ## Sourced design
 

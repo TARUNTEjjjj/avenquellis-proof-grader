@@ -1,0 +1,26 @@
+{
+  "description": "Authored synthetic data for hand-checking the stratified benchmark report. Not examiner labels; no accuracy claim.",
+  "question": {"id": "qa", "statement": "Synthetic four-mark question.", "maxMarks": 4, "rubric": [{"id": "c1", "description": "First step.", "points": 2}, {"id": "c2", "description": "Second step.", "points": 2}]},
+  "cases": [
+    {"id": "a1", "label": {"score": 4, "criterionScores": {"c1": 2, "c2": 2}, "substantialFlaw": false, "strata": {"subject": "algebra", "proofType": "direct", "language": "en"}}, "prediction": {"suggestedScore": 4, "criterionScores": {"c1": 2, "c2": 2}, "flawDetected": false}},
+    {"id": "a2", "label": {"score": 2, "criterionScores": {"c1": 2, "c2": 0}, "substantialFlaw": true, "strata": {"subject": "algebra", "proofType": "direct", "language": "en"}}, "prediction": {"suggestedScore": 3, "criterionScores": {"c1": 2, "c2": 1}, "flawDetected": false}},
+    {"id": "a3", "label": {"score": 0, "criterionScores": {"c1": 0, "c2": 0}, "substantialFlaw": true, "strata": {"subject": "geometry", "proofType": "direct", "language": "en"}}, "prediction": {"suggestedScore": 0, "criterionScores": {"c1": 0, "c2": 0}, "flawDetected": true}},
+    {"id": "a4", "label": {"score": 4, "criterionScores": {"c1": 2, "c2": 2}, "substantialFlaw": false, "strata": {"subject": "geometry", "proofType": "induction", "language": "fr"}}, "prediction": {"suggestedScore": 3, "criterionScores": {"c1": 2, "c2": 1}}},
+    {"id": "a5", "label": {"score": 1, "criterionScores": {"c1": 1, "c2": 0}, "substantialFlaw": true, "strata": {"subject": "geometry", "language": "fr"}}, "prediction": {"suggestedScore": null, "criterionScores": {"c1": 1, "c2": null}}},
+    {"id": "a6", "label": {"score": 2, "criterionScores": {"c1": 1, "c2": 1}, "substantialFlaw": true, "strata": {"subject": "algebra", "proofType": "induction", "language": "fr"}}, "prediction": {"suggestedScore": 2, "criterionScores": {"c1": 1, "c2": 1}, "flawDetected": true}}
+  ],
+  "derivation": [
+    "Total pairs (human,predicted): a1 (4,4), a2 (2,3), a3 (0,0), a4 (4,3), a6 (2,2); a5 abstains. Errors 0,+1,0,-1,0.",
+    "MAE 2/5=0.4; RMSE sqrt(2/5); exact 3/5; within one 5/5; signed 0; overgrading 1/5; coverage 5/6.",
+    "Quadratic kappa, K=4: observed sum (i-j)^2 = 2, so mean 2/5. Human marginal {4:2,2:2,0:1}, predicted {4:1,3:2,2:1,0:1}.",
+    "Expected sum h_i p_j (i-j)^2 = 44 (h=4) + 20 (h=2) + 38 (h=0) = 102, so mean 102/25. Kappa = 1-(2/5)/(102/25) = 1-10/102 = 46/51.",
+    "c1 pairs all six exact; marginals vary, so expected > 0 and kappa = 1. c2 pairs exclude a5 (null): (2,2),(0,1),(0,0),(2,1),(1,1).",
+    "c2 kappa, K=2: observed sum 2 -> mean 2/5; expected sum 14 (h=2) + 14 (h=0) + 2 (h=1) = 30 -> mean 30/25; kappa = 1-(2/5)/(6/5) = 2/3.",
+    "Pooled criteria: 11 pairs, |error| sum 2 -> MAE 2/11; exact 9/11; within one 11/11.",
+    "Flaws: a2,a3,a5,a6 flawed; a5 has no flawDetected signal; recall 2/3 (a3,a6 of a2,a3,a6). Overgraded flawed proposals: a2 only of a2,a3,a6 -> 1/3.",
+    "algebra (a1,a2,a6): observed 1/3; expected sum 15 -> 15/9; kappa 1-(1/3)/(15/9)=0.8. geometry (a3,a4; a5 abstains): coverage 2/3; observed 1/2, expected 26/4; kappa 1-(1/2)/(26/4)=12/13.",
+    "scoreBand zero has the single pair (0,0): expected disagreement 0, kappa null (degenerate_denominator). full: (4,4),(4,3): observed 1/2, expected 2/4, kappa 0.",
+    "proofType: direct a1,a2,a3; induction a4,a6; unspecified a5 (no pair, all agreement nulls).",
+    "Wilson 95% bounds (computed independently in Python): 5/6 [0.436497,0.969947]; 3/5 [0.230724,0.882379]; 5/5 [0.565518,1]; 1/5 [0.036224,0.624465]; 2/3 [0.20766,0.938508]; 1/3 [0.061492,0.79234]; 9/11 [0.523019,0.948632]."
+  ]
+}
