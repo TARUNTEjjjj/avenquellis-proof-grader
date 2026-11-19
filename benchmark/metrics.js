@@ -2,6 +2,8 @@
 export const LABEL_STRATA=['subject','proofType','language'];
 
 const isPlainObject=value=>Boolean(value) && typeof value==='object' && !Array.isArray(value);
+/** True for the device harness's per-reviewer criterionScores array, which criterion metrics ignore. */
+export const isPerReviewerCriterionScores=value=>Array.isArray(value);
 
 function rubricPoints(fixture) {
   const rubric=fixture.question?.rubric;
@@ -28,7 +30,9 @@ export function validateBenchmarkInputs({fixtures,predictions,labels=[]}) {
   for (const p of predictions) {
     if (!p || !byId.has(p.id) || predicted.has(p.id)) throw new TypeError('Predictions need unique existing fixture ids.');
     if (p.suggestedScore !== null && (!Number.isInteger(p.suggestedScore) || p.suggestedScore<0 || p.suggestedScore>byId.get(p.id).question.maxMarks)) throw new RangeError('Invalid suggested score.');
-    validateCriterionScores(p.criterionScores,byId.get(p.id),{allowNull:true,owner:'Prediction'});
+    // benchmark/device-browser.mjs records one criterion-score object (or null) per reviewer as an array. That
+    // per-reviewer record is not a resolved criterion score: accept it unvalidated, as before, and leave it out of criterion metrics.
+    if (!isPerReviewerCriterionScores(p.criterionScores)) validateCriterionScores(p.criterionScores,byId.get(p.id),{allowNull:true,owner:'Prediction'});
     if (p.flawDetected!==undefined && typeof p.flawDetected!=='boolean') throw new TypeError('Prediction flawDetected must be a boolean when present.');
     predicted.set(p.id,p);
   }

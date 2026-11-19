@@ -152,3 +152,16 @@ test('benchmark CLI adds the stratified report only on request',()=>{
     assert.deepEqual(extra,JSON.parse(JSON.stringify(report)));
   } finally {rmSync(dir,{recursive:true,force:true});}
 });
+
+test('device harness predictions with per-reviewer criterionScores arrays remain valid input',()=>{
+  // benchmark/device-browser.mjs writes criterionScores as [reviewer A object or null, reviewer B object or null].
+  const device=predictions.map(p=>({id:p.id,status:'needs_review',suggestedScore:p.suggestedScore,reviewReason:'reviewer_disagreement',
+    reviewerScores:[p.suggestedScore,null],criterionScores:[p.criterionScores ?? null,null],failureCodes:[null,'invalid_output'],promptVersion:'device-v1'}));
+  const legacy=computeMetrics({fixtures,predictions,labels});
+  assert.deepEqual(computeMetrics({fixtures,predictions:device,labels}),legacy);
+  const deviceReport=computeStratifiedReport({fixtures,predictions:device,labels});
+  assert.deepEqual(deviceReport.overall.total,report.overall.total);
+  const c1=deviceReport.overall.criteria.byCriterion['qa/c1'];
+  assert.equal(c1.labelled,6);assert.equal(c1.compared,0);assert.equal(c1.weightedKappa.reason,'no_compared_pairs');
+  assert.equal(deviceReport.overall.criteria.pooled.compared,0);
+});

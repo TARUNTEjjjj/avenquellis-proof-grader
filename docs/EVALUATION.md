@@ -21,7 +21,7 @@ A future formal-proof integration can mechanically verify a proof represented in
 
 **Inputs.** All new fields are optional and validated only when present.
 
-- Prediction: `criterionScores` maps a rubric criterion id of the fixture's question to an integer in `0..points`, or `null` when unresolved. `flawDetected` is a boolean: whether the system flagged a substantial logical flaw.
+- Prediction: `criterionScores` maps a rubric criterion id of the fixture's question to an integer in `0..points`, or `null` when unresolved. `flawDetected` is a boolean: whether the system flagged a substantial logical flaw. The device harness (`benchmark/device-browser.mjs`) writes `criterionScores` as an array with one entry per reviewer; that array is accepted without validation and gives no criterion pairs, because it is not a resolved criterion score.
 - Human label: `criterionScores` uses the same keys but no `null`; omit an unmarked criterion. `substantialFlaw` is the adjudicated boolean annotation. `strata` may contain `subject`, `proofType` and `language`, each a non-empty string of at most 100 characters.
 - `scoreBand` is derived, never supplied: `zero` (score 0), `partial` (between 0 and `maxMarks`) and `full` (`maxMarks`).
 

@@ -1,4 +1,4 @@
-import {LABEL_STRATA,validateBenchmarkInputs} from './metrics.js';
+import {LABEL_STRATA,isPerReviewerCriterionScores,validateBenchmarkInputs} from './metrics.js';
 
 /**
  * Criterion-level and stratified benchmark report (docs/EVALUATION.md step 5).
@@ -107,7 +107,8 @@ function population(cases) {
   for (const c of cases) for (const [criterionId,human] of Object.entries(c.label.criterionScores ?? {})) {
     const key=`${c.questionId}/${criterionId}`;
     if (!byCriterion.has(key)) byCriterion.set(key,{labelled:0,pairs:[],maxima:new Set()});
-    const entry=byCriterion.get(key),predicted=c.prediction?.criterionScores?.[criterionId];
+    const scores=c.prediction?.criterionScores,entry=byCriterion.get(key);
+    const predicted=isPerReviewerCriterionScores(scores)?undefined:scores?.[criterionId];
     entry.labelled++;entry.maxima.add(c.criterionMax.get(criterionId));
     if (Number.isInteger(predicted)) entry.pairs.push({id:c.id,human,predicted,max:c.criterionMax.get(criterionId)});
   }
