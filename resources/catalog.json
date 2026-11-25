@@ -2,8 +2,8 @@
   "schemaVersion": 1,
   "project": "avenquellis-proof-grader",
   "title": "Avenquellis proof references",
-  "fetchedAt": "2026-11-24T13:33:50.425Z",
-  "attemptedAt": "2026-11-24T13:33:34.402Z",
+  "fetchedAt": "2026-11-25T12:42:48.481Z",
+  "attemptedAt": "2026-11-25T12:42:32.811Z",
   "status": "live",
   "errors": [],
   "excludedSeeds": [],
@@ -33,17 +33,17 @@
       ],
       "stars": 5678,
       "forks": 774,
-      "pushedAt": "2026-11-23T14:27:48.000Z",
+      "pushedAt": "2026-11-25T12:33:11.000Z",
       "license": "LGPL-2.1",
       "category": "proofs",
       "sourceQuery": "topic:theorem-proving",
-      "fetchedAt": "2026-11-24T13:33:35.251Z",
+      "fetchedAt": "2026-11-25T12:42:33.584Z",
       "provenance": "github",
       "stale": false,
       "sourceQueries": [
         "topic:theorem-proving"
       ],
-      "score": 73.75,
+      "score": 73.77,
       "reason": "Formal proof references resource; 5678 GitHub stars."
     },
     {
@@ -73,20 +73,20 @@
         "theorem-proving",
         "verified-code"
       ],
-      "stars": 2917,
+      "stars": 2919,
       "forks": 129,
       "pushedAt": "2026-10-22T19:27:09.000Z",
       "license": "MIT",
       "category": "proofs",
       "sourceQuery": "topic:theorem-proving",
-      "fetchedAt": "2026-11-24T13:33:35.251Z",
+      "fetchedAt": "2026-11-25T12:42:33.584Z",
       "provenance": "github",
       "stale": false,
       "sourceQueries": [
         "topic:theorem-proving"
       ],
-      "score": 71.5,
-      "reason": "Formal proof references resource; 2917 GitHub stars."
+      "score": 71.48,
+      "reason": "Formal proof references resource; 2919 GitHub stars."
     },
     {
       "id": 1176678872,
@@ -113,20 +113,20 @@
         "sparql",
         "theorem-proving"
       ],
-      "stars": 2954,
+      "stars": 2961,
       "forks": 331,
       "pushedAt": "2026-11-24T03:21:40.000Z",
       "license": "MIT",
       "category": "proofs",
       "sourceQuery": "topic:theorem-proving",
-      "fetchedAt": "2026-11-24T13:33:35.251Z",
+      "fetchedAt": "2026-11-25T12:42:33.584Z",
       "provenance": "github",
       "stale": false,
       "sourceQueries": [
         "topic:theorem-proving"
       ],
-      "score": 57.34,
-      "reason": "Formal proof references resource; 2954 GitHub stars."
+      "score": 57.32,
+      "reason": "Formal proof references resource; 2961 GitHub stars."
     },
     {
       "id": 684776900,
@@ -144,20 +144,20 @@
         "proof",
         "theorem-proving"
       ],
-      "stars": 25836,
+      "stars": 25868,
       "forks": 827,
-      "pushedAt": "2026-11-24T13:27:13.000Z",
+      "pushedAt": "2026-11-24T19:06:19.000Z",
       "license": "Apache-2.0",
       "category": "proofs",
       "sourceQuery": "topic:theorem-proving",
-      "fetchedAt": "2026-11-24T13:33:35.251Z",
+      "fetchedAt": "2026-11-25T12:42:33.584Z",
       "provenance": "github",
       "stale": false,
       "sourceQueries": [
         "topic:theorem-proving"
       ],
-      "score": 47.06,
-      "reason": "Formal proof references resource; 25836 GitHub stars."
+      "score": 47.04,
+      "reason": "Formal proof references resource; 25868 GitHub stars."
     },
     {
       "id": 18411972,
@@ -180,18 +180,18 @@
         "verification"
       ],
       "stars": 3150,
-      "forks": 268,
-      "pushedAt": "2026-11-22T21:03:15.000Z",
+      "forks": 270,
+      "pushedAt": "2026-11-25T05:34:27.000Z",
       "license": "Apache-2.0",
       "category": "proofs",
       "sourceQuery": "topic:theorem-proving",
-      "fetchedAt": "2026-11-24T13:33:35.251Z",
+      "fetchedAt": "2026-11-25T12:42:33.584Z",
       "provenance": "github",
       "stale": false,
       "sourceQueries": [
         "topic:theorem-proving"
       ],
-      "score": 42.45,
+      "score": 42.48,
       "reason": "Formal proof references resource; 3150 GitHub stars."
     },
     {
@@ -208,20 +208,20 @@
         "sml",
         "theorem-proving"
       ],
-      "stars": 1234,
-      "forks": 114,
-      "pushedAt": "2026-11-24T10:58:53.000Z",
+      "stars": 1235,
+      "forks": 115,
+      "pushedAt": "2026-11-25T09:00:02.000Z",
       "license": "BSD-3-Clause",
       "category": "proofs",
       "sourceQuery": "topic:theorem-proving",
-      "fetchedAt": "2026-11-24T13:33:35.251Z",
+      "fetchedAt": "2026-11-25T12:42:33.584Z",
       "provenance": "github",
       "stale": false,
       "sourceQueries": [
         "topic:theorem-proving"
       ],
       "score": 40.46,
-      "reason": "Formal proof references resource; 1234 GitHub stars."
+      "reason": "Formal proof references resource; 1235 GitHub stars."
     },
     {
       "id": 689172454,
@@ -237,20 +237,20 @@
         "machine-learning",
         "theorem-proving"
       ],
-      "stars": 1349,
+      "stars": 1350,
       "forks": 129,
       "pushedAt": "2026-11-16T22:56:48.000Z",
       "license": "MIT",
       "category": "proofs",
       "sourceQuery": "topic:theorem-proving",
-      "fetchedAt": "2026-11-24T13:33:35.251Z",
+      "fetchedAt": "2026-11-25T12:42:33.584Z",
       "provenance": "github",
       "stale": false,
       "sourceQueries": [
         "topic:theorem-proving"
       ],
-      "score": 40.45,
-      "reason": "Formal proof references resource; 1349 GitHub stars."
+      "score": 40.42,
+      "reason": "Formal proof references resource; 1350 GitHub stars."
     },
     {
       "id": 1178494429,
@@ -268,31 +268,31 @@
         "firmware",
         "formal-verification",
         "gpu-acceleration",
-        "gpu-programming",
         "hacking",
         "lean4",
+        "model-checking",
         "penetration-testing",
         "red-team",
         "theorem-proving",
         "verification",
         "web-framework",
         "web-security",
-        "webapp"
+        "webapps"
       ],
-      "stars": 987,
+      "stars": 1004,
       "forks": 84,
-      "pushedAt": "2026-11-24T10:53:29.000Z",
+      "pushedAt": "2026-11-25T11:57:44.000Z",
       "license": "Apache-2.0",
       "category": "proofs",
       "sourceQuery": "topic:theorem-proving",
-      "fetchedAt": "2026-11-24T13:33:35.251Z",
+      "fetchedAt": "2026-11-25T12:42:33.584Z",
       "provenance": "github",
       "stale": false,
       "sourceQueries": [
         "topic:theorem-proving"
       ],
-      "score": 39.97,
-      "reason": "Formal proof references resource; 987 GitHub stars."
+      "score": 40.01,
+      "reason": "Formal proof references resource; 1004 GitHub stars."
     },
     {
       "id": 32944298,
@@ -300,20 +300,20 @@
       "url": "https://github.com/Z3Prover/z3",
       "description": "The Z3 Theorem Prover",
       "topics": [],
-      "stars": 12988,
-      "forks": 1737,
-      "pushedAt": "2026-11-24T11:25:44.000Z",
+      "stars": 12992,
+      "forks": 1738,
+      "pushedAt": "2026-11-25T04:54:35.000Z",
       "license": null,
       "category": "proofs",
       "sourceQuery": "repo:z3prover/z3",
-      "fetchedAt": "2026-11-24T13:33:42.531Z",
+      "fetchedAt": "2026-11-25T12:42:40.911Z",
       "provenance": "github",
       "stale": false,
       "sourceQueries": [
         "repo:z3prover/z3"
       ],
-      "score": 30.57,
-      "reason": "Formal proof references resource; 12988 GitHub stars."
+      "score": 30.56,
+      "reason": "Formal proof references resource; 12992 GitHub stars."
     },
     {
       "id": 129571436,
@@ -324,20 +324,20 @@
         "lean",
         "lean4"
       ],
-      "stars": 10320,
-      "forks": 1133,
-      "pushedAt": "2026-11-24T13:04:11.000Z",
+      "stars": 10378,
+      "forks": 1136,
+      "pushedAt": "2026-11-25T10:43:50.000Z",
       "license": "Apache-2.0",
       "category": "proofs",
       "sourceQuery": "repo:leanprover/lean4",
-      "fetchedAt": "2026-11-24T13:33:40.107Z",
+      "fetchedAt": "2026-11-25T12:42:38.355Z",
       "provenance": "github",
       "stale": false,
       "sourceQueries": [
         "repo:leanprover/lean4"
       ],
-      "score": 30.07,
-      "reason": "Formal proof references resource; 10320 GitHub stars."
+      "score": 30.08,
+      "reason": "Formal proof references resource; 10378 GitHub stars."
     },
     {
       "id": 365697493,
@@ -347,20 +347,20 @@
       "topics": [
         "lean4"
       ],
-      "stars": 4626,
-      "forks": 1905,
-      "pushedAt": "2026-11-24T13:16:31.000Z",
+      "stars": 4644,
+      "forks": 1917,
+      "pushedAt": "2026-11-25T12:39:35.000Z",
       "license": "Apache-2.0",
       "category": "proofs",
       "sourceQuery": "repo:leanprover-community/mathlib4",
-      "fetchedAt": "2026-11-24T13:33:37.679Z",
+      "fetchedAt": "2026-11-25T12:42:35.952Z",
       "provenance": "github",
       "stale": false,
       "sourceQueries": [
         "repo:leanprover-community/mathlib4"
       ],
       "score": 28.33,
-      "reason": "Formal proof references resource; 4626 GitHub stars."
+      "reason": "Formal proof references resource; 4644 GitHub stars."
     },
     {
       "id": 787574978,
@@ -372,20 +372,20 @@
         "physics",
         "theorem-proving"
       ],
-      "stars": 881,
-      "forks": 248,
-      "pushedAt": "2026-11-24T11:58:22.000Z",
+      "stars": 887,
+      "forks": 249,
+      "pushedAt": "2026-11-25T06:49:18.000Z",
       "license": "Apache-2.0",
       "category": "proofs",
       "sourceQuery": "topic:theorem-proving",
-      "fetchedAt": "2026-11-24T13:33:35.251Z",
+      "fetchedAt": "2026-11-25T12:42:33.584Z",
       "provenance": "github",
       "stale": false,
       "sourceQueries": [
         "topic:theorem-proving"
       ],
-      "score": 24.73,
-      "reason": "Formal proof references resource; 881 GitHub stars."
+      "score": 24.74,
+      "reason": "Formal proof references resource; 887 GitHub stars."
     },
     {
       "id": 123055424,
@@ -415,18 +415,18 @@
         "symbolic-numerics"
       ],
       "stars": 1700,
-      "forks": 280,
-      "pushedAt": "2026-11-24T04:11:52.000Z",
+      "forks": 281,
+      "pushedAt": "2026-11-25T11:56:26.000Z",
       "license": null,
       "category": "symbolic",
       "sourceQuery": "topic:computer-algebra",
-      "fetchedAt": "2026-11-24T13:33:45.363Z",
+      "fetchedAt": "2026-11-25T12:42:43.724Z",
       "provenance": "github",
       "stale": false,
       "sourceQueries": [
         "topic:computer-algebra"
       ],
-      "score": 86.14,
+      "score": 86.15,
       "reason": "Symbolic computation resource; 1700 GitHub stars."
     },
     {
@@ -456,13 +456,13 @@
       "license": null,
       "category": "symbolic",
       "sourceQuery": "topic:computer-algebra",
-      "fetchedAt": "2026-11-24T13:33:45.363Z",
+      "fetchedAt": "2026-11-25T12:42:43.724Z",
       "provenance": "github",
       "stale": false,
       "sourceQueries": [
         "topic:computer-algebra"
       ],
-      "score": 85,
+      "score": 84.98,
       "reason": "Symbolic computation resource; 1016 GitHub stars."
     },
     {
@@ -491,13 +491,13 @@
       "license": "MIT",
       "category": "symbolic",
       "sourceQuery": "topic:computer-algebra",
-      "fetchedAt": "2026-11-24T13:33:45.363Z",
+      "fetchedAt": "2026-11-25T12:42:43.724Z",
       "provenance": "github",
       "stale": false,
       "sourceQueries": [
         "topic:computer-algebra"
       ],
-      "score": 81.52,
+      "score": 81.51,
       "reason": "Symbolic computation resource; 1003 GitHub stars."
     },
     {
@@ -525,13 +525,13 @@
       "license": "Apache-2.0",
       "category": "symbolic",
       "sourceQuery": "topic:computer-algebra",
-      "fetchedAt": "2026-11-24T13:33:45.363Z",
+      "fetchedAt": "2026-11-25T12:42:43.724Z",
       "provenance": "github",
       "stale": false,
       "sourceQueries": [
         "topic:computer-algebra"
       ],
-      "score": 79.7,
+      "score": 79.69,
       "reason": "Symbolic computation resource; 2386 GitHub stars."
     },
     {
@@ -544,21 +544,21 @@
         "computer-algebra",
         "math"
       ],
-      "stars": 1429,
+      "stars": 1430,
       "forks": 317,
       "pushedAt": "2026-11-13T18:15:25.000Z",
       "license": null,
       "category": "symbolic",
       "sourceQuery": "repo:symengine/symengine",
-      "fetchedAt": "2026-11-24T13:33:50.425Z",
+      "fetchedAt": "2026-11-25T12:42:48.481Z",
       "provenance": "github",
       "stale": false,
       "sourceQueries": [
         "topic:computer-algebra",
         "repo:symengine/symengine"
       ],
-      "score": 55.49,
-      "reason": "Symbolic computation resource; 1429 GitHub stars."
+      "score": 55.47,
+      "reason": "Symbolic computation resource; 1430 GitHub stars."
     },
     {
       "id": 31270208,
@@ -577,11 +577,11 @@
       ],
       "stars": 1023,
       "forks": 193,
-      "pushedAt": "2026-11-24T13:05:54.000Z",
+      "pushedAt": "2026-11-25T08:03:27.000Z",
       "license": "GPL-2.0",
       "category": "symbolic",
       "sourceQuery": "topic:computer-algebra",
-      "fetchedAt": "2026-11-24T13:33:45.363Z",
+      "fetchedAt": "2026-11-25T12:42:43.724Z",
       "provenance": "github",
       "stale": false,
       "sourceQueries": [
@@ -618,11 +618,11 @@
       ],
       "stars": 832,
       "forks": 78,
-      "pushedAt": "2026-11-24T13:09:35.000Z",
+      "pushedAt": "2026-11-25T12:27:35.000Z",
       "license": "MIT",
       "category": "symbolic",
       "sourceQuery": "topic:computer-algebra",
-      "fetchedAt": "2026-11-24T13:33:45.363Z",
+      "fetchedAt": "2026-11-25T12:42:43.724Z",
       "provenance": "github",
       "stale": false,
       "sourceQueries": [
@@ -646,20 +646,20 @@
         "mathematics",
         "maths"
       ],
-      "stars": 537,
+      "stars": 538,
       "forks": 189,
-      "pushedAt": "2026-11-24T10:33:13.000Z",
+      "pushedAt": "2026-11-25T12:40:14.000Z",
       "license": null,
       "category": "symbolic",
       "sourceQuery": "topic:computer-algebra",
-      "fetchedAt": "2026-11-24T13:33:45.363Z",
+      "fetchedAt": "2026-11-25T12:42:43.724Z",
       "provenance": "github",
       "stale": false,
       "sourceQueries": [
         "topic:computer-algebra"
       ],
-      "score": 53.65,
-      "reason": "Symbolic computation resource; 537 GitHub stars."
+      "score": 53.66,
+      "reason": "Symbolic computation resource; 538 GitHub stars."
     },
     {
       "id": 101519786,
@@ -693,13 +693,13 @@
       "license": "AGPL-3.0",
       "category": "symbolic",
       "sourceQuery": "topic:computer-algebra",
-      "fetchedAt": "2026-11-24T13:33:45.363Z",
+      "fetchedAt": "2026-11-25T12:42:43.724Z",
       "provenance": "github",
       "stale": false,
       "sourceQueries": [
         "topic:computer-algebra"
       ],
-      "score": 53.33,
+      "score": 53.3,
       "reason": "Symbolic computation resource; 521 GitHub stars."
     },
     {
@@ -729,13 +729,13 @@
       "license": "GPL-3.0",
       "category": "symbolic",
       "sourceQuery": "topic:computer-algebra",
-      "fetchedAt": "2026-11-24T13:33:45.363Z",
+      "fetchedAt": "2026-11-25T12:42:43.724Z",
       "provenance": "github",
       "stale": false,
       "sourceQueries": [
         "topic:computer-algebra"
       ],
-      "score": 47.71,
+      "score": 47.7,
       "reason": "Symbolic computation resource; 500 GitHub stars."
     },
     {
@@ -766,7 +766,7 @@
       "license": "Apache-2.0",
       "category": "symbolic",
       "sourceQuery": "topic:computer-algebra",
-      "fetchedAt": "2026-11-24T13:33:45.363Z",
+      "fetchedAt": "2026-11-25T12:42:43.724Z",
       "provenance": "github",
       "stale": false,
       "sourceQueries": [
@@ -787,13 +787,13 @@
         "python",
         "science"
       ],
-      "stars": 15124,
-      "forks": 5745,
-      "pushedAt": "2026-11-24T11:35:25.000Z",
+      "stars": 15126,
+      "forks": 5750,
+      "pushedAt": "2026-11-25T12:29:10.000Z",
       "license": null,
       "category": "symbolic",
       "sourceQuery": "repo:sympy/sympy",
-      "fetchedAt": "2026-11-24T13:33:47.905Z",
+      "fetchedAt": "2026-11-25T12:42:46.096Z",
       "provenance": "github",
       "stale": false,
       "sourceQueries": [
@@ -801,7 +801,7 @@
         "repo:sympy/sympy"
       ],
       "score": 30.9,
-      "reason": "Symbolic computation resource; 15124 GitHub stars."
+      "reason": "Symbolic computation resource; 15126 GitHub stars."
     }
   ]
 }
