@@ -101,4 +101,29 @@ for(const change of [
   r=>{r.criterionScores.even=3;},r=>{r.criterionScores.odd=-1;},r=>{r.criterionScores.even=1.5;},
   r=>{delete r.criterionScores.odd;},r=>{r.criterionScores.extra=0;},r=>{r.question.maxMarks=5;}
 ]) finalizes(change);
-console.log(assertions+' certificate/prose differential cases across all supported parameters; '+decisions+' finalize cases.');
+
+// Verify native `diagnose` + `--pretty` DAG dependency telemetry on verified, incomplete, and human-reviewed requests
+const fullGcd = invoke('diagnose', {question: q, answer});
+assert.equal(fullGcd.status, 'verified_certificate');
+assert.equal(fullGcd.certificateRecognized, true);
+assert.equal(fullGcd.verifiedCriteriaCount, fullGcd.totalCriteriaCount);
+assert.deepEqual(fullGcd.soundnessGaps, []);
+
+const partialGcd = invoke('diagnose', {question: q, answer: answer.replace('reverse: 1 1', 'reverse: 0 2')});
+assert.equal(partialGcd.status, 'incomplete_certificate');
+assert.ok(partialGcd.soundnessGaps.length >= 1);
+assert.equal(partialGcd.dependencyChain.length, q.rubric.length);
+
+const diagPretty = spawnSync(binary, ['diagnose', '--pretty'], {
+  input: JSON.stringify({question: review.question, answer: review.answer, reviews: [
+    {reviewer: 1, status: 'proposal', criterionScores: {even: 2, odd: 0}, rationale: 'Shown.', evidence: [{criterionId: 'even', quote: review.answer}]},
+    {reviewer: 2, status: 'proposal', criterionScores: {even: 2, odd: 0}, rationale: 'Shown.', evidence: [{criterionId: 'even', quote: review.answer}]},
+  ]}),
+  encoding: 'utf8',
+});
+assert.equal(diagPretty.status, 0, diagPretty.stderr);
+assert.ok(diagPretty.stdout.includes('\n  "diagnosticMode": "certificate-and-rubric-dag"'));
+const diagParsed = JSON.parse(diagPretty.stdout);
+assert.equal(diagParsed.consensus.suggestedScore, 2);
+
+console.log(assertions+' certificate/prose differential cases across all supported parameters; '+decisions+' finalize cases; diagnose DAG & pretty telemetry.');

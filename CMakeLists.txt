@@ -60,6 +60,10 @@ if(BUILD_TESTING)
     target_link_libraries(grader-native-tests PRIVATE NoetherGrader::grader)
     noether_configure(grader-native-tests)
     add_test(NAME native-core COMMAND grader-native-tests)
+    add_executable(grader-soundness-fuzz native-tests/soundness_fuzz.cpp)
+    target_link_libraries(grader-soundness-fuzz PRIVATE NoetherGrader::grader)
+    noether_configure(grader-soundness-fuzz)
+    add_test(NAME soundness-adversarial-fuzz COMMAND grader-soundness-fuzz)
     if(NOT IS_ABSOLUTE "${CMAKE_INSTALL_INCLUDEDIR}" AND NOT IS_ABSOLUTE "${CMAKE_INSTALL_LIBDIR}" AND NOT IS_ABSOLUTE "${CMAKE_INSTALL_BINDIR}")
         add_test(NAME installed-consumer COMMAND ${CMAKE_COMMAND} -DBUILD_DIR=${CMAKE_CURRENT_BINARY_DIR}
             -DSOURCE_DIR=${CMAKE_CURRENT_SOURCE_DIR} -DCOMPILER=${CMAKE_CXX_COMPILER} -DCONFIG=$<CONFIG>
